@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import type { MapFeature, MetricSnapshot, OverviewResponse, StoryRecord } from "@shared/types";
+import type { EntityRecord, MapFeature, MetricSnapshot, OverviewResponse, StoryRecord } from "@shared/types";
 import { LoadPanel } from "../components/LoadPanel";
 import { StoryStrip } from "../components/StoryStrip";
 
@@ -17,14 +17,18 @@ export default function CommandSurface({
   overview,
   frontStories,
   achievementStories,
+  entities,
   mapLayers,
-  history
+  history,
+  onOpenEntity
 }: {
   overview: OverviewResponse | null;
   frontStories: StoryRecord[];
   achievementStories: StoryRecord[];
+  entities: EntityRecord[];
   mapLayers: Record<string, MapFeature[]>;
   history: MetricSnapshot[];
+  onOpenEntity?: (key: string) => void;
 }) {
   return (
     <div
@@ -134,12 +138,16 @@ export default function CommandSurface({
         title="Fronts"
         copy="Conflict lines with explicit public posture"
         items={frontStories}
+        entities={entities}
+        onOpenEntity={onOpenEntity}
       />
 
       <StoryStrip
         title="Achievement / risk stories"
         copy="Narrative and accountability threads"
         items={achievementStories}
+        entities={entities}
+        onOpenEntity={onOpenEntity}
       />
     </div>
   );

@@ -335,7 +335,13 @@ export default function App() {
     }
 
     if (target === "command") {
-      await Promise.all([fetchOverview(force), fetchStories(force), fetchMapLayers(force), fetchHistory(force)]);
+      await Promise.all([
+        fetchOverview(force),
+        fetchStories(force),
+        fetchGraph(force),
+        fetchMapLayers(force),
+        fetchHistory(force)
+      ]);
       return;
     }
 
@@ -363,12 +369,12 @@ export default function App() {
     }
 
     if (target === "signals") {
-      await Promise.all([fetchStories(force), fetchSources(force), fetchMarketSignals(force)]);
+      await Promise.all([fetchStories(force), fetchGraph(force), fetchSources(force), fetchMarketSignals(force)]);
       return;
     }
 
     if (target === "briefings") {
-      await Promise.all([fetchBriefings(force), fetchEvents(force)]);
+      await Promise.all([fetchBriefings(force), fetchEvents(force), fetchGraph(force)]);
       return;
     }
 
@@ -641,8 +647,10 @@ export default function App() {
                 overview={overview}
                 frontStories={frontStories}
                 achievementStories={achievementStories}
+                entities={entities}
                 mapLayers={mapLayers}
                 history={history}
+                onOpenEntity={handleOpenEntity}
               />
             </Suspense>
           )}
@@ -687,10 +695,12 @@ export default function App() {
             <SignalsSurface
               indicators={indicatorStories}
               stories={stories}
+              entities={entities}
               sources={sources}
               marketSignals={marketSignals}
               focusedSourceSlug={focusedSourceSlug}
               onFocusSource={setFocusedSourceSlug}
+              onOpenEntity={handleOpenEntity}
             />
           )}
 
@@ -698,7 +708,9 @@ export default function App() {
             <BriefingsSurface
               briefings={briefings}
               events={events}
+              entities={entities}
               onOpenEvent={handleOpenEventReference}
+              onOpenEntity={handleOpenEntity}
             />
           )}
 

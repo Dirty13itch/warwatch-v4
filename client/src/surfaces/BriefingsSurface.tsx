@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import type { BriefingRecord, EventRecord } from "@shared/types";
+import type { BriefingRecord, EntityRecord, EventRecord } from "@shared/types";
 import { formatDate, formatDateTime } from "../lib/format";
-import { findEventByReference } from "../lib/canonical-linking";
+import { findEntitiesByText, findEventByReference } from "../lib/canonical-linking";
 
 type BriefingSection = {
   heading: string | null;
@@ -48,14 +48,21 @@ function briefingHighlights(body: string): BriefingSection[] {
 export default function BriefingsSurface({
   briefings,
   events,
-  onOpenEvent
+  entities,
+  onOpenEvent,
+  onOpenEntity
 }: {
   briefings: BriefingRecord[];
   events: EventRecord[];
+  entities: EntityRecord[];
   onOpenEvent?: (reference: string) => void;
+  onOpenEntity?: (key: string) => void;
 }) {
   const [selectedId, setSelectedId] = useState<string | null>(briefings[0]?.id ?? null);
   const selectedBriefing = briefings.find((briefing) => briefing.id === selectedId) ?? briefings[0] ?? null;
+  const matchedEntities = selectedBriefing
+    ? findEntitiesByText(entities, selectedBriefing.title, selectedBriefing.body, selectedBriefing.sourceRefs.join(" "))
+    : [];
 
   useEffect(() => {
     if (!selectedBriefing) {
@@ -224,6 +231,29 @@ export default function BriefingsSurface({
                 )}
               </div>
             </div>
+
+            {matchedEntities.length ? (
+              <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/78">
+                  Actor threads
+                </p>
+                <p className="mt-3 text-sm leading-6 text-calm/72">
+                  Briefings can now hand directly into the dossier graph when a canonical actor match exists.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {matchedEntities.map((entity) => (
+                    <button
+                      key={entity.id}
+                      type="button"
+                      onClick={() => onOpenEntity?.(entity.slug)}
+                      className="rounded-full border border-signal/18 bg-signal/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-signal"
+                    >
+                      {entity.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </div>
         ) : (
           <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-5 text-sm leading-6 text-calm/76">

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import type { StoryRecord } from "@shared/types";
+import type { EntityRecord, StoryRecord } from "@shared/types";
 import { formatTokenLabel } from "../lib/format";
+import { findEntitiesByText } from "../lib/canonical-linking";
 
 function storyTone(significance: StoryRecord["significance"]): string {
   if (significance === "critical") {
@@ -15,14 +16,21 @@ function storyTone(significance: StoryRecord["significance"]): string {
 export function StoryStrip({
   title,
   copy,
-  items
+  items,
+  entities = [],
+  onOpenEntity
 }: {
   title: string;
   copy: string;
   items: StoryRecord[];
+  entities?: EntityRecord[];
+  onOpenEntity?: (key: string) => void;
 }) {
   const [selectedId, setSelectedId] = useState<string | null>(items[0]?.id ?? null);
   const selectedStory = items.find((item) => item.id === selectedId) ?? items[0] ?? null;
+  const matchedEntities = selectedStory
+    ? findEntitiesByText(entities, selectedStory.title, selectedStory.summary, selectedStory.detail, selectedStory.sourceText)
+    : [];
 
   useEffect(() => {
     if (!selectedStory) {
@@ -127,6 +135,29 @@ export function StoryStrip({
                 </p>
                 <p className="mt-3 text-sm leading-7 text-calm/84">{selectedStory.detail}</p>
               </div>
+
+              {matchedEntities.length ? (
+                <div className="rounded-[20px] border border-white/8 bg-white/[0.03] p-4">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/78">
+                    Actor threads
+                  </p>
+                  <p className="mt-3 text-sm leading-6 text-calm/76">
+                    This story now resolves into the same dossier graph used by the timeline lane.
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {matchedEntities.map((entity) => (
+                      <button
+                        key={entity.id}
+                        type="button"
+                        onClick={() => onOpenEntity?.(entity.slug)}
+                        className="rounded-full border border-signal/18 bg-signal/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-signal"
+                      >
+                        {entity.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
             </div>
           ) : (
             <div className="rounded-[20px] border border-white/8 bg-white/[0.03] p-5 text-sm leading-6 text-calm/76">

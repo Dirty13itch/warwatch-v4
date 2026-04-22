@@ -82,6 +82,7 @@ Tasks:
    - timeline to claim/entity context
    - briefings to story/event/entity context
    - signals to source/story/claim context
+   Current state: timeline, story strips, and briefing readers can already open into the dossier graph; snapshot and source-posture entry remain next.
 4. Add UI drill-down for canonical objects without collapsing the current clean shell.
 5. Keep public-safe labeling explicit for disputed or unreviewed nodes.
 

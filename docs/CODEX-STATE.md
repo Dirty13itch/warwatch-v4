@@ -30,6 +30,7 @@ Primary repo: `C:\Codex Projects\Iran War`
   - timeline events can now also hand readers into matched actor dossiers when the graph has a canonical entity match
   - dossiers surface now exposes the actor/claim/relationship graph as a public reader lane instead of leaving the graph buried in SQLite
   - story and briefing lanes now provide selection-aware reader depth instead of static text dumps
+  - story strips and briefing readers can now also hand into matched actor dossiers, so the graph is reachable from fronts, signals, and SITREP context
   - briefing references can now hand readers into matched timeline events instead of ending at raw citation text
   - signals now includes a selection-aware source reader tied to canonical stories and source posture
   - operator console is separated from the public bundle
@@ -74,6 +75,6 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - The operator console can now see queue pressure directly through age buckets and SLA summary cards, which gives the COO lane a concrete review-backlog surface
 - The operator console can now turn a queue row into a real review packet and jump straight into timeline evidence from the operator lane
 - The COO lane can now attach actual UI evidence to updates through local preview screenshots instead of relying only on text artifacts
-- Public reader surfaces no longer dead-end as quickly: briefing refs can jump into timeline detail, timeline detail can jump into source posture, and actor-matched events can jump into dossier graph detail
+- Public reader surfaces no longer dead-end as quickly: briefing refs can jump into timeline detail, timeline detail can jump into source posture, and actor-matched events, stories, and briefings can jump into dossier graph detail
 - Scope gating is still heuristic and rules-based, so borderline regional-spillover judgments remain a tuning lane rather than a solved problem
 - Critical claims continue to require operator approval before promotion to primary public surfaces

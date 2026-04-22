@@ -1,4 +1,4 @@
-import type { MetricSnapshot, SourceRecord, StoryRecord } from "@shared/types";
+import type { EntityRecord, MetricSnapshot, SourceRecord, StoryRecord } from "@shared/types";
 import { MarketSignalsPanel } from "../components/MarketSignalsPanel";
 import { SourceTable } from "../components/SourceTable";
 import { StoryStrip } from "../components/StoryStrip";
@@ -6,17 +6,21 @@ import { StoryStrip } from "../components/StoryStrip";
 export default function SignalsSurface({
   indicators,
   stories,
+  entities,
   sources,
   marketSignals,
   focusedSourceSlug,
-  onFocusSource
+  onFocusSource,
+  onOpenEntity
 }: {
   indicators: StoryRecord[];
   stories: StoryRecord[];
+  entities: EntityRecord[];
   sources: SourceRecord[];
   marketSignals: Record<string, MetricSnapshot[]>;
   focusedSourceSlug?: string | null;
   onFocusSource?: (slug: string) => void;
+  onOpenEntity?: (key: string) => void;
 }) {
   return (
     <div
@@ -29,6 +33,8 @@ export default function SignalsSurface({
           title="Signals"
           copy="Unconventional indicators with explicit source labeling"
           items={indicators}
+          entities={entities}
+          onOpenEntity={onOpenEntity}
         />
         <SourceTable
           sources={sources}

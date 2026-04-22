@@ -12,6 +12,7 @@
 - Canonical handoff is now live across public reader lanes: timeline events can open matched source posture, signals exposes a real source reader, and briefing references can jump into matched timeline events
 - Canonical actor dossiers are now live as a first-class public surface: entities, claims, and relationships resolve into a dossier graph with linked stories, events, and briefings
 - Timeline events can now hand readers directly into matched actor dossiers, which turns event inspection into graph exploration instead of another dead end
+- Story and briefing readers can now also hand directly into matched actor dossiers, so fronts, signals, and SITREPs all resolve into the same graph instead of forcing a timeline detour
 - Live ingestion is active against `BBC Middle East`, `Al Jazeera`, `NPR World`, `Defense News`, `USNI News`, and `USGS Iran Earthquakes`
 - Live market ingestion is active against Yahoo Finance for `oil_brent`, `oil_wti`, and `gold_price`
 - Feed dedupe and corroboration are live: repeated feed hits now merge into existing events instead of inflating duplicates
