@@ -203,6 +203,11 @@ export interface OverviewResponse {
   currentDay: number;
   stale: boolean;
   legacyAsOf: string | null;
+  freshness: {
+    topLine: string;
+    lastSuccessfulIngestionAt: string | null;
+    hasLiveIngestion: boolean;
+  };
   headline: {
     level: string;
     label: string;
@@ -216,4 +221,3 @@ export interface OverviewResponse {
     lastIngestionStatus: string;
   };
 }
-

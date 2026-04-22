@@ -22,6 +22,25 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Operator API routes: review queue, approve/reject actions, ingestion runs, manual ingest trigger
 - Seed path: legacy V3 bundle plus blueprint-derived launch briefing and review backlog
 - Reporting path: heartbeat script writes a reviewable markdown artifact
+- Client runtime is surface-aware and split by lane:
+  - command shell lazy-loads heavy map/chart code
+  - operator console is separated from the public bundle
+  - timeline, signals, and briefings fetch only the data they need
+- Overview freshness is derived from top-line KPI freshness, not just latest event activity
+- RSS/event ingestion now dedupes by normalized title/category/date window and upgrades corroboration/source refs on merge
 
 ## Operating Assumption
 Twice-daily COO heartbeat remains the default cadence unless the repo contract changes.
+
+## Live Feed Lane
+- `BBC Middle East`
+- `Al Jazeera`
+- `NPR World`
+- `Defense News`
+- `USNI News`
+- `USGS Iran Earthquakes`
+
+## Current Truth
+- Ingestion is healthy on the current default feed set
+- Public stale state remains expected because top-line KPIs are still bootstrap-era values labeled `stale_seed`
+- Critical claims continue to require operator approval before promotion to primary public surfaces

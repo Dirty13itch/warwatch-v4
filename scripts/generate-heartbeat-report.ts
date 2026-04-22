@@ -28,6 +28,8 @@ const lines = [
   `Current day: ${overview.currentDay}`,
   `Legacy as of: ${overview.legacyAsOf ?? "n/a"}`,
   `Public stale flag: ${overview.stale ? "YES" : "NO"}`,
+  `Top-line freshness: ${overview.freshness.topLine}`,
+  `Last successful ingestion: ${overview.freshness.lastSuccessfulIngestionAt ?? "none"}`,
   "",
   "## Queue",
   ...queue.slice(0, 6).map((item) => `- [${item.severity}] ${item.title} :: ${item.status}`),
@@ -51,4 +53,3 @@ fs.mkdirSync(path.dirname(config.heartbeatReportPath), { recursive: true });
 fs.writeFileSync(config.heartbeatReportPath, `${lines.join("\n")}\n`, "utf8");
 console.log(`Wrote heartbeat report to ${config.heartbeatReportPath}`);
 db.close();
-

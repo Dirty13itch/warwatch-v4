@@ -183,17 +183,30 @@ export function getOverview(db: DatabaseSync): OverviewResponse {
     LIMIT 1
   `).get() as { status?: string } | undefined;
 
-  const lastReviewedEvent = db.prepare(`
-    SELECT MAX(date) AS latest FROM events
-    WHERE review_state IN ('approved', 'auto_published')
+  const lastSuccessfulIngestion = db.prepare(`
+    SELECT MAX(finished_at) AS latest
+    FROM ingestion_runs
+    WHERE status = 'success'
   `).get() as { latest: string | null };
 
   const legacyAsOf = metricMap.get("oil_brent")?.timestamp?.slice(0, 10) ?? null;
-  const daysSinceLastEvent = lastReviewedEvent.latest
-    ? Math.floor(
-        (Date.now() - Date.parse(`${lastReviewedEvent.latest}T00:00:00.000Z`)) / 86_400_000
-      )
-    : 999;
+  const topLineFreshnesses = [
+    metricMap.get("total_strikes")?.freshness ?? "missing",
+    metricMap.get("oil_brent")?.freshness ?? "missing",
+    metricMap.get("hormuz_daily_cap")?.freshness ?? "missing",
+    metricMap.get("iran_casualties_estimate")?.freshness ?? "missing"
+  ];
+  const topLineFreshness = topLineFreshnesses.includes("missing")
+    ? "missing"
+    : topLineFreshnesses.every((value) => value === "live" || value === "ingested")
+      ? "live"
+      : topLineFreshnesses.every((value) => value === "historical_seed")
+        ? "historical_seed"
+        : topLineFreshnesses.includes("stale_seed")
+          ? "stale_seed"
+          : "mixed";
+  const hasLiveIngestion = Boolean(lastSuccessfulIngestion.latest);
+  const stale = topLineFreshness !== "live";
 
   const kpis = [
     {
@@ -230,8 +243,13 @@ export function getOverview(db: DatabaseSync): OverviewResponse {
   return {
     generatedAt: new Date().toISOString(),
     currentDay: Math.floor((Date.now() - Date.parse(CONFLICT_START_ISO)) / 86_400_000) + 1,
-    stale: daysSinceLastEvent > 3,
+    stale,
     legacyAsOf,
+    freshness: {
+      topLine: topLineFreshness,
+      lastSuccessfulIngestionAt: lastSuccessfulIngestion.latest,
+      hasLiveIngestion
+    },
     headline: {
       level: metricMap.get("threat_level")?.valueText ?? "CRITICAL",
       label: "Public intelligence shell",

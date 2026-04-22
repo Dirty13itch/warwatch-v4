@@ -4,7 +4,8 @@ dist/
 .env
 data/*.sqlite
 data/*.sqlite-*
+data/*.db
+data/*.db-*
 reports/heartbeat/LATEST.md
 coverage/
 *.log
-

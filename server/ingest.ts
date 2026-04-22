@@ -17,10 +17,192 @@ function toId(prefix: string, value: string): string {
   return `${prefix}_${crypto.createHash("sha1").update(value).digest("hex").slice(0, 12)}`;
 }
 
+function normalizeForMatch(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\b(breaking|live|update|analysis|watch)\b/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function deriveConfidenceFromCorroboration(count: number) {
+  if (count >= 3) {
+    return "confirmed" as const;
+  }
+
+  if (count >= 2) {
+    return "reported" as const;
+  }
+
+  return "unverified" as const;
+}
+
+interface PreparedFeedEvent {
+  eventDate: string;
+  title: string;
+  detail: string;
+  category: string;
+  significance: "critical" | "high" | "medium" | "watch";
+  feedName: string;
+  link: string | null;
+  createdAt: string;
+}
+
+function findMatchingEvent(
+  db: DatabaseSync,
+  candidate: PreparedFeedEvent
+): {
+  id: string;
+  sourceRefs: string[];
+  tags: string[];
+  corroboration: number;
+  sourceText: string;
+  reviewState: string;
+  visibility: string;
+} | null {
+  const rows = db.prepare(`
+    SELECT id, title, source_refs_json, tags_json, corroboration, source_text, review_state, visibility
+    FROM events
+    WHERE date BETWEEN date($date, '-1 day') AND date($date, '+1 day')
+      AND category = $category
+  `).all({
+    date: candidate.eventDate,
+    category: candidate.category
+  }) as Array<{
+    id: string;
+    title: string;
+    source_refs_json: string;
+    tags_json: string;
+    corroboration: number;
+    source_text: string;
+    review_state: string;
+    visibility: string;
+  }>;
+
+  const normalizedCandidate = normalizeForMatch(candidate.title);
+  for (const row of rows) {
+    const normalizedExisting = normalizeForMatch(row.title);
+    if (!normalizedExisting || !normalizedCandidate) {
+      continue;
+    }
+
+    if (
+      normalizedExisting === normalizedCandidate ||
+      normalizedExisting.includes(normalizedCandidate) ||
+      normalizedCandidate.includes(normalizedExisting)
+    ) {
+      return {
+        id: row.id,
+        sourceRefs: JSON.parse(row.source_refs_json ?? "[]") as string[],
+        tags: JSON.parse(row.tags_json ?? "[]") as string[],
+        corroboration: Number(row.corroboration),
+        sourceText: row.source_text,
+        reviewState: row.review_state,
+        visibility: row.visibility
+      };
+    }
+  }
+
+  return null;
+}
+
+export function upsertPreparedFeedEvent(
+  db: DatabaseSync,
+  candidate: PreparedFeedEvent
+): { action: "inserted" | "merged" | "noop"; queueCreated: boolean } {
+  const matched = findMatchingEvent(db, candidate);
+  if (matched) {
+    const nextSourceRefs = Array.from(
+      new Set([...matched.sourceRefs, candidate.feedName, candidate.link].filter(Boolean))
+    );
+    const nextTags = Array.from(new Set([...matched.tags, "auto_ingest", candidate.feedName]));
+    const nextCorroboration = nextSourceRefs.filter((value) => value && !String(value).startsWith("http")).length;
+    const nextConfidence = deriveConfidenceFromCorroboration(Math.max(nextCorroboration, matched.corroboration));
+    const nextSourceText = Array.from(
+      new Set(
+        matched.sourceText
+          .split("/")
+          .map((value) => value.trim())
+          .concat(candidate.feedName)
+          .filter(Boolean)
+      )
+    ).join(" / ");
+
+    db.prepare(`
+      UPDATE events
+      SET source_refs_json = ?, tags_json = ?, corroboration = ?, confidence = ?, source_text = ?
+      WHERE id = ?
+    `).run(
+      JSON.stringify(nextSourceRefs),
+      JSON.stringify(nextTags),
+      Math.max(nextCorroboration, matched.corroboration),
+      nextConfidence,
+      nextSourceText,
+      matched.id
+    );
+
+    return { action: "merged", queueCreated: false };
+  }
+
+  const reviewState = initialReviewState(candidate.significance, "ingest");
+  const visibility = initialVisibility(candidate.significance, "ingest");
+  const eventId = toId("event", `${candidate.title}:${candidate.eventDate}:${candidate.feedName}`);
+
+  db.prepare(`
+    INSERT INTO events (
+      id, date, time, title, detail, category, significance, confidence, corroboration,
+      source_text, source_refs_json, review_state, visibility, geo_json, tags_json, created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    eventId,
+    candidate.eventDate,
+    null,
+    candidate.title,
+    candidate.detail,
+    candidate.category,
+    candidate.significance,
+    "unverified",
+    1,
+    candidate.feedName,
+    JSON.stringify([candidate.feedName, candidate.link].filter(Boolean)),
+    reviewState,
+    visibility,
+    null,
+    JSON.stringify(["auto_ingest", candidate.feedName]),
+    candidate.createdAt
+  );
+
+  let queueCreated = false;
+  if (reviewState === "pending") {
+    const queueId = toId("queue", eventId);
+    db.prepare(`
+      INSERT OR IGNORE INTO review_queue (
+        id, item_type, item_id, title, severity, reason, status, created_at, updated_at, metadata_json
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      queueId,
+      "event",
+      eventId,
+      candidate.title,
+      severityFromSignificance(candidate.significance),
+      "Critical auto-ingested event requires human review before public promotion.",
+      "pending",
+      candidate.createdAt,
+      candidate.createdAt,
+      JSON.stringify({ feed: candidate.feedName, link: candidate.link })
+    );
+    queueCreated = true;
+  }
+
+  return { action: "inserted", queueCreated };
+}
+
 export const feedDefinitions = [
   { name: "BBC Middle East", url: "https://feeds.bbci.co.uk/news/world/middle_east/rss.xml", runType: "rss" },
   { name: "Al Jazeera", url: "https://www.aljazeera.com/xml/rss/all.xml", runType: "rss" },
-  { name: "Reuters", url: "https://feeds.reuters.com/reuters/topNews", runType: "rss" },
+  { name: "NPR World", url: "https://feeds.npr.org/1004/rss.xml", runType: "rss" },
   { name: "Defense News", url: "https://www.defensenews.com/arc/outboundfeeds/rss/", runType: "rss" },
   { name: "USNI News", url: "https://news.usni.org/feed", runType: "rss" },
   {
@@ -35,6 +217,7 @@ export async function runIngestionCycle(db: DatabaseSync): Promise<void> {
     const startedAt = new Date().toISOString();
     const runId = toId("run", `${feed.name}:${startedAt}`);
     let insertedCount = 0;
+    let mergedCount = 0;
     let queuedCount = 0;
     let status: "success" | "partial" | "error" = "success";
     let summary = "No new records";
@@ -50,62 +233,29 @@ export async function runIngestionCycle(db: DatabaseSync): Promise<void> {
             continue;
           }
 
-          const fingerprint = `${feed.name}:${title}:${item.pubDate ?? item.isoDate ?? ""}`;
-          const eventId = toId("event", fingerprint);
-          const exists = db.prepare(`SELECT id FROM events WHERE id = ?`).get(eventId) as { id?: string } | undefined;
-          if (exists?.id) {
-            continue;
-          }
-
           const detail = item.contentSnippet?.trim() || item.content?.slice(0, 420) || "Auto-ingested feed item.";
           const classified = classifyFeedEvent(`${title} ${detail}`);
-          const reviewState = initialReviewState(classified.significance, "ingest");
-          const visibility = initialVisibility(classified.significance, "ingest");
           const eventDate = (item.isoDate ?? item.pubDate ?? new Date().toISOString()).slice(0, 10);
-
-          db.prepare(`
-            INSERT INTO events (
-              id, date, time, title, detail, category, significance, confidence, corroboration,
-              source_text, source_refs_json, review_state, visibility, geo_json, tags_json, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-          `).run(
-            eventId,
+          const result = upsertPreparedFeedEvent(db, {
             eventDate,
-            null,
             title,
             detail,
-            classified.category,
-            classified.significance,
-            "unverified",
-            1,
-            feed.name,
-            JSON.stringify([feed.name, item.link].filter(Boolean)),
-            reviewState,
-            visibility,
-            null,
-            JSON.stringify(["auto_ingest", feed.name]),
-            new Date().toISOString()
-          );
-          insertedCount += 1;
+            category: classified.category,
+            significance: classified.significance,
+            feedName: feed.name,
+            link: item.link ?? null,
+            createdAt: new Date().toISOString()
+          });
 
-          if (reviewState === "pending") {
-            const queueId = toId("queue", eventId);
-            db.prepare(`
-              INSERT OR IGNORE INTO review_queue (
-                id, item_type, item_id, title, severity, reason, status, created_at, updated_at, metadata_json
-              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `).run(
-              queueId,
-              "event",
-              eventId,
-              title,
-              severityFromSignificance(classified.significance),
-              "Critical auto-ingested event requires human review before public promotion.",
-              "pending",
-              startedAt,
-              startedAt,
-              JSON.stringify({ feed: feed.name, link: item.link ?? null })
-            );
+          if (result.action === "inserted") {
+            insertedCount += 1;
+          }
+
+          if (result.action === "merged") {
+            mergedCount += 1;
+          }
+
+          if (result.queueCreated) {
             queuedCount += 1;
           }
         }
@@ -164,8 +314,8 @@ export async function runIngestionCycle(db: DatabaseSync): Promise<void> {
         }
       }
 
-      summary = insertedCount
-        ? `Inserted ${insertedCount} items; queued ${queuedCount} for review`
+      summary = insertedCount || mergedCount
+        ? `Inserted ${insertedCount} items; merged ${mergedCount}; queued ${queuedCount} for review`
         : "No new events were inserted";
     } catch (error) {
       status = "error";
@@ -191,3 +341,5 @@ export async function runIngestionCycle(db: DatabaseSync): Promise<void> {
     );
   }
 }
+
+export { normalizeForMatch, deriveConfidenceFromCorroboration };
