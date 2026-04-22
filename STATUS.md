@@ -8,6 +8,7 @@
 - The public shell now opens on a curated `Snapshot` surface that packages posture, SITREP context, fronts, live market signals, and trust framing before the deeper command/operator lanes
 - Public shell is now surface-aware: overview loads first, timeline/signals/briefings/operator data load on demand, and heavy map/chart/operator code is split out of the initial bundle
 - The timeline is now a real explorer: filterable chronology, selection-aware event detail, corroboration counts, and public-posture context are all visible without leaving the surface
+- Story and briefing lanes now have real drill-down: shared story strips expose selection-aware readers, and the briefing archive opens into a structured SITREP reader instead of dumping full text inline
 - Live ingestion is active against `BBC Middle East`, `Al Jazeera`, `NPR World`, `Defense News`, `USNI News`, and `USGS Iran Earthquakes`
 - Live market ingestion is active against Yahoo Finance for `oil_brent`, `oil_wti`, and `gold_price`
 - Feed dedupe and corroboration are live: repeated feed hits now merge into existing events instead of inflating duplicates
@@ -23,6 +24,7 @@
 - Preview output now also includes a single `reports/previews/latest/preview-board.png` board artifact so updates can show one readable visual brief instead of a loose image set
 - The preview lane now centers the new Snapshot surface, which gives the product a better public/demo-first entry point than dropping directly into the raw command shell
 - Visual proof now includes the upgraded timeline surface so public exploration depth is visible in the preview board, not just the landing shell
+- Visual proof now includes the briefing reader lane so public archive depth is visible in the preview board as well
 - Verification contract is green locally via `npm run verify`
 
 ## Current Goal

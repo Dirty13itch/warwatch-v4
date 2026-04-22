@@ -19,7 +19,7 @@ type CaptureTarget = {
   title: string;
   fileName: string;
   notes: string;
-  surface?: "preview" | "command" | "timeline" | "signals" | "operator";
+  surface?: "preview" | "command" | "timeline" | "signals" | "briefings" | "operator";
   selector?: string;
   mobile?: boolean;
 };
@@ -89,6 +89,8 @@ async function openSurface(page: Page, surface: CaptureTarget["surface"]) {
         ? "Timeline"
         : surface === "signals"
           ? "Signals"
+          : surface === "briefings"
+            ? "Briefings"
           : "Operator";
   await page.getByRole("button", { name: new RegExp(label, "i") }).click();
   await page.locator(`[data-preview="${surface}-surface"]`).waitFor();
@@ -389,6 +391,12 @@ async function main() {
       fileName: "signals-desktop.png",
       notes: "Signals surface with live market cards and source table",
       surface: "signals"
+    },
+    {
+      title: "Briefings Surface",
+      fileName: "briefings-desktop.png",
+      notes: "Briefing archive reader with archive selection, highlights, and full SITREP detail",
+      surface: "briefings"
     },
     {
       title: "Operator Surface",
