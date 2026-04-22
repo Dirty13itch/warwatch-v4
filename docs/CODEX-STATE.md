@@ -63,6 +63,8 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Build output now isolates React, chart, and MapLibre vendor lanes, with MapLibre kept off the initial shell through dynamic import
 - Preview proof now exists as a repo script: `npm run preview:shots` captures desktop/mobile screenshots from the built app and writes `reports/previews/LATEST.md`
 - Preview proof also emits `reports/previews/latest/preview-board.png`, a single stitched board artifact for human-facing updates
+- Preview proof now also emits a first-class atlas entrypoint at `reports/previews/latest/index.html` plus `preview-atlas.html` and `preview-atlas.pdf`, so the entire product can be reviewed from one local artifact
+- `npm run preview:open` now opens the latest atlas directly, which turns preview proof into a real walkthrough surface instead of a folder of PNGs
 - Preview proof now includes the Snapshot surface as the primary visual/demo lane
 - Preview proof now also includes the upgraded timeline surface so exploration depth is visible in each artifact pass
 - Preview proof now also includes the briefing reader surface so archive usability is visible in each artifact pass
@@ -98,6 +100,7 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - The operator console can now turn a queue row into a real review packet and jump straight into timeline evidence from the operator lane
 - The repo now has a deterministic queue-reconciliation script (`npm run review:reconcile`) that reclassifies bad auto-ingest criticals, promotes matched claim suggestions, and rejects superseded launch briefings instead of leaving backlog cleanup as a manual chat loop
 - The COO lane can now attach actual UI evidence to updates through local preview screenshots instead of relying only on text artifacts
+- The COO lane can now point to one local full-preview atlas instead of forcing review through individual PNG links or a stitched board alone
 - The preview lane now reflects the stronger hierarchy pass instead of the older flatter card system, and the mobile artifact shows the tighter hero/nav/status shell rather than the earlier oversized first screen
 - Public reader surfaces no longer dead-end as quickly: snapshot, source posture, briefing refs, events, stories, and briefings can all jump into dossier graph detail
 - Shared entity matching now reduces drift between what the client thinks is related and what the server uses for dossier context

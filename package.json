@@ -17,6 +17,7 @@
     "test": "vitest run",
     "integrity": "tsx scripts/verify-integrity.ts",
     "preview:shots": "npm run build && tsx scripts/capture-preview.ts",
+    "preview:open": "tsx scripts/open-preview.ts",
     "smoke": "tsx scripts/verify-smoke.ts",
     "verify:public": "tsx scripts/verify-public.ts",
     "verify": "npm run integrity && npm run typecheck && npm run test && npm run build && npm run smoke && npm run verify:public",

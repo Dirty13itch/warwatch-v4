@@ -19,9 +19,15 @@ type CaptureTarget = {
   title: string;
   fileName: string;
   notes: string;
+  group: "snapshot" | "reader" | "operator" | "mobile";
   surface?: "preview" | "command" | "timeline" | "dossiers" | "signals" | "briefings" | "operator";
   selector?: string;
   mobile?: boolean;
+};
+
+type PreviewHighlights = {
+  heartbeat: string[];
+  build: string[];
 };
 
 function ensureBuildOutputs() {
@@ -36,12 +42,50 @@ function ensurePreviewDirs() {
   fs.mkdirSync(archiveDir, { recursive: true });
 }
 
+function readLines(filePath: string): string[] {
+  if (!fs.existsSync(filePath)) {
+    return [];
+  }
+
+  return fs
+    .readFileSync(filePath, "utf8")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+function firstMatchingLine(lines: string[], prefix: string): string | null {
+  return lines.find((line) => line.startsWith(prefix)) ?? null;
+}
+
+function loadPreviewHighlights(): PreviewHighlights {
+  const heartbeatLines = readLines(path.join(rootDir, "reports/heartbeat/LATEST.md"));
+  const buildLines = readLines(path.join(rootDir, "reports/build/LATEST.md"));
+
+  return {
+    heartbeat: [
+      firstMatchingLine(heartbeatLines, "Public stale flag:"),
+      firstMatchingLine(heartbeatLines, "Top-line freshness:"),
+      firstMatchingLine(heartbeatLines, "Last successful ingestion:"),
+      heartbeatLines.find((line) => line.startsWith("- Pending ")) ?? null
+    ].filter((line): line is string => Boolean(line)),
+    build: [
+      buildLines.find((line) => line.startsWith("- JavaScript:")) ?? null,
+      buildLines.find((line) => line.startsWith("- CSS:")) ?? null,
+      buildLines.find((line) => line.startsWith("- assets/maplibre-vendor")) ?? null
+    ].filter((line): line is string => Boolean(line))
+  };
+}
+
 function startServer(): ChildProcessWithoutNullStreams {
   return spawn(process.execPath, [serverEntry], {
     cwd: rootDir,
     env: {
       ...process.env,
       PORT: String(port),
+      PUBLIC_BASE_URL: "",
+      OPERATOR_API_KEY: "",
+      WARWATCH_REQUIRE_OPERATOR_KEY: "false",
       WARWATCH_ENABLE_SCHEDULER: "false"
     },
     stdio: "pipe"
@@ -127,12 +171,26 @@ async function captureSurface(
   await context.close();
 }
 
-function writeBoardHtml(captures: CaptureTarget[]) {
-  const boardHtml = `<!doctype html>
+function groupLabel(group: CaptureTarget["group"]): string {
+  if (group === "snapshot") {
+    return "Public Shell";
+  }
+  if (group === "reader") {
+    return "Reader Lanes";
+  }
+  if (group === "operator") {
+    return "Operator Lanes";
+  }
+  return "Mobile";
+}
+
+function writeAtlasHtml(captures: CaptureTarget[], highlights: PreviewHighlights) {
+  const groups: Array<CaptureTarget["group"]> = ["snapshot", "reader", "operator", "mobile"];
+  const atlasHtml = `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>WarWatch Preview Board</title>
+    <title>WarWatch Preview Atlas</title>
     <style>
       :root {
         color-scheme: dark;
@@ -144,9 +202,7 @@ function writeBoardHtml(captures: CaptureTarget[]) {
         --muted: #9caebe;
         --signal: #59d3ff;
       }
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; }
       body {
         margin: 0;
         font-family: "Segoe UI", Inter, system-ui, sans-serif;
@@ -155,9 +211,8 @@ function writeBoardHtml(captures: CaptureTarget[]) {
           linear-gradient(160deg, var(--bg-a), var(--bg-b));
         color: var(--text);
       }
-      main {
-        padding: 32px;
-      }
+      main { padding: 32px; }
+      .shell { max-width: 1680px; margin: 0 auto; }
       .hero {
         display: grid;
         grid-template-columns: 1.1fr 0.9fr;
@@ -165,15 +220,33 @@ function writeBoardHtml(captures: CaptureTarget[]) {
         align-items: start;
         margin-bottom: 24px;
       }
+      .nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 0 0 24px;
+      }
+      .nav a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text);
+        text-decoration: none;
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
       .panel {
         border: 1px solid var(--line);
         border-radius: 28px;
         background: var(--shell);
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
       }
-      .meta {
-        padding: 28px;
-      }
+      .meta, .metrics, .summary-panel { padding: 28px; }
       .eyebrow {
         font-size: 12px;
         letter-spacing: 0.34em;
@@ -194,11 +267,7 @@ function writeBoardHtml(captures: CaptureTarget[]) {
         font-size: 19px;
         line-height: 1.6;
       }
-      .metrics {
-        display: grid;
-        gap: 12px;
-        padding: 28px;
-      }
+      .metrics { display: grid; gap: 12px; }
       .metric {
         display: flex;
         justify-content: space-between;
@@ -213,18 +282,50 @@ function writeBoardHtml(captures: CaptureTarget[]) {
         letter-spacing: 0.18em;
         text-transform: uppercase;
       }
-      .metric-value {
-        font-size: 14px;
-        font-weight: 600;
+      .metric-value { font-size: 14px; font-weight: 600; }
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+        margin: 0 0 24px;
       }
+      .summary-panel h2 {
+        margin: 0;
+        font-size: 18px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--signal);
+      }
+      .summary-panel ul {
+        margin: 18px 0 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 10px;
+      }
+      .summary-panel li {
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .section { margin: 0 0 28px; }
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 16px;
+        margin: 0 0 14px;
+      }
+      .section-title { font-size: 28px; line-height: 1; font-weight: 600; }
+      .section-copy { max-width: 34rem; color: var(--muted); font-size: 15px; line-height: 1.6; }
       .grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 20px;
       }
-      .card {
-        overflow: hidden;
-      }
+      .card { overflow: hidden; }
       .card-header {
         display: flex;
         justify-content: space-between;
@@ -232,10 +333,7 @@ function writeBoardHtml(captures: CaptureTarget[]) {
         gap: 16px;
         padding: 18px 20px 0;
       }
-      .card-title {
-        font-size: 22px;
-        font-weight: 600;
-      }
+      .card-title { font-size: 22px; font-weight: 600; }
       .card-tag {
         color: var(--signal);
         font-size: 11px;
@@ -248,9 +346,7 @@ function writeBoardHtml(captures: CaptureTarget[]) {
         font-size: 14px;
         line-height: 1.6;
       }
-      .frame {
-        padding: 0 14px 14px;
-      }
+      .frame { padding: 0 14px 14px; }
       img {
         display: block;
         width: 100%;
@@ -260,67 +356,98 @@ function writeBoardHtml(captures: CaptureTarget[]) {
         background: #04101a;
       }
       @media (max-width: 1280px) {
-        .hero,
-        .grid {
-          grid-template-columns: 1fr;
-        }
+        .hero, .summary-grid, .grid { grid-template-columns: 1fr; }
       }
     </style>
   </head>
   <body>
     <main>
-      <section class="hero">
-        <div class="panel meta">
-          <div class="eyebrow">WarWatch V4 Preview Board</div>
-          <h1>Current visual proof for the snapshot, dossier, command, signals, operator, and synthesis lanes.</h1>
-          <p class="copy">
-            This board is generated from the built app so COO updates can show concrete UI state, not just commit messages and markdown artifacts.
-          </p>
-        </div>
-        <div class="panel metrics">
-          <div class="metric">
-            <div class="metric-label">Generated</div>
-            <div class="metric-value">${new Date().toISOString()}</div>
+      <div class="shell">
+        <section class="hero">
+          <div class="panel meta">
+            <div class="eyebrow">WarWatch V4 Preview Atlas</div>
+            <h1>Full local preview of the public shell, reader lanes, operator lanes, and mobile path.</h1>
+            <p class="copy">
+              This atlas is generated from the built app so COO updates can show concrete product state, not just commit messages, PNG filenames, or markdown artifacts.
+            </p>
           </div>
-          <div class="metric">
-            <div class="metric-label">Base URL</div>
-            <div class="metric-value">${baseUrl}</div>
+          <div class="panel metrics">
+            <div class="metric"><div class="metric-label">Generated</div><div class="metric-value">${new Date().toISOString()}</div></div>
+            <div class="metric"><div class="metric-label">Base URL</div><div class="metric-value">${baseUrl}</div></div>
+            <div class="metric"><div class="metric-label">Capture count</div><div class="metric-value">${captures.length}</div></div>
+            <div class="metric"><div class="metric-label">Artifacts</div><div class="metric-value">index.html + preview-atlas.pdf + preview-board.png</div></div>
           </div>
-          <div class="metric">
-            <div class="metric-label">Capture count</div>
-            <div class="metric-value">${captures.length}</div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">Artifacts</div>
-            <div class="metric-value">latest/*.png + preview-board.png</div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="grid">
-        ${captures
-          .map(
-            (capture) => `<article class="panel card">
-          <div class="card-header">
-            <div class="card-title">${capture.title}</div>
-            <div class="card-tag">${capture.mobile ? "Mobile" : "Desktop"}</div>
-          </div>
-          <div class="card-copy">${capture.notes}</div>
-          <div class="frame">
-            <img src="${pathToFileURL(path.join(archiveDir, capture.fileName)).href}" alt="${capture.title}" />
-          </div>
-        </article>`
-          )
-          .join("\n")}
-      </section>
+        <nav class="nav">
+          <a href="#snapshot">Public Shell</a>
+          <a href="#reader">Reader Lanes</a>
+          <a href="#operator">Operator Lanes</a>
+          <a href="#mobile">Mobile</a>
+        </nav>
+
+        <section class="summary-grid">
+          <article class="panel summary-panel">
+            <h2>Runtime Truth</h2>
+            <ul>
+              ${
+                highlights.heartbeat.length
+                  ? highlights.heartbeat.map((line) => `<li>${line}</li>`).join("")
+                  : "<li>No heartbeat artifact found.</li>"
+              }
+            </ul>
+          </article>
+          <article class="panel summary-panel">
+            <h2>Build Pressure</h2>
+            <ul>
+              ${
+                highlights.build.length
+                  ? highlights.build.map((line) => `<li>${line}</li>`).join("")
+                  : "<li>No build artifact found.</li>"
+              }
+            </ul>
+          </article>
+        </section>
+
+        ${groups.map((group) => {
+          const groupCaptures = captures.filter((capture) => capture.group === group);
+          const description =
+            group === "snapshot"
+              ? "Best starting point for the public product: landing shell, command context, and first-view dossier entry."
+              : group === "reader"
+                ? "Deep reading lanes for timeline, signals, briefings, dossiers, and source posture."
+                : group === "operator"
+                  ? "Review, synthesis, and queue-control surfaces used to keep public truth honest."
+                  : "Narrow-screen proof that the shell still works as an actual phone surface.";
+
+          return `<section class="section" id="${group}">
+            <div class="section-header">
+              <div class="section-title">${groupLabel(group)}</div>
+              <div class="section-copy">${description}</div>
+            </div>
+            <div class="grid">
+              ${groupCaptures.map((capture) => `<article class="panel card">
+                <div class="card-header">
+                  <div class="card-title">${capture.title}</div>
+                  <div class="card-tag">${capture.mobile ? "Mobile" : "Desktop"}</div>
+                </div>
+                <div class="card-copy">${capture.notes}</div>
+                <div class="frame">
+                  <img src="./${capture.fileName}" alt="${capture.title}" />
+                </div>
+              </article>`).join("\n")}
+            </div>
+          </section>`;
+        }).join("\n")}
+      </div>
     </main>
   </body>
 </html>`;
 
-  const archiveHtmlPath = path.join(archiveDir, "preview-board.html");
-  const latestHtmlPath = path.join(latestDir, "preview-board.html");
-  fs.writeFileSync(archiveHtmlPath, boardHtml, "utf8");
-  fs.writeFileSync(latestHtmlPath, boardHtml, "utf8");
+  fs.writeFileSync(path.join(archiveDir, "preview-atlas.html"), atlasHtml, "utf8");
+  fs.writeFileSync(path.join(latestDir, "preview-atlas.html"), atlasHtml, "utf8");
+  fs.writeFileSync(path.join(archiveDir, "index.html"), atlasHtml, "utf8");
+  fs.writeFileSync(path.join(latestDir, "index.html"), atlasHtml, "utf8");
 }
 
 async function captureBoard(browser: Browser) {
@@ -329,7 +456,7 @@ async function captureBoard(browser: Browser) {
     deviceScaleFactor: 1
   });
   const page = await context.newPage();
-  await page.goto(pathToFileURL(path.join(archiveDir, "preview-board.html")).href, {
+  await page.goto(pathToFileURL(path.join(archiveDir, "preview-atlas.html")).href, {
     waitUntil: "load"
   });
   await page.screenshot({
@@ -337,6 +464,18 @@ async function captureBoard(browser: Browser) {
     fullPage: true
   });
   fs.copyFileSync(path.join(archiveDir, "preview-board.png"), path.join(latestDir, "preview-board.png"));
+  await page.pdf({
+    path: path.join(archiveDir, "preview-atlas.pdf"),
+    printBackground: true,
+    width: "16in",
+    margin: {
+      top: "0.35in",
+      right: "0.35in",
+      bottom: "0.35in",
+      left: "0.35in"
+    }
+  });
+  fs.copyFileSync(path.join(archiveDir, "preview-atlas.pdf"), path.join(latestDir, "preview-atlas.pdf"));
   await context.close();
 }
 
@@ -348,8 +487,11 @@ function writeLatestReport(captures: CaptureTarget[]) {
     `Base URL: ${baseUrl}`,
     `Archive: ${archiveDir}`,
     "",
-    "## Board",
-    `- latest/preview-board.png`,
+    "## Best Starting Points",
+    "- latest/index.html",
+    "- latest/preview-atlas.html",
+    "- latest/preview-atlas.pdf",
+    "- latest/preview-board.png",
     "",
     "## Captures",
     ...captures.map(
@@ -358,6 +500,9 @@ function writeLatestReport(captures: CaptureTarget[]) {
     ),
     "",
     "## Latest Files",
+    "- latest/index.html",
+    "- latest/preview-atlas.html",
+    "- latest/preview-atlas.pdf",
     "- latest/preview-board.png",
     ...captures.map((capture) => `- latest/${capture.fileName}`)
   ];
@@ -374,12 +519,14 @@ async function main() {
       title: "Snapshot Surface",
       fileName: "preview-desktop.png",
       notes: "Curated public snapshot with posture, SITREP, fronts, live markets, and trust framing",
+      group: "snapshot",
       surface: "preview"
     },
     {
       title: "Snapshot Dossiers",
       fileName: "preview-dossiers.png",
       notes: "Snapshot-level actor and claim posture cards that now open directly into the canonical dossier graph",
+      group: "snapshot",
       surface: "preview",
       selector: '[data-preview="preview-dossiers"]'
     },
@@ -387,24 +534,28 @@ async function main() {
       title: "Command Surface",
       fileName: "command-desktop.png",
       notes: "Command surface with KPI shell, map lane, and public freshness posture",
+      group: "snapshot",
       surface: "command"
     },
     {
       title: "Timeline Surface",
       fileName: "timeline-desktop.png",
       notes: "Filtered chronology explorer with event detail, corroboration, and public posture",
+      group: "reader",
       surface: "timeline"
     },
     {
       title: "Dossiers Surface",
       fileName: "dossiers-desktop.png",
       notes: "Canonical actor graph with relationships, linked claims, and evidence handoff into public records",
+      group: "reader",
       surface: "dossiers"
     },
     {
       title: "Dossier Detail",
       fileName: "dossiers-detail.png",
       notes: "Focused actor dossier with influence lanes, claim stack, and linked public evidence",
+      group: "reader",
       surface: "dossiers",
       selector: '[data-preview="dossiers-detail"]'
     },
@@ -412,12 +563,14 @@ async function main() {
       title: "Signals Surface",
       fileName: "signals-desktop.png",
       notes: "Signals surface with live market cards and source table",
+      group: "reader",
       surface: "signals"
     },
     {
       title: "Source Reader",
       fileName: "source-reader.png",
       notes: "Source posture with actor-thread handoff into the dossier graph",
+      group: "reader",
       surface: "signals",
       selector: '[data-preview="source-reader"]'
     },
@@ -425,18 +578,21 @@ async function main() {
       title: "Briefings Surface",
       fileName: "briefings-desktop.png",
       notes: "Briefing archive reader with archive selection, highlights, and full SITREP detail",
+      group: "reader",
       surface: "briefings"
     },
     {
       title: "Operator Surface",
       fileName: "operator-desktop.png",
       notes: "Operator surface with top-line controls, synthesis lane, review queue, and ingestion health",
+      group: "operator",
       surface: "operator"
     },
     {
       title: "Synthesis Lane",
       fileName: "operator-synthesis.png",
       notes: "Graph-aware story and claim promotion candidates built from recent event evidence",
+      group: "operator",
       surface: "operator",
       selector: '[data-preview="operator-synthesis"]'
     },
@@ -444,6 +600,7 @@ async function main() {
       title: "Review Dossier",
       fileName: "operator-review-detail.png",
       notes: "Focused review packet for a selected queue item with canonical object detail and related evidence",
+      group: "operator",
       surface: "operator",
       selector: '[data-preview="operator-review-detail"]'
     },
@@ -451,6 +608,7 @@ async function main() {
       title: "Queue SLA Summary",
       fileName: "operator-queue-summary.png",
       notes: "Focused queue-SLA summary cards for the review backlog",
+      group: "operator",
       surface: "operator",
       selector: '[data-preview="operator-queue-summary"]'
     },
@@ -458,6 +616,7 @@ async function main() {
       title: "Snapshot Surface Mobile",
       fileName: "preview-mobile.png",
       notes: "Curated public snapshot on a narrow mobile viewport",
+      group: "mobile",
       surface: "preview",
       mobile: true
     }
@@ -479,7 +638,7 @@ async function main() {
     for (const capture of captures) {
       await captureSurface(browser, capture);
     }
-    writeBoardHtml(captures);
+    writeAtlasHtml(captures, loadPreviewHighlights());
     await captureBoard(browser);
     writeLatestReport(captures);
     console.log(`Wrote preview artifact to ${path.join(previewRoot, "LATEST.md")}`);

@@ -6,7 +6,7 @@
 3. Land a real deployment target, set `PUBLIC_BASE_URL`, and stop skipping live public verification.
 4. Keep operator auth production-safe by treating `OPERATOR_API_KEY` as mandatory once a public URL or production mode exists.
 5. Use the new build artifact lane to drive MapLibre/vendor reduction, then keep pushing tranche-5 mobile density so the public/demo shell reaches payload faster on phones.
-6. Extend preview proof from local screenshots to deploy-aware and diff-aware artifacts.
+6. Extend preview proof from the new local atlas entrypoint to deploy-aware and diff-aware artifacts.
 
 ## External Boundaries
 - Deployment work that needs provider configuration or secrets

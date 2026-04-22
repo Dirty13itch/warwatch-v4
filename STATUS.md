@@ -45,6 +45,8 @@
 - Heartbeat next actions are now queue-aware, so the operator artifact stops telling the repo to reduce pending critical items once the queue is already clear
 - Visual proof is now first-class: `npm run preview:shots` builds the app, captures desktop/mobile screenshots for the command, signals, and operator lanes, and writes a local artifact to `reports/previews/LATEST.md`
 - Preview output now also includes a single `reports/previews/latest/preview-board.png` board artifact so updates can show one readable visual brief instead of a loose image set
+- Preview output now also emits a full atlas entrypoint at `reports/previews/latest/index.html` plus `preview-atlas.html` and `preview-atlas.pdf`, so the entire product can be reviewed from one local artifact instead of a loose screenshot folder
+- `npm run preview:open` now opens the latest local atlas directly, which makes the preview lane usable as a real demo/review surface instead of a hidden build byproduct
 - The preview lane now centers the new Snapshot surface, which gives the product a better public/demo-first entry point than dropping directly into the raw command shell
 - Visual proof now includes the upgraded timeline surface so public exploration depth is visible in the preview board, not just the landing shell
 - Visual proof now includes the briefing reader lane so public archive depth is visible in the preview board as well
@@ -73,6 +75,7 @@ Hold and extend the first milestone:
 - Public deployment verification requires `PUBLIC_BASE_URL` to be set
 - Client bundle shaping is improved through vendor/manual chunking and lazy map boot, but the MapLibre vendor chunk still breaches the warning threshold and remains a performance follow-up
 - Preview screenshots are local workspace artifacts today; once a public deployment exists, the same visual-proof lane should validate the deployed surface as well
+- The local preview lane now has a proper atlas entrypoint, but deploy-aware and diff-aware preview proof are still next rather than solved
 - Mobile shell density is materially better than the earlier oversized hero pass, but above-the-fold efficiency is still a tranche-5 follow-up rather than a solved lane
 - The operator refresh lane now surfaces current evidence, but the remaining stale top-line metrics still need actual reviewed publications to clear the public stale flag
 - The critical review queue is cleared, so the remaining stale-truth blocker is evidence quality for the KPI lane rather than review backlog pressure
