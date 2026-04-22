@@ -139,4 +139,72 @@ describe("operator synthesis suggestions", () => {
 
     db.close();
   });
+
+  it("drops stale evidence outside the active synthesis window", () => {
+    const db = makeDb();
+    db.exec("DELETE FROM events;");
+
+    insertEvent(db, {
+      id: "event_hormuz_recent",
+      date: "2026-04-22",
+      title: "Hormuz transit corridor remains constrained",
+      detail: "Commercial advisories say the Strait of Hormuz remains constrained after the latest warning cycle.",
+      category: "economic",
+      sourceText: "Reuters / Operator Test Feed",
+      tags: ["economic", "entity:iran", "entity:strait-of-hormuz"]
+    });
+
+    insertEvent(db, {
+      id: "event_hormuz_old",
+      date: "2026-03-20",
+      title: "Hormuz transit corridor remains constrained",
+      detail: "Older shipping advisories also described a constrained Strait of Hormuz corridor.",
+      category: "economic",
+      sourceText: "Lloyd's List / Operator Test Feed",
+      tags: ["economic", "entity:iran", "entity:strait-of-hormuz"]
+    });
+
+    const suggestions = getSynthesisSuggestions(db);
+    const claim = suggestions.claims.find((item) => item.title === "Hormuz Shipping Constraint");
+
+    expect(claim?.eventCount).toBe(1);
+    expect(claim?.evidence[0]?.eventId).toBe("event_hormuz_recent");
+
+    db.close();
+  });
+
+  it("splits unrelated threat-level topics into separate candidate lanes", () => {
+    const db = makeDb();
+    db.exec("DELETE FROM events;");
+
+    insertEvent(db, {
+      id: "event_threat_airframe",
+      date: "2026-04-22",
+      title: "A-10 Thunderbolt II downed near Strait of Hormuz",
+      detail: "An A-10 Thunderbolt II was downed near the Strait of Hormuz during a rescue operation.",
+      category: "air_strike",
+      significance: "critical",
+      sourceText: "Operator Test Feed / Reuters",
+      tags: ["air_strike", "entity:iran", "entity:strait-of-hormuz", "entity:united-states"]
+    });
+
+    insertEvent(db, {
+      id: "event_threat_maritime",
+      date: "2026-04-22",
+      title: "Hezbollah anti-ship cruise missile strikes Israeli warship",
+      detail: "Hezbollah fired an anti-ship cruise missile at an Israeli naval vessel operating in Lebanese coastal waters.",
+      category: "cross_border_strike",
+      significance: "critical",
+      sourceText: "Operator Test Feed / AP",
+      tags: ["cross_border_strike", "entity:hezbollah", "entity:israel", "entity:lebanon"]
+    });
+
+    const suggestions = getSynthesisSuggestions(db);
+    const threatLanes = suggestions.claims.filter((item) => item.title === "Threat Level");
+
+    expect(threatLanes.length).toBeGreaterThanOrEqual(2);
+    expect(threatLanes.every((item) => item.eventCount === 1)).toBe(true);
+
+    db.close();
+  });
 });

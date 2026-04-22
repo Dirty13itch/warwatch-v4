@@ -3,7 +3,7 @@
 ## Current Autonomous Order
 1. Clear the stale top-line truth bottleneck by resolving reviewed current values for strikes, Hormuz throughput, and casualties.
 2. Use the new operator dossier lane to reduce the critical review queue items that block a fully current public SITREP and headline posture.
-3. Tighten the new clustered synthesis lane with better time/topic windows, stronger structured extraction, and safer canonical update rules so the graph upgrades cleanly from live evidence.
+3. Continue tranche-3 hardening by improving structured extraction, canonical merge quality, and safer update rules now that clustered synthesis has active-window and topic/entity guardrails.
 4. Land a real deployment target, set `PUBLIC_BASE_URL`, and stop skipping live public verification.
 5. Reduce the MapLibre vendor cost and keep the public/demo shell fast on desktop and mobile.
 6. Extend preview proof from local screenshots to deploy-aware and diff-aware artifacts.

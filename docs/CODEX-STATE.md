@@ -49,6 +49,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Operator API now also exposes graph-aware synthesis candidates for story and claim promotion based on recent event evidence
 - Operator API now also exposes queue actions for synthesis candidates, and review approval can persist approved story/claim suggestions into canonical records
 - Operator synthesis candidates are now built from clustered evidence instead of a single strongest event, which gives the operator lane event/source counts and richer evidence packets before promotion
+- Operator synthesis clustering now applies active-window pruning and topic/entity compatibility splitting, which stops unrelated high-volume `Threat Level` events from collapsing into the same promotion lane
 - Operator API now exposes aggregate review-queue SLA summary data for backlog pressure and aging
 - Operator API now also exposes a selection-aware review dossier for each queue item, including canonical object detail, feed/link metadata, related evidence events, and superseding briefing context
 - Review dossiers now also unpack story/claim suggestion payloads and canonical matches, so the operator lane can review promotion candidates as first-class objects instead of opaque metadata
@@ -86,6 +87,7 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - The operator console can now also surface graph-aware story and claim candidates, which gives ingestion a canonical promotion path before any write-side automation exists
 - The operator console can now also queue those graph-aware promotion candidates and approve them into canonical stories/claims through the normal review gate
 - The operator console now also sees clustered event/source counts on synthesis candidates and review dossiers, which makes the strength of each promotion lane more legible
+- The operator synthesis lane is now materially less noisy on high-volume claim classes because stale evidence is pruned and unrelated threat topics split into separate candidates
 - The operator console can now see queue pressure directly through age buckets and SLA summary cards, which gives the COO lane a concrete review-backlog surface
 - The operator console can now turn a queue row into a real review packet and jump straight into timeline evidence from the operator lane
 - The COO lane can now attach actual UI evidence to updates through local preview screenshots instead of relying only on text artifacts

@@ -30,6 +30,8 @@ type RankedSeed = {
   event: EventRecord;
   entityKeys: string[];
   eventRank: number;
+  topicKey: string;
+  topicKeywords: string[];
 };
 
 type StorySeed = RankedSeed & {
@@ -167,13 +169,128 @@ function buildKeywordSet(values: Array<string | null | undefined>): string[] {
   );
 }
 
+function buildClusterKeywordSet(values: Array<string | null | undefined>): string[] {
+  const stopWords = new Set([
+    "about",
+    "after",
+    "against",
+    "again",
+    "amid",
+    "analysts",
+    "around",
+    "before",
+    "between",
+    "campaign",
+    "combined",
+    "control",
+    "described",
+    "describes",
+    "event",
+    "fresh",
+    "from",
+    "holding",
+    "latest",
+    "multiple",
+    "operators",
+    "public",
+    "recent",
+    "report",
+    "reported",
+    "shell",
+    "should",
+    "still",
+    "synthesis",
+    "their",
+    "today",
+    "under",
+    "update",
+    "while",
+    "with",
+    "accord",
+    "advisers",
+    "air",
+    "aircraft",
+    "armed",
+    "army",
+    "commander",
+    "commanders",
+    "conflict",
+    "crisis",
+    "defense",
+    "diplomatic",
+    "downed",
+    "drone",
+    "drones",
+    "fired",
+    "force",
+    "forces",
+    "hezbollah",
+    "hormuz",
+    "iran",
+    "iranian",
+    "israel",
+    "israeli",
+    "killed",
+    "lebanon",
+    "lebanese",
+    "military",
+    "missile",
+    "missiles",
+    "pakistan",
+    "shipping",
+    "shipped",
+    "ships",
+    "strait",
+    "strike",
+    "strikes",
+    "threat",
+    "united",
+    "states",
+    "vessel",
+    "vessels",
+    "war"
+  ]);
+
+  return Array.from(
+    new Set(
+      values
+        .flatMap((value) =>
+          String(value ?? "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, " ")
+            .split(" ")
+        )
+        .map((value) => value.trim())
+        .filter((value) => value.length >= 4 && !stopWords.has(value))
+    )
+  );
+}
+
 function keywordOverlapScore(left: string[], right: string[]): number {
   const rightSet = new Set(right);
   return left.reduce((score, keyword) => score + (rightSet.has(keyword) ? 1 : 0), 0);
 }
 
 function topicSignature(...values: Array<string | null | undefined>): string {
-  return buildKeywordSet(values).slice(0, 2).join("-") || "general";
+  return buildClusterKeywordSet(values).slice(0, 2).join("-") || "general";
+}
+
+function topicKeywordsForEvent(event: EventRecord): string[] {
+  return buildKeywordSet([event.title, event.detail, event.sourceText]).slice(0, 8);
+}
+
+function topicKeyForEvent(event: EventRecord, entityKeys: string[]): string {
+  const keywords = buildClusterKeywordSet([event.title, event.detail, event.sourceText]).slice(0, 2);
+  const entityTokens = entityKeys
+    .map((value) => value.replace(/^entity:/, ""))
+    .filter(Boolean)
+    .slice(0, 2);
+
+  return uniqueStrings([...keywords, ...entityTokens, event.category]).slice(0, 2).join("-") || "general";
+}
+
+function daysBetween(left: string, right: string): number {
+  return Math.abs(Date.parse(`${left}T00:00:00Z`) - Date.parse(`${right}T00:00:00Z`)) / 86_400_000;
 }
 
 function splitSourceNames(sourceText: string): string[] {
@@ -333,10 +450,78 @@ function detailFromSeeds(seeds: RankedSeed[]): string {
     .slice(0, 620);
 }
 
+function pruneStorySeeds(cluster: StoryCluster): StorySeed[] {
+  const seeds = [...cluster.seeds].sort(sortSeedsBySignal);
+  const lead = seeds[0];
+  const maxDays =
+    cluster.matchedStory
+      ? cluster.section === "front"
+        ? 10
+        : 14
+      : cluster.section === "front"
+        ? 7
+        : 12;
+
+  return seeds.filter((seed) => daysBetween(lead.event.date, seed.event.date) <= maxDays);
+}
+
+function pruneClaimSeeds(cluster: ClaimCluster): ClaimSeed[] {
+  const seeds = [...cluster.seeds].sort(
+    (left, right) =>
+      (right.eventRank + claimStatusRank(right.template.proposedStatus)) -
+      (left.eventRank + claimStatusRank(left.template.proposedStatus)) ||
+      sortSeedsBySignal(left, right)
+  );
+  const lead = seeds[0];
+  const laneTitle = cluster.matchedClaim?.title ?? lead.template.title;
+  const maxDays =
+    laneTitle === "Threat Level"
+      ? 5
+      : laneTitle === "Ceasefire / Deadline Status" || laneTitle === "Negotiation Track"
+        ? 10
+        : 14;
+
+  return seeds.filter((seed) => daysBetween(lead.event.date, seed.event.date) <= maxDays);
+}
+
+function sortClaimSeedsByPriority(left: ClaimSeed, right: ClaimSeed): number {
+  return (
+    (right.eventRank + claimStatusRank(right.template.proposedStatus)) -
+      (left.eventRank + claimStatusRank(left.template.proposedStatus)) ||
+    sortSeedsBySignal(left, right)
+  );
+}
+
+function claimSeedCompatibility(cluster: ClaimCluster, seed: ClaimSeed): boolean {
+  const lead = [...cluster.seeds].sort(sortClaimSeedsByPriority)[0];
+  if (!lead) {
+    return true;
+  }
+
+  const keywordOverlap = keywordOverlapScore(lead.topicKeywords, seed.topicKeywords);
+  const entityOverlap = seed.entityKeys.filter((key) => cluster.entityKeys.has(key)).length;
+  const sameCategory = lead.event.category === seed.event.category;
+  const laneTitle = cluster.matchedClaim?.title ?? lead.template.title;
+
+  if (laneTitle === "Threat Level") {
+    return keywordOverlap >= 2 || (keywordOverlap >= 1 && entityOverlap >= 1) || (entityOverlap >= 2 && sameCategory);
+  }
+
+  if (laneTitle === "Ceasefire / Deadline Status" || laneTitle === "Negotiation Track") {
+    return keywordOverlap >= 1 || entityOverlap >= 1 || sameCategory;
+  }
+
+  if (laneTitle === "Hormuz Shipping Constraint") {
+    return keywordOverlap >= 1 || entityOverlap >= 1;
+  }
+
+  return keywordOverlap >= 1 || (entityOverlap >= 1 && sameCategory);
+}
+
 function storyClusterKey(event: EventRecord, entityKeys: string[]): string {
   const section = sectionForEvent(event);
   const entityKey = entityKeys[0]?.replace(/^entity:/, "") ?? event.category;
-  const topicKey = topicSignature(event.title, event.detail, event.sourceText);
+  const topicKey = topicKeyForEvent(event, entityKeys);
   return `${section}:${entityKey}:${topicKey}`;
 }
 
@@ -362,14 +547,18 @@ function buildStorySeed(
     }))
     .sort((left, right) => right.score - left.score)[0];
   const hasStoryMatch = (matchedStory?.score ?? 0) >= 9;
+  const topicKey = topicKeyForEvent(event, entityKeys);
+  const topicKeywords = topicKeywordsForEvent(event);
 
   return {
-    key: hasStoryMatch ? matchedStory.story.id : storyClusterKey(event, entityKeys),
+    key: hasStoryMatch ? `${matchedStory.story.id}:${topicKey}` : storyClusterKey(event, entityKeys),
     matchedStory: hasStoryMatch ? matchedStory.story : null,
     section: hasStoryMatch ? matchedStory.story.section : sectionForEvent(event),
     event,
     entityKeys,
-    eventRank: eventRank(event, entityKeys, sourceMap)
+    eventRank: eventRank(event, entityKeys, sourceMap),
+    topicKey,
+    topicKeywords
   };
 }
 
@@ -455,6 +644,8 @@ function buildClaimSeed(
     }))
     .sort((left, right) => right.score - left.score)[0];
   const hasClaimMatch = (matchedClaim?.score ?? 0) >= 9;
+  const topicKey = topicKeyForEvent(event, entityKeys);
+  const topicKeywords = topicKeywordsForEvent(event);
 
   return {
     key: hasClaimMatch ? matchedClaim.claim.id : template.title,
@@ -462,7 +653,9 @@ function buildClaimSeed(
     template,
     event,
     entityKeys,
-    eventRank: eventRank(event, entityKeys, sourceMap)
+    eventRank: eventRank(event, entityKeys, sourceMap),
+    topicKey,
+    topicKeywords
   };
 }
 
@@ -490,29 +683,36 @@ function pushStorySeed(clusters: Map<string, StoryCluster>, seed: StorySeed) {
 }
 
 function pushClaimSeed(clusters: Map<string, ClaimCluster>, seed: ClaimSeed) {
-  const existing = clusters.get(seed.key);
-  if (!existing) {
-    clusters.set(seed.key, {
-      key: seed.key,
-      matchedClaim: seed.matchedClaim,
-      seeds: [seed],
-      entityKeys: new Set(seed.entityKeys)
-    });
+  const candidateKeyPrefix = `${seed.key}::`;
+  const existingClusters = Array.from(clusters.values()).filter(
+    (cluster) => cluster.key === seed.key || cluster.key.startsWith(candidateKeyPrefix)
+  );
+  const compatibleCluster = existingClusters.find((cluster) => claimSeedCompatibility(cluster, seed));
+
+  if (compatibleCluster) {
+    if (compatibleCluster.seeds.some((item) => item.event.id === seed.event.id)) {
+      return;
+    }
+
+    compatibleCluster.seeds.push(seed);
+    for (const key of seed.entityKeys) {
+      compatibleCluster.entityKeys.add(key);
+    }
     return;
   }
 
-  if (existing.seeds.some((item) => item.event.id === seed.event.id)) {
-    return;
-  }
+  const clusterKey = existingClusters.length === 0 ? seed.key : `${seed.key}::${seed.topicKey}`;
 
-  existing.seeds.push(seed);
-  for (const key of seed.entityKeys) {
-    existing.entityKeys.add(key);
-  }
+  clusters.set(clusterKey, {
+    key: clusterKey,
+    matchedClaim: seed.matchedClaim,
+    seeds: [seed],
+    entityKeys: new Set(seed.entityKeys)
+  });
 }
 
 function buildStorySuggestion(cluster: StoryCluster): { rank: number; suggestion: OperatorStorySuggestion } {
-  const seeds = [...cluster.seeds].sort(sortSeedsBySignal);
+  const seeds = pruneStorySeeds(cluster);
   const lead = seeds[0];
   const matchedStory = cluster.matchedStory;
   const eventCount = seeds.length;
@@ -553,12 +753,7 @@ function buildStorySuggestion(cluster: StoryCluster): { rank: number; suggestion
 }
 
 function buildClaimSuggestion(cluster: ClaimCluster): { rank: number; suggestion: OperatorClaimSuggestion } {
-  const seeds = [...cluster.seeds].sort(
-    (left, right) =>
-      (right.eventRank + claimStatusRank(right.template.proposedStatus)) -
-      (left.eventRank + claimStatusRank(left.template.proposedStatus)) ||
-      sortSeedsBySignal(left, right)
-  );
+  const seeds = pruneClaimSeeds(cluster);
   const lead = seeds[0];
   const matchedClaim = cluster.matchedClaim;
   const eventCount = seeds.length;
