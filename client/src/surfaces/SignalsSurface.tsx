@@ -13,7 +13,10 @@ export default function SignalsSurface({
   marketSignals: Record<string, MetricSnapshot[]>;
 }) {
   return (
-    <div className="space-y-6">
+    <div
+      className="space-y-6"
+      data-preview="signals-surface"
+    >
       <MarketSignalsPanel marketSignals={marketSignals} />
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <StoryStrip

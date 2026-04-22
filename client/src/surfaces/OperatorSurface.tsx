@@ -47,8 +47,14 @@ export default function OperatorSurface({
   }
 
   return (
-    <div className="space-y-5">
-      <section className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell">
+    <div
+      className="space-y-5"
+      data-preview="operator-surface"
+    >
+      <section
+        className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell"
+        data-preview="topline-control"
+      >
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
@@ -74,7 +80,10 @@ export default function OperatorSurface({
       </section>
 
       <div className="grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
-        <section className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell">
+        <section
+          className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell"
+          data-preview="operator-queue"
+        >
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
@@ -90,7 +99,10 @@ export default function OperatorSurface({
               Run ingest
             </button>
           </div>
-          <div className="mt-5 grid gap-3 md:grid-cols-4">
+          <div
+            className="mt-5 grid gap-3 md:grid-cols-4"
+            data-preview="operator-queue-summary"
+          >
             {[
               ["Pending", String(queueSummary?.pending ?? 0)],
               ["Critical", String(queueSummary?.critical ?? 0)],

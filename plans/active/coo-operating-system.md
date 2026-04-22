@@ -27,3 +27,4 @@ Phase zero plus first release foundation:
 4. Set a real deployment target and enable live public verification through `PUBLIC_BASE_URL`
 5. Keep heartbeat, status, and next-step artifacts synchronized with runtime truth after each ingestion/verification slice
 6. Use the new queue-aging summary to drive operator backlog triage before critical claims are promoted
+7. Refresh local preview artifacts when UI lanes change so COO updates can include concrete visual proof

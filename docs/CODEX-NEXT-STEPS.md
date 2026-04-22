@@ -5,6 +5,7 @@
 2. Use the new operator-reviewed KPI lane and suggestion cards to publish defensible current values for strikes, Hormuz throughput, and casualty indicators
 3. Tighten ingestion quality further with better matching rules, source scoring, and operator-safe story/claim synthesis from merged feed evidence
 4. Reduce the remaining MapLibre vendor cost with deeper geospatial isolation, render-budget cleanup, or a lighter map strategy
+5. Extend the preview lane from local screenshots to deployment-aware visual proof once the public URL exists
 
 ## After First Milestone
 - richer map animation and geospatial timeline
@@ -14,3 +15,4 @@
 - deeper historical metric backfill
 - production-safe operator auth and review workflow hardening
 - queue escalation and reminder rules once operator auth exists
+- before/after visual diffing for the most-changed surfaces

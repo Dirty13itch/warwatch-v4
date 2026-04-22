@@ -7,5 +7,6 @@ data/*.sqlite-*
 data/*.db
 data/*.db-*
 reports/heartbeat/LATEST.md
+reports/previews/
 coverage/
 *.log

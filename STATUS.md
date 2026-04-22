@@ -17,6 +17,7 @@
 - Operator queue aging is now explicit: queue items carry age buckets, the operator console shows backlog pressure cards, and the heartbeat reports pending, critical, >24h, >72h, and oldest-item age
 - Heartbeat now renders explicit top-line metric values, freshness, source text, and timestamps instead of only aggregate stale-state summaries
 - Heartbeat output is sanitized to an ASCII-safe operator artifact so Windows console review does not corrupt high-signal lines
+- Visual proof is now first-class: `npm run preview:shots` builds the app, captures desktop/mobile screenshots for the command, signals, and operator lanes, and writes a local artifact to `reports/previews/LATEST.md`
 - Verification contract is green locally via `npm run verify`
 
 ## Current Goal
@@ -34,5 +35,6 @@ Hold and extend the first milestone:
 - `node:sqlite` is viable locally but still emits experimental warnings in Node 22
 - Public deployment verification requires `PUBLIC_BASE_URL` to be set
 - Client bundle shaping is improved through vendor/manual chunking and lazy map boot, but the MapLibre vendor chunk still breaches the warning threshold and remains a performance follow-up
+- Preview screenshots are local workspace artifacts today; once a public deployment exists, the same visual-proof lane should validate the deployed surface as well
 - The operator refresh lane now surfaces current evidence, but the remaining stale top-line metrics still need actual reviewed publications to clear the public stale flag
 - Several critical review queue items still block promotion of fresher top-line public claims

@@ -37,6 +37,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Aggregate stale-state logic can now clear through a mix of live/ingested and `operator_reviewed` top-line metrics
 - Heartbeat artifact includes explicit top-line metric rows plus queue-aging summary in addition to aggregate freshness state
 - Build output now isolates React, chart, and MapLibre vendor lanes, with MapLibre kept off the initial shell through dynamic import
+- Preview proof now exists as a repo script: `npm run preview:shots` captures desktop/mobile screenshots from the built app and writes `reports/previews/LATEST.md`
 
 ## Operating Assumption
 Twice-daily COO heartbeat remains the default cadence unless the repo contract changes.
@@ -54,4 +55,5 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - Public stale state remains expected because only the market lane is live; strike, Hormuz, and casualty top-line metrics are still bootstrap-era values labeled `stale_seed`
 - The operator console can now surface current evidence for stale KPIs, but it will not invent values where extraction is not defensible
 - The operator console can now see queue pressure directly through age buckets and SLA summary cards, which gives the COO lane a concrete review-backlog surface
+- The COO lane can now attach actual UI evidence to updates through local preview screenshots instead of relying only on text artifacts
 - Critical claims continue to require operator approval before promotion to primary public surfaces

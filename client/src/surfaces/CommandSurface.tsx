@@ -27,7 +27,10 @@ export default function CommandSurface({
   history: MetricSnapshot[];
 }) {
   return (
-    <>
+    <div
+      className="space-y-6"
+      data-preview="command-surface"
+    >
       <section className="grid gap-4 lg:grid-cols-4">
         {overview?.kpis.map((item) => (
           <article
@@ -138,7 +141,6 @@ export default function CommandSurface({
         copy="Narrative and accountability threads"
         items={achievementStories}
       />
-    </>
+    </div>
   );
 }
-
