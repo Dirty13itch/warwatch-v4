@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Confidence, EventRecord, Significance, SourceRecord } from "@shared/types";
+import type { Confidence, EntityRecord, EventRecord, Significance, SourceRecord } from "@shared/types";
 import { EventRow } from "../components/EventRow";
 import { formatDate, formatDateTime, formatTokenLabel } from "../lib/format";
-import { findSourceByText } from "../lib/canonical-linking";
+import { findEntitiesByText, findSourceByText } from "../lib/canonical-linking";
 
 const confidenceFilters: Array<Confidence | "all"> = [
   "all",
@@ -34,20 +34,24 @@ function publicationLabel(event: EventRecord): string {
 
 export default function TimelineSurface({
   events,
+  entities,
   sources,
   search,
   onSearch,
   focusedEventId,
   focusedEvent,
-  onOpenSource
+  onOpenSource,
+  onOpenEntity
 }: {
   events: EventRecord[];
+  entities: EntityRecord[];
   sources: SourceRecord[];
   search: string;
   onSearch: (value: string) => void;
   focusedEventId?: string | null;
   focusedEvent?: EventRecord | null;
   onOpenSource?: (slug: string) => void;
+  onOpenEntity?: (key: string) => void;
 }) {
   const categories = useMemo(
     () => ["all", ...Array.from(new Set(events.map((event) => event.category))).sort()],
@@ -83,6 +87,9 @@ export default function TimelineSurface({
     null;
 
   const matchedSource = selectedEvent ? findSourceByText(sources, selectedEvent.sourceText) : null;
+  const matchedEntities = selectedEvent
+    ? findEntitiesByText(entities, selectedEvent.title, selectedEvent.detail, selectedEvent.sourceText)
+    : [];
 
   useEffect(() => {
     if (focusedEventId) {
@@ -293,8 +300,26 @@ export default function TimelineSurface({
                 </div>
 
                 <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">Tags and ingest timing</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">Actor threads and ingest timing</p>
+                  {matchedEntities.length ? (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {matchedEntities.map((entity) => (
+                        <button
+                          key={entity.id}
+                          type="button"
+                          onClick={() => onOpenEntity?.(entity.slug)}
+                          className="rounded-full border border-signal/18 bg-signal/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-signal"
+                        >
+                          {entity.name}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-3 text-sm leading-6 text-calm/74">
+                      No canonical actor matches were derived from this event yet.
+                    </p>
+                  )}
+                  <div className="mt-4 flex flex-wrap gap-2">
                     {selectedEvent.tags.length ? (
                       selectedEvent.tags.map((tag) => (
                         <span

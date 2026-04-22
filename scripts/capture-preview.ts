@@ -19,7 +19,7 @@ type CaptureTarget = {
   title: string;
   fileName: string;
   notes: string;
-  surface?: "preview" | "command" | "timeline" | "signals" | "briefings" | "operator";
+  surface?: "preview" | "command" | "timeline" | "dossiers" | "signals" | "briefings" | "operator";
   selector?: string;
   mobile?: boolean;
 };
@@ -87,6 +87,8 @@ async function openSurface(page: Page, surface: CaptureTarget["surface"]) {
       ? "Command"
       : surface === "timeline"
         ? "Timeline"
+        : surface === "dossiers"
+          ? "Dossiers"
         : surface === "signals"
           ? "Signals"
           : surface === "briefings"
@@ -270,7 +272,7 @@ function writeBoardHtml(captures: CaptureTarget[]) {
       <section class="hero">
         <div class="panel meta">
           <div class="eyebrow">WarWatch V4 Preview Board</div>
-          <h1>Current visual proof for the snapshot, command, signals, and operator lanes.</h1>
+          <h1>Current visual proof for the snapshot, dossier, command, signals, and operator lanes.</h1>
           <p class="copy">
             This board is generated from the built app so COO updates can show concrete UI state, not just commit messages and markdown artifacts.
           </p>
@@ -385,6 +387,19 @@ async function main() {
       fileName: "timeline-desktop.png",
       notes: "Filtered chronology explorer with event detail, corroboration, and public posture",
       surface: "timeline"
+    },
+    {
+      title: "Dossiers Surface",
+      fileName: "dossiers-desktop.png",
+      notes: "Canonical actor graph with relationships, linked claims, and evidence handoff into public records",
+      surface: "dossiers"
+    },
+    {
+      title: "Dossier Detail",
+      fileName: "dossiers-detail.png",
+      notes: "Focused actor dossier with influence lanes, claim stack, and linked public evidence",
+      surface: "dossiers",
+      selector: '[data-preview="dossiers-detail"]'
     },
     {
       title: "Signals Surface",

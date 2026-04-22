@@ -18,7 +18,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Public verify: optional live URL check via `PUBLIC_BASE_URL`
 
 ## Implemented Runtime
-- Public API routes: overview, events, event detail, metric history, briefings, map layers, stories, sources
+- Public API routes: overview, events, event detail, metric history, briefings, map layers, stories, sources, graph snapshot, entity dossier
 - Operator API routes: review queue, approve/reject actions, ingestion runs, manual ingest trigger
 - Seed path: legacy V3 bundle plus blueprint-derived launch briefing and review backlog
 - Reporting path: heartbeat script writes a reviewable markdown artifact
@@ -27,6 +27,8 @@ Primary repo: `C:\Codex Projects\Iran War`
   - command shell lazy-loads heavy map/chart code
   - timeline surface now exposes filters, event inspection, corroboration, and public posture directly in the UI
   - timeline events can now hand readers into matched source posture when the source ledger has a canonical match
+  - timeline events can now also hand readers into matched actor dossiers when the graph has a canonical entity match
+  - dossiers surface now exposes the actor/claim/relationship graph as a public reader lane instead of leaving the graph buried in SQLite
   - story and briefing lanes now provide selection-aware reader depth instead of static text dumps
   - briefing references can now hand readers into matched timeline events instead of ending at raw citation text
   - signals now includes a selection-aware source reader tied to canonical stories and source posture
@@ -51,6 +53,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Preview proof now also includes the upgraded timeline surface so exploration depth is visible in each artifact pass
 - Preview proof now also includes the briefing reader surface so archive usability is visible in each artifact pass
 - Preview proof now also validates the cross-surface handoff lane by keeping timeline, signals, and briefing readers in the same artifact set
+- Preview proof now also includes the dossiers surface and focused dossier detail so graph progress is visible in each artifact pass
 
 ## Operating Assumption
 Twice-daily COO heartbeat remains the default cadence unless the repo contract changes.
@@ -71,6 +74,6 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - The operator console can now see queue pressure directly through age buckets and SLA summary cards, which gives the COO lane a concrete review-backlog surface
 - The operator console can now turn a queue row into a real review packet and jump straight into timeline evidence from the operator lane
 - The COO lane can now attach actual UI evidence to updates through local preview screenshots instead of relying only on text artifacts
-- Public reader surfaces no longer dead-end as quickly: briefing refs can jump into timeline detail, and timeline detail can jump into source posture when a canonical source match exists
+- Public reader surfaces no longer dead-end as quickly: briefing refs can jump into timeline detail, timeline detail can jump into source posture, and actor-matched events can jump into dossier graph detail
 - Scope gating is still heuristic and rules-based, so borderline regional-spillover judgments remain a tuning lane rather than a solved problem
 - Critical claims continue to require operator approval before promotion to primary public surfaces

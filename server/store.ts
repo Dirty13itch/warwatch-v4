@@ -5,12 +5,16 @@ import { topLineMetricDefinitions } from "../shared/topline.js";
 import type {
   BriefingRecord,
   ClaimRecord,
+  EntityDossier,
+  EntityRecord,
   EventRecord,
+  GraphSnapshot,
   IngestionRun,
   MapFeature,
   MetricSnapshot,
   OperatorTopLineMetric,
   OverviewResponse,
+  RelationshipRecord,
   ReviewQueueDetail,
   ReviewQueueItem,
   ReviewQueueSummary,
@@ -97,6 +101,27 @@ function rowToClaim(row: Record<string, any>): ClaimRecord {
     evidenceRefs: parseJson<string[]>(row.evidence_refs_json),
     reviewState: row.review_state,
     lastReviewedAt: row.last_reviewed_at
+  };
+}
+
+function rowToEntity(row: Record<string, any>): EntityRecord {
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    kind: row.kind,
+    summary: row.summary
+  };
+}
+
+function rowToRelationship(row: Record<string, any>): RelationshipRecord {
+  return {
+    id: row.id,
+    fromEntityId: row.from_entity_id,
+    toEntityId: row.to_entity_id,
+    relationType: row.relation_type,
+    confidence: row.confidence,
+    note: row.note
   };
 }
 
@@ -195,6 +220,52 @@ function buildKeywordSet(values: Array<string | null | undefined>): string[] {
         )
     )
   );
+}
+
+function significanceRank(value: string): number {
+  if (value === "critical") {
+    return 0;
+  }
+
+  if (value === "high") {
+    return 1;
+  }
+
+  if (value === "medium") {
+    return 2;
+  }
+
+  return 3;
+}
+
+function entityKeywords(entity: EntityRecord): string[] {
+  return Array.from(
+    new Set([
+      entity.name.toLowerCase(),
+      entity.slug.replace(/-/g, " ").toLowerCase(),
+      ...buildKeywordSet([entity.name, entity.slug.replace(/-/g, " ")])
+    ])
+  );
+}
+
+function scoreEntityMatch(entity: EntityRecord, values: Array<string | null | undefined>): number {
+  const haystack = values
+    .map((value) => String(value ?? "").toLowerCase())
+    .join(" ");
+  const keywords = entityKeywords(entity);
+  let score = 0;
+
+  for (const keyword of keywords) {
+    if (!keyword) {
+      continue;
+    }
+
+    if (haystack.includes(keyword)) {
+      score += keyword.includes(" ") ? 4 : 1;
+    }
+  }
+
+  return score;
 }
 
 function rankMatchingEvents(
@@ -533,6 +604,172 @@ export function getSources(db: DatabaseSync): SourceRecord[] {
       ORDER BY reliability_score DESC, name ASC
     `).all() as Record<string, any>[]
   ).map(rowToSource);
+}
+
+function getEntityByKey(db: DatabaseSync, key: string): EntityRecord | null {
+  const row = db.prepare(`
+    SELECT * FROM entities
+    WHERE id = ? OR slug = ?
+    LIMIT 1
+  `).get(key, key) as Record<string, any> | undefined;
+
+  return row ? rowToEntity(row) : null;
+}
+
+export function getEntities(db: DatabaseSync): EntityRecord[] {
+  return (
+    db.prepare(`
+      SELECT * FROM entities
+      ORDER BY
+        CASE kind
+          WHEN 'state' THEN 0
+          WHEN 'chokepoint' THEN 1
+          WHEN 'non_state' THEN 2
+          ELSE 3
+        END,
+        name ASC
+    `).all() as Record<string, any>[]
+  ).map(rowToEntity);
+}
+
+export function getClaims(db: DatabaseSync): ClaimRecord[] {
+  return (
+    db.prepare(`
+      SELECT * FROM claims
+      ORDER BY
+        CASE review_state
+          WHEN 'pending' THEN 0
+          WHEN 'approved' THEN 1
+          ELSE 2
+        END,
+        CASE significance
+          WHEN 'critical' THEN 0
+          WHEN 'high' THEN 1
+          WHEN 'medium' THEN 2
+          ELSE 3
+        END,
+        title ASC
+    `).all() as Record<string, any>[]
+  ).map(rowToClaim);
+}
+
+export function getRelationships(db: DatabaseSync): RelationshipRecord[] {
+  return (
+    db.prepare(`
+      SELECT * FROM relationships
+      ORDER BY relation_type ASC, id ASC
+    `).all() as Record<string, any>[]
+  ).map(rowToRelationship);
+}
+
+export function getGraphSnapshot(db: DatabaseSync): GraphSnapshot {
+  return {
+    entities: getEntities(db),
+    claims: getClaims(db),
+    relationships: getRelationships(db)
+  };
+}
+
+export function getEntityDossier(db: DatabaseSync, key: string): EntityDossier | null {
+  const entity = getEntityByKey(db, key);
+  if (!entity) {
+    return null;
+  }
+
+  const entities = getEntities(db);
+  const entityMap = new Map(entities.map((item) => [item.id, item]));
+  const relationships = getRelationships(db)
+    .filter((relationship) => relationship.fromEntityId === entity.id || relationship.toEntityId === entity.id)
+    .map((relationship) => {
+      const outbound = relationship.fromEntityId === entity.id;
+      return {
+        relationship,
+        counterparty: entityMap.get(outbound ? relationship.toEntityId : relationship.fromEntityId) ?? null,
+        direction: outbound ? "outbound" : "inbound"
+      } as const;
+    })
+    .sort((left, right) => {
+      const leftName = left.counterparty?.name ?? "";
+      const rightName = right.counterparty?.name ?? "";
+      return leftName.localeCompare(rightName);
+    });
+
+  const claims = getClaims(db)
+    .map((claim) => ({
+      claim,
+      score: scoreEntityMatch(entity, [
+        claim.title,
+        claim.statement,
+        claim.status,
+        claim.evidenceRefs.join(" ")
+      ])
+    }))
+    .filter((entry) => entry.score > 0)
+    .sort(
+      (left, right) =>
+        right.score - left.score || significanceRank(left.claim.significance) - significanceRank(right.claim.significance)
+    )
+    .map((entry) => entry.claim)
+    .slice(0, 4);
+
+  const stories = getStories(db)
+    .map((story) => ({
+      story,
+      score: scoreEntityMatch(entity, [story.title, story.summary, story.detail, story.sourceText])
+    }))
+    .filter((entry) => entry.score > 0)
+    .sort(
+      (left, right) =>
+        right.score - left.score || significanceRank(left.story.significance) - significanceRank(right.story.significance)
+    )
+    .map((entry) => entry.story)
+    .slice(0, 5);
+
+  const events = getEvents(db, { includeHidden: true, limit: 240 })
+    .map((event) => ({
+      event,
+      score: scoreEntityMatch(entity, [
+        event.title,
+        event.detail,
+        event.sourceText,
+        event.tags.join(" ")
+      ])
+    }))
+    .filter((entry) => entry.score > 0)
+    .sort(
+      (left, right) =>
+        right.score - left.score ||
+        right.event.date.localeCompare(left.event.date) ||
+        right.event.corroboration - left.event.corroboration
+    )
+    .map((entry) => entry.event)
+    .slice(0, 6);
+
+  const briefings = getBriefings(db)
+    .map((briefing) => ({
+      briefing,
+      score: scoreEntityMatch(entity, [
+        briefing.title,
+        briefing.body,
+        briefing.sourceRefs.join(" ")
+      ])
+    }))
+    .filter((entry) => entry.score > 0)
+    .sort(
+      (left, right) =>
+        right.score - left.score || right.briefing.briefingDate.localeCompare(left.briefing.briefingDate)
+    )
+    .map((entry) => entry.briefing)
+    .slice(0, 3);
+
+  return {
+    entity,
+    relationships,
+    claims,
+    stories,
+    events,
+    briefings
+  };
 }
 
 export function getMapLayers(db: DatabaseSync): Record<string, MapFeature[]> {

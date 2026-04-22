@@ -10,6 +10,8 @@
 - The timeline is now a real explorer: filterable chronology, selection-aware event detail, corroboration counts, and public-posture context are all visible without leaving the surface
 - Story and briefing lanes now have real drill-down: shared story strips expose selection-aware readers, and the briefing archive opens into a structured SITREP reader instead of dumping full text inline
 - Canonical handoff is now live across public reader lanes: timeline events can open matched source posture, signals exposes a real source reader, and briefing references can jump into matched timeline events
+- Canonical actor dossiers are now live as a first-class public surface: entities, claims, and relationships resolve into a dossier graph with linked stories, events, and briefings
+- Timeline events can now hand readers directly into matched actor dossiers, which turns event inspection into graph exploration instead of another dead end
 - Live ingestion is active against `BBC Middle East`, `Al Jazeera`, `NPR World`, `Defense News`, `USNI News`, and `USGS Iran Earthquakes`
 - Live market ingestion is active against Yahoo Finance for `oil_brent`, `oil_wti`, and `gold_price`
 - Feed dedupe and corroboration are live: repeated feed hits now merge into existing events instead of inflating duplicates
@@ -30,6 +32,7 @@
 - Visual proof now includes the upgraded timeline surface so public exploration depth is visible in the preview board, not just the landing shell
 - Visual proof now includes the briefing reader lane so public archive depth is visible in the preview board as well
 - Visual proof now captures the canonical handoff slice, so the timeline, signals, and briefing lanes can be shown as one connected reading flow instead of isolated screens
+- Visual proof now also includes the dossiers lane, so actor/claim graph progress is visible alongside the public shell and operator workflow
 - Verification contract is green locally via `npm run verify`
 
 ## Current Goal

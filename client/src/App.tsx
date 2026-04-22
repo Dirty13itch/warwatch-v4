@@ -10,6 +10,9 @@ import {
 } from "react";
 import type {
   BriefingRecord,
+  ClaimRecord,
+  EntityDossier,
+  EntityRecord,
   EventRecord,
   IngestionRun,
   MapFeature,
@@ -21,6 +24,7 @@ import type {
   ReviewQueueDetail,
   ReviewQueueItem,
   ReviewQueueSummary,
+  RelationshipRecord,
   SourceRecord,
   StoryRecord
 } from "@shared/types";
@@ -33,12 +37,14 @@ import BriefingsSurface from "./surfaces/BriefingsSurface";
 import { LoadPanel } from "./components/LoadPanel";
 
 const CommandSurface = lazy(() => import("./surfaces/CommandSurface"));
+const DossiersSurface = lazy(() => import("./surfaces/DossiersSurface"));
 const OperatorSurface = lazy(() => import("./surfaces/OperatorSurface"));
 
 const surfaces = [
   { id: "preview", label: "Snapshot" },
   { id: "command", label: "Command" },
   { id: "timeline", label: "Timeline" },
+  { id: "dossiers", label: "Dossiers" },
   { id: "signals", label: "Signals" },
   { id: "briefings", label: "Briefings" },
   { id: "operator", label: "Operator" }
@@ -50,6 +56,7 @@ type LoadedState = {
   overview: boolean;
   stories: boolean;
   events: boolean;
+  graph: boolean;
   sources: boolean;
   briefings: boolean;
   mapLayers: boolean;
@@ -62,6 +69,7 @@ const initialLoadedState: LoadedState = {
   overview: false,
   stories: false,
   events: false,
+  graph: false,
   sources: false,
   briefings: false,
   mapLayers: false,
@@ -83,6 +91,10 @@ export default function App() {
   const [overview, setOverview] = useState<OverviewResponse | null>(null);
   const [events, setEvents] = useState<EventRecord[]>([]);
   const [stories, setStories] = useState<StoryRecord[]>([]);
+  const [entities, setEntities] = useState<EntityRecord[]>([]);
+  const [claims, setClaims] = useState<ClaimRecord[]>([]);
+  const [relationships, setRelationships] = useState<RelationshipRecord[]>([]);
+  const [entityDossier, setEntityDossier] = useState<EntityDossier | null>(null);
   const [sources, setSources] = useState<SourceRecord[]>([]);
   const [briefings, setBriefings] = useState<BriefingRecord[]>([]);
   const [mapLayers, setMapLayers] = useState<Record<string, MapFeature[]>>({});
@@ -96,6 +108,7 @@ export default function App() {
   const [search, setSearch] = useState("");
   const [focusedEventId, setFocusedEventId] = useState<string | null>(null);
   const [focusedEvent, setFocusedEvent] = useState<EventRecord | null>(null);
+  const [focusedEntityKey, setFocusedEntityKey] = useState<string | null>(null);
   const [focusedSourceSlug, setFocusedSourceSlug] = useState<string | null>(null);
   const [selectedQueueId, setSelectedQueueId] = useState<string | null>(null);
   const [reviewQueueDetail, setReviewQueueDetail] = useState<ReviewQueueDetail | null>(null);
@@ -134,6 +147,54 @@ export default function App() {
       markLoaded({ stories: true });
     } finally {
       loadingRef.current.delete("stories");
+    }
+  }
+
+  async function fetchGraph(force = false) {
+    if (!force && (loaded.graph || loadingRef.current.has("graph"))) {
+      return;
+    }
+
+    loadingRef.current.add("graph");
+    try {
+      const graph = await api.graph();
+      setEntities(graph.entities);
+      setClaims(graph.claims);
+      setRelationships(graph.relationships);
+      if (
+        !focusedEntityKey ||
+        !graph.entities.some((entity) => entity.id === focusedEntityKey || entity.slug === focusedEntityKey)
+      ) {
+        setFocusedEntityKey(graph.entities[0]?.slug ?? null);
+      }
+      markLoaded({ graph: true });
+      return graph;
+    } finally {
+      loadingRef.current.delete("graph");
+    }
+  }
+
+  async function fetchEntityDossier(key: string, force = false) {
+    const loadKey = `entityDossier:${key}`;
+    if (!force && loadingRef.current.has(loadKey)) {
+      return;
+    }
+
+    if (
+      !force &&
+      entityDossier &&
+      (entityDossier.entity.id === key || entityDossier.entity.slug === key)
+    ) {
+      return entityDossier;
+    }
+
+    loadingRef.current.add(loadKey);
+    try {
+      const dossier = await api.entityDossier(key);
+      setEntityDossier(dossier);
+      return dossier;
+    } finally {
+      loadingRef.current.delete(loadKey);
     }
   }
 
@@ -279,7 +340,25 @@ export default function App() {
     }
 
     if (target === "timeline") {
-      await Promise.all([fetchEvents(force), fetchSources(force)]);
+      await Promise.all([fetchEvents(force), fetchSources(force), fetchGraph(force)]);
+      return;
+    }
+
+    if (target === "dossiers") {
+      const graph = (await fetchGraph(force)) ?? {
+        entities,
+        claims,
+        relationships
+      };
+      const targetKey =
+        focusedEntityKey &&
+        graph.entities.some((entity) => entity.id === focusedEntityKey || entity.slug === focusedEntityKey)
+          ? focusedEntityKey
+          : graph.entities[0]?.slug ?? null;
+
+      if (targetKey) {
+        await fetchEntityDossier(targetKey, force);
+      }
       return;
     }
 
@@ -326,6 +405,26 @@ export default function App() {
     }
   }, [surface, loaded.operator, reviewQueue, selectedQueueId, reviewQueueDetail?.item.id]);
 
+  useEffect(() => {
+    if (surface !== "dossiers" || !loaded.graph) {
+      return;
+    }
+
+    const targetKey = focusedEntityKey ?? entities[0]?.slug ?? null;
+    if (!targetKey) {
+      return;
+    }
+
+    if (
+      entityDossier &&
+      (entityDossier.entity.id === targetKey || entityDossier.entity.slug === targetKey)
+    ) {
+      return;
+    }
+
+    void fetchEntityDossier(targetKey);
+  }, [surface, loaded.graph, focusedEntityKey, entities, entityDossier]);
+
   async function fetchReviewQueueDetail(id: string) {
     setReviewQueueDetail(await api.reviewQueueDetail(id));
   }
@@ -334,10 +433,15 @@ export default function App() {
     await Promise.all([
       fetchOverview(true),
       loaded.events ? fetchEvents(true) : Promise.resolve(),
+      loaded.graph ? fetchGraph(true) : Promise.resolve(),
       loaded.briefings ? fetchBriefings(true) : Promise.resolve(),
       loaded.marketSignals ? fetchMarketSignals(true) : Promise.resolve(),
       loaded.operator ? fetchOperator(true) : Promise.resolve()
     ]);
+
+    if (loaded.graph && focusedEntityKey) {
+      await fetchEntityDossier(focusedEntityKey, true);
+    }
 
     if (selectedQueueId) {
       await fetchReviewQueueDetail(selectedQueueId);
@@ -363,6 +467,9 @@ export default function App() {
       fetchMarketSignals(true),
       fetchOperator(true)
     ]);
+    if (loaded.graph && focusedEntityKey) {
+      await fetchEntityDossier(focusedEntityKey, true);
+    }
   }
 
   async function handlePublishTopLineMetric(key: string, payload: OperatorMetricPublishInput) {
@@ -375,6 +482,9 @@ export default function App() {
         fetchMarketSignals(true),
         fetchOperator(true)
       ]);
+      if (loaded.graph && focusedEntityKey) {
+        await fetchEntityDossier(focusedEntityKey, true);
+      }
     } finally {
       setPublishingMetricKey(null);
     }
@@ -408,6 +518,13 @@ export default function App() {
     setFocusedEvent(matchedEvent ?? null);
     void ensureSurfaceData("timeline");
     startTransition(() => setSurface("timeline"));
+  }
+
+  async function handleOpenEntity(key: string) {
+    setFocusedEntityKey(key);
+    await fetchGraph();
+    await fetchEntityDossier(key, true);
+    startTransition(() => setSurface("dossiers"));
   }
 
   const filteredEvents = useMemo(
@@ -533,13 +650,37 @@ export default function App() {
           {surface === "timeline" && (
             <TimelineSurface
               events={filteredEvents}
+              entities={entities}
               sources={sources}
               search={search}
               onSearch={setSearch}
               focusedEventId={focusedEventId}
               focusedEvent={focusedEvent}
               onOpenSource={handleOpenSourceFocus}
+              onOpenEntity={handleOpenEntity}
             />
+          )}
+
+          {surface === "dossiers" && (
+            <Suspense
+              fallback={
+                <LoadPanel
+                  eyebrow="Dossiers surface"
+                  title="Loading actor graph"
+                  detail="Canonical actor and claim dossiers are split into their own lane so the graph can deepen without bloating the first paint."
+                />
+              }
+            >
+              <DossiersSurface
+                graph={{ entities, claims, relationships }}
+                dossier={entityDossier}
+                onSelectEntity={(key) => {
+                  setFocusedEntityKey(key);
+                  void fetchEntityDossier(key, true);
+                }}
+                onOpenEvent={handleOpenEventById}
+              />
+            </Suspense>
           )}
 
           {surface === "signals" && (

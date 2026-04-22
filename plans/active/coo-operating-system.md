@@ -71,6 +71,7 @@ Supporting lanes:
 
 Tasks:
 1. Promote entities, claims, and relationships from passive types into active stored/queryable runtime objects.
+   Current state: baseline graph snapshot and public dossier surface are now live.
 2. Add APIs and selectors for:
    - entities
    - claims
@@ -233,7 +234,7 @@ Exit criteria:
 
 ## Immediate Sequence To Run Without Stopping
 1. Clear the remaining stale top-line truth gap through the operator lane and current critical queue.
-2. Build the canonical entity/claim/relationship graph and extend public drill-down into it.
+2. Deepen the live canonical entity/claim/relationship graph and extend the remaining public drill-down lanes into it.
 3. Harden ingestion synthesis so the graph updates cleanly from live evidence.
 4. Wire a real deployment target and live verification.
 5. Reduce the MapLibre/performance burden and improve preview proof.

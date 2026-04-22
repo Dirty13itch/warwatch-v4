@@ -32,6 +32,21 @@ describe("WarWatch API", () => {
     expect(response.body.fronts.length).toBeGreaterThan(0);
   });
 
+  it("exposes the canonical graph and actor dossiers", async () => {
+    const graph = await request(app).get("/api/graph");
+    expect(graph.status).toBe(200);
+    expect(graph.body.entities.length).toBeGreaterThan(0);
+    expect(graph.body.claims.length).toBeGreaterThan(0);
+    expect(graph.body.relationships.length).toBeGreaterThan(0);
+
+    const dossier = await request(app).get("/api/entities/iran/dossier");
+    expect(dossier.status).toBe(200);
+    expect(dossier.body.entity.slug).toBe("iran");
+    expect(Array.isArray(dossier.body.relationships)).toBe(true);
+    expect(Array.isArray(dossier.body.events)).toBe(true);
+    expect(Array.isArray(dossier.body.stories)).toBe(true);
+  });
+
   it("exposes operator queue and can approve seeded queue items", async () => {
     const queue = await request(app).get("/api/operator/review-queue");
     expect(queue.status).toBe(200);
@@ -59,7 +74,7 @@ describe("WarWatch API", () => {
       .post("/api/operator/topline-metrics/hormuz_daily_cap")
       .send({
         value: 18,
-        valueText: "≤18/day",
+        valueText: "<=18/day",
         sourceText: "Kpler / operator review",
         confidence: "reported",
         note: "Reviewed after the latest shipping corridor update."
@@ -67,7 +82,7 @@ describe("WarWatch API", () => {
 
     expect(response.status).toBe(200);
     expect(response.body.key).toBe("hormuz_daily_cap");
-    expect(response.body.current.valueText).toBe("≤18/day");
+    expect(response.body.current.valueText).toBe("<=18/day");
     expect(response.body.current.freshness).toBe("operator_reviewed");
 
     await request(app).post("/api/operator/topline-metrics/total_strikes").send({

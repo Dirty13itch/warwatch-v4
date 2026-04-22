@@ -170,6 +170,27 @@ export interface RelationshipRecord {
   note: string;
 }
 
+export interface GraphSnapshot {
+  entities: EntityRecord[];
+  claims: ClaimRecord[];
+  relationships: RelationshipRecord[];
+}
+
+export interface EntityRelationshipLink {
+  relationship: RelationshipRecord;
+  counterparty: EntityRecord | null;
+  direction: "outbound" | "inbound";
+}
+
+export interface EntityDossier {
+  entity: EntityRecord;
+  relationships: EntityRelationshipLink[];
+  claims: ClaimRecord[];
+  stories: StoryRecord[];
+  events: EventRecord[];
+  briefings: BriefingRecord[];
+}
+
 export interface BriefingRecord {
   id: string;
   briefingDate: string;

@@ -1,6 +1,8 @@
 import type {
   BriefingRecord,
+  EntityDossier,
   EventRecord,
+  GraphSnapshot,
   IngestionRun,
   MapFeature,
   MetricSnapshot,
@@ -38,6 +40,9 @@ export const api = {
   stories: () => requestJson<StoryRecord[]>("/api/stories"),
   briefings: () => requestJson<BriefingRecord[]>("/api/briefings"),
   sources: () => requestJson<SourceRecord[]>("/api/sources"),
+  graph: () => requestJson<GraphSnapshot>("/api/graph"),
+  entityDossier: (key: string) =>
+    requestJson<EntityDossier>(`/api/entities/${encodeURIComponent(key)}/dossier`),
   mapLayers: () => requestJson<Record<string, MapFeature[]>>("/api/map/layers"),
   metricHistory: (key: string) =>
     requestJson<MetricSnapshot[]>(`/api/metrics/${encodeURIComponent(key)}/history`),

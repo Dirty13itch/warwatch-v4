@@ -5,9 +5,11 @@ import type { DatabaseSync } from "node:sqlite";
 import type { AppConfig } from "./config.js";
 import { upsertPreparedMetricSnapshot, runIngestionCycle } from "./ingest.js";
 import {
+  getEntityDossier,
   getOverview,
   getEvents,
   getEventById,
+  getGraphSnapshot,
   getMetricHistory,
   getBriefings,
   getMapLayers,
@@ -83,6 +85,19 @@ export function createApp(db: DatabaseSync, config: AppConfig) {
 
   app.get("/api/sources", (_req, res) => {
     res.json(getSources(db));
+  });
+
+  app.get("/api/graph", (_req, res) => {
+    res.json(getGraphSnapshot(db));
+  });
+
+  app.get("/api/entities/:key/dossier", (req, res) => {
+    const dossier = getEntityDossier(db, req.params.key);
+    if (!dossier) {
+      return res.status(404).json({ error: "Entity dossier not found" });
+    }
+
+    return res.json(dossier);
   });
 
   app.use("/api/operator", (req, res, next) => {
