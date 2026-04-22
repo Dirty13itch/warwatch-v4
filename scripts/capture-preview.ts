@@ -19,7 +19,7 @@ type CaptureTarget = {
   title: string;
   fileName: string;
   notes: string;
-  surface?: "preview" | "command" | "signals" | "operator";
+  surface?: "preview" | "command" | "timeline" | "signals" | "operator";
   selector?: string;
   mobile?: boolean;
 };
@@ -82,7 +82,14 @@ async function openSurface(page: Page, surface: CaptureTarget["surface"]) {
     return;
   }
 
-  const label = surface === "command" ? "Command" : surface === "signals" ? "Signals" : "Operator";
+  const label =
+    surface === "command"
+      ? "Command"
+      : surface === "timeline"
+        ? "Timeline"
+        : surface === "signals"
+          ? "Signals"
+          : "Operator";
   await page.getByRole("button", { name: new RegExp(label, "i") }).click();
   await page.locator(`[data-preview="${surface}-surface"]`).waitFor();
 }
@@ -370,6 +377,12 @@ async function main() {
       fileName: "command-desktop.png",
       notes: "Command surface with KPI shell, map lane, and public freshness posture",
       surface: "command"
+    },
+    {
+      title: "Timeline Surface",
+      fileName: "timeline-desktop.png",
+      notes: "Filtered chronology explorer with event detail, corroboration, and public posture",
+      surface: "timeline"
     },
     {
       title: "Signals Surface",

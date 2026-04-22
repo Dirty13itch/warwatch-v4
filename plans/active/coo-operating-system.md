@@ -30,3 +30,4 @@ Phase zero plus first release foundation:
 7. Refresh local preview artifacts when UI lanes change so COO updates can include concrete visual proof
 8. Prefer the single preview-board artifact for human updates, then drill into individual surface shots only when needed
 9. Keep the Snapshot surface strong enough to serve as the default public/demo-first lane while command remains the deeper operational shell
+10. Keep strengthening public exploration depth after the landing shell, starting with timeline detail and then story/briefing drill-down

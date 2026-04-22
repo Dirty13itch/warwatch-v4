@@ -25,6 +25,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Client runtime is surface-aware and split by lane:
   - snapshot surface now acts as the public/demo-first entry lane
   - command shell lazy-loads heavy map/chart code
+  - timeline surface now exposes filters, event inspection, corroboration, and public posture directly in the UI
   - operator console is separated from the public bundle
   - timeline, signals, and briefings fetch only the data they need
 - Overview freshness is derived from top-line KPI freshness, not just latest event activity
@@ -41,6 +42,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Preview proof now exists as a repo script: `npm run preview:shots` captures desktop/mobile screenshots from the built app and writes `reports/previews/LATEST.md`
 - Preview proof also emits `reports/previews/latest/preview-board.png`, a single stitched board artifact for human-facing updates
 - Preview proof now includes the Snapshot surface as the primary visual/demo lane
+- Preview proof now also includes the upgraded timeline surface so exploration depth is visible in each artifact pass
 
 ## Operating Assumption
 Twice-daily COO heartbeat remains the default cadence unless the repo contract changes.

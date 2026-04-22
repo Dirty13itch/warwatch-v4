@@ -40,3 +40,9 @@ export function formatRelativeHours(value: number | null): string {
 
   return `${value.toFixed(0)}h`;
 }
+
+export function formatTokenLabel(value: string): string {
+  return value
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
