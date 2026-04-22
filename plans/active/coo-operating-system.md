@@ -29,3 +29,4 @@ Phase zero plus first release foundation:
 6. Use the new queue-aging summary to drive operator backlog triage before critical claims are promoted
 7. Refresh local preview artifacts when UI lanes change so COO updates can include concrete visual proof
 8. Prefer the single preview-board artifact for human updates, then drill into individual surface shots only when needed
+9. Keep the Snapshot surface strong enough to serve as the default public/demo-first lane while command remains the deeper operational shell

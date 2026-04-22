@@ -23,6 +23,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Seed path: legacy V3 bundle plus blueprint-derived launch briefing and review backlog
 - Reporting path: heartbeat script writes a reviewable markdown artifact
 - Client runtime is surface-aware and split by lane:
+  - snapshot surface now acts as the public/demo-first entry lane
   - command shell lazy-loads heavy map/chart code
   - operator console is separated from the public bundle
   - timeline, signals, and briefings fetch only the data they need
@@ -39,6 +40,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Build output now isolates React, chart, and MapLibre vendor lanes, with MapLibre kept off the initial shell through dynamic import
 - Preview proof now exists as a repo script: `npm run preview:shots` captures desktop/mobile screenshots from the built app and writes `reports/previews/LATEST.md`
 - Preview proof also emits `reports/previews/latest/preview-board.png`, a single stitched board artifact for human-facing updates
+- Preview proof now includes the Snapshot surface as the primary visual/demo lane
 
 ## Operating Assumption
 Twice-daily COO heartbeat remains the default cadence unless the repo contract changes.

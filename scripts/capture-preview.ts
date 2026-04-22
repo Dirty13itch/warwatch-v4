@@ -19,7 +19,7 @@ type CaptureTarget = {
   title: string;
   fileName: string;
   notes: string;
-  surface?: "command" | "signals" | "operator";
+  surface?: "preview" | "command" | "signals" | "operator";
   selector?: string;
   mobile?: boolean;
 };
@@ -31,6 +31,7 @@ function ensureBuildOutputs() {
 }
 
 function ensurePreviewDirs() {
+  fs.rmSync(latestDir, { recursive: true, force: true });
   fs.mkdirSync(latestDir, { recursive: true });
   fs.mkdirSync(archiveDir, { recursive: true });
 }
@@ -76,12 +77,13 @@ async function openSurface(page: Page, surface: CaptureTarget["surface"]) {
   await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
   await page.locator("header").waitFor();
 
-  if (!surface || surface === "command") {
-    await page.locator('[data-preview="command-surface"]').waitFor();
+  if (!surface || surface === "preview") {
+    await page.locator('[data-preview="preview-surface"]').waitFor();
     return;
   }
 
-  await page.getByRole("button", { name: new RegExp(surface, "i") }).click();
+  const label = surface === "command" ? "Command" : surface === "signals" ? "Signals" : "Operator";
+  await page.getByRole("button", { name: new RegExp(label, "i") }).click();
   await page.locator(`[data-preview="${surface}-surface"]`).waitFor();
 }
 
@@ -259,7 +261,7 @@ function writeBoardHtml(captures: CaptureTarget[]) {
       <section class="hero">
         <div class="panel meta">
           <div class="eyebrow">WarWatch V4 Preview Board</div>
-          <h1>Current visual proof for the command, signals, and operator lanes.</h1>
+          <h1>Current visual proof for the snapshot, command, signals, and operator lanes.</h1>
           <p class="copy">
             This board is generated from the built app so COO updates can show concrete UI state, not just commit messages and markdown artifacts.
           </p>
@@ -358,6 +360,12 @@ async function main() {
 
   const captures: CaptureTarget[] = [
     {
+      title: "Snapshot Surface",
+      fileName: "preview-desktop.png",
+      notes: "Curated public snapshot with posture, SITREP, fronts, live markets, and trust framing",
+      surface: "preview"
+    },
+    {
       title: "Command Surface",
       fileName: "command-desktop.png",
       notes: "Command surface with KPI shell, map lane, and public freshness posture",
@@ -383,10 +391,10 @@ async function main() {
       selector: '[data-preview="operator-queue-summary"]'
     },
     {
-      title: "Command Surface Mobile",
-      fileName: "command-mobile.png",
-      notes: "Command surface on a narrow mobile viewport",
-      surface: "command",
+      title: "Snapshot Surface Mobile",
+      fileName: "preview-mobile.png",
+      notes: "Curated public snapshot on a narrow mobile viewport",
+      surface: "preview",
       mobile: true
     }
   ];

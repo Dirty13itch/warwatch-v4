@@ -24,6 +24,7 @@ import type {
   StoryRecord
 } from "@shared/types";
 import { api } from "./lib/api";
+import PreviewSurface from "./surfaces/PreviewSurface";
 import TimelineSurface from "./surfaces/TimelineSurface";
 import SignalsSurface from "./surfaces/SignalsSurface";
 import BriefingsSurface from "./surfaces/BriefingsSurface";
@@ -33,6 +34,7 @@ const CommandSurface = lazy(() => import("./surfaces/CommandSurface"));
 const OperatorSurface = lazy(() => import("./surfaces/OperatorSurface"));
 
 const surfaces = [
+  { id: "preview", label: "Snapshot" },
   { id: "command", label: "Command" },
   { id: "timeline", label: "Timeline" },
   { id: "signals", label: "Signals" },
@@ -75,7 +77,7 @@ function headerValue(value: string | number | null | undefined): string {
 }
 
 export default function App() {
-  const [surface, setSurface] = useState<SurfaceId>("command");
+  const [surface, setSurface] = useState<SurfaceId>("preview");
   const [overview, setOverview] = useState<OverviewResponse | null>(null);
   const [events, setEvents] = useState<EventRecord[]>([]);
   const [stories, setStories] = useState<StoryRecord[]>([]);
@@ -251,6 +253,16 @@ export default function App() {
   }
 
   async function ensureSurfaceData(target: SurfaceId, force = false) {
+    if (target === "preview") {
+      await Promise.all([
+        fetchOverview(force),
+        fetchStories(force),
+        fetchBriefings(force),
+        fetchMarketSignals(force)
+      ]);
+      return;
+    }
+
     if (target === "command") {
       await Promise.all([fetchOverview(force), fetchStories(force), fetchMapLayers(force), fetchHistory(force)]);
       return;
@@ -420,6 +432,16 @@ export default function App() {
         </header>
 
         <main className="mt-6 flex-1 space-y-6 pb-10">
+          {surface === "preview" && (
+            <PreviewSurface
+              overview={overview}
+              frontStories={frontStories}
+              achievementStories={achievementStories}
+              briefings={briefings}
+              marketSignals={marketSignals}
+            />
+          )}
+
           {surface === "command" && (
             <Suspense
               fallback={
