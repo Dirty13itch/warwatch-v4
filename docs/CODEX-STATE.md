@@ -46,6 +46,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Daily SITREP generation refreshes the same-day briefing and includes market movement when live snapshots exist
 - Operator API exposes reviewed top-line metric publishing for the public KPI lane
 - Operator API also exposes evidence-backed top-line suggestions derived from recent event context
+- Operator API now also exposes graph-aware synthesis candidates for story and claim promotion based on recent event evidence
 - Operator API now exposes aggregate review-queue SLA summary data for backlog pressure and aging
 - Operator API now also exposes a selection-aware review dossier for each queue item, including canonical object detail, feed/link metadata, related evidence events, and superseding briefing context
 - Aggregate stale-state logic can now clear through a mix of live/ingested and `operator_reviewed` top-line metrics
@@ -59,6 +60,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Preview proof now also validates the cross-surface handoff lane by keeping timeline, signals, and briefing readers in the same artifact set
 - Preview proof now also includes the dossiers surface and focused dossier detail so graph progress is visible in each artifact pass
 - Preview proof now also includes focused snapshot-dossier and source-reader captures so graph-entry improvements are visible in each artifact pass
+- Preview proof now also includes the operator synthesis lane so graph-promotion work stays visible in each artifact pass
 - Event ingestion now writes canonical `entity:*` tags on insert/merge, and `npm run backfill:entity-tags` can normalize the historical event store onto the same tagging scheme
 - Operator KPI suggestions now use entity-aware relevance instead of pure regex scanning, which reduces false positives in stale-metric review
 
@@ -78,6 +80,7 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - The live feed lane is now materially cleaner: obvious sports, tourism, and unrelated global stories from broad RSS feeds are quarantined away from public surfaces
 - Public stale state remains expected because only the market lane is live; strike, Hormuz, and casualty top-line metrics are still bootstrap-era values labeled `stale_seed`
 - The operator console can now surface current evidence for stale KPIs, but it will not invent values where extraction is not defensible
+- The operator console can now also surface graph-aware story and claim candidates, which gives ingestion a canonical promotion path before any write-side automation exists
 - The operator console can now see queue pressure directly through age buckets and SLA summary cards, which gives the COO lane a concrete review-backlog surface
 - The operator console can now turn a queue row into a real review packet and jump straight into timeline evidence from the operator lane
 - The COO lane can now attach actual UI evidence to updates through local preview screenshots instead of relying only on text artifacts

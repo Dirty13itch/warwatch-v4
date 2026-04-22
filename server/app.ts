@@ -26,6 +26,7 @@ import { generateDailyBriefing } from "./briefings.js";
 import { getTopLineMetricDefinition, isTopLineMetricKey } from "../shared/topline.js";
 import { confidenceLevels, type OperatorMetricPublishInput } from "../shared/types.js";
 import { getTopLineSuggestions } from "./topline.js";
+import { getSynthesisSuggestions } from "./synthesis.js";
 
 function operatorAllowed(config: AppConfig, req: express.Request): boolean {
   if (!config.operatorApiKey) {
@@ -153,6 +154,10 @@ export function createApp(db: DatabaseSync, config: AppConfig) {
 
   app.get("/api/operator/topline-suggestions", (_req, res) => {
     res.json(getTopLineSuggestions(db));
+  });
+
+  app.get("/api/operator/synthesis", (_req, res) => {
+    res.json(getSynthesisSuggestions(db));
   });
 
   app.post("/api/operator/topline-metrics/:key", (req, res) => {

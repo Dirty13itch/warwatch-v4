@@ -2,6 +2,7 @@ import clsx from "clsx";
 import type {
   IngestionRun,
   OperatorMetricPublishInput,
+  OperatorSynthesisSnapshot,
   OperatorTopLineSuggestion,
   OperatorTopLineMetric,
   ReviewQueueDetail,
@@ -11,6 +12,7 @@ import type {
 import { formatDateTime, formatRelativeHours } from "../lib/format";
 import { ReviewQueueDetailPanel } from "../components/ReviewQueueDetailPanel";
 import { TopLineMetricEditor } from "../components/TopLineMetricEditor";
+import { OperatorSynthesisPanel } from "../components/OperatorSynthesisPanel";
 
 export default function OperatorSurface({
   queue,
@@ -18,6 +20,7 @@ export default function OperatorSurface({
   runs,
   topLineMetrics,
   topLineSuggestions,
+  synthesis,
   selectedQueueId,
   reviewQueueDetail,
   onApprove,
@@ -25,6 +28,7 @@ export default function OperatorSurface({
   onIngest,
   onSelectQueueItem,
   onOpenEvent,
+  onOpenEntity,
   onPublishMetric,
   publishingMetricKey,
   operatorError
@@ -34,6 +38,7 @@ export default function OperatorSurface({
   runs: IngestionRun[];
   topLineMetrics: OperatorTopLineMetric[];
   topLineSuggestions: OperatorTopLineSuggestion[];
+  synthesis: OperatorSynthesisSnapshot;
   selectedQueueId: string | null;
   reviewQueueDetail: ReviewQueueDetail | null;
   onApprove: (id: string) => void;
@@ -41,6 +46,7 @@ export default function OperatorSurface({
   onIngest: () => void;
   onSelectQueueItem: (id: string) => void;
   onOpenEvent?: (eventId: string) => void;
+  onOpenEntity?: (key: string) => void;
   onPublishMetric: (key: string, payload: OperatorMetricPublishInput) => Promise<void>;
   publishingMetricKey: string | null;
   operatorError: string | null;
@@ -89,6 +95,12 @@ export default function OperatorSurface({
           ))}
         </div>
       </section>
+
+      <OperatorSynthesisPanel
+        synthesis={synthesis}
+        onOpenEvent={onOpenEvent}
+        onOpenEntity={onOpenEntity}
+      />
 
       <div className="grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
         <section

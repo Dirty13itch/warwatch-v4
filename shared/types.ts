@@ -128,6 +128,40 @@ export interface OperatorTopLineSuggestion {
   evidence: OperatorSuggestionEvidence[];
 }
 
+export interface OperatorStorySuggestion {
+  id: string;
+  status: "new_story" | "update_story";
+  title: string;
+  suggestedSection: string;
+  significance: Significance;
+  summary: string;
+  rationale: string;
+  matchedStoryId: string | null;
+  matchedStoryTitle: string | null;
+  entityKeys: string[];
+  evidence: OperatorSuggestionEvidence[];
+}
+
+export interface OperatorClaimSuggestion {
+  id: string;
+  status: "new_claim" | "update_claim";
+  title: string;
+  proposedStatus: string;
+  statement: string;
+  significance: Significance;
+  confidence: Confidence;
+  rationale: string;
+  matchedClaimId: string | null;
+  matchedClaimTitle: string | null;
+  entityKeys: string[];
+  evidence: OperatorSuggestionEvidence[];
+}
+
+export interface OperatorSynthesisSnapshot {
+  stories: OperatorStorySuggestion[];
+  claims: OperatorClaimSuggestion[];
+}
+
 export interface StoryRecord {
   id: string;
   slug: string;

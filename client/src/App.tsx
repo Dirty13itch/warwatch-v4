@@ -18,6 +18,7 @@ import type {
   MapFeature,
   MetricSnapshot,
   OperatorMetricPublishInput,
+  OperatorSynthesisSnapshot,
   OperatorTopLineSuggestion,
   OperatorTopLineMetric,
   OverviewResponse,
@@ -105,6 +106,7 @@ export default function App() {
   const [ingestionRuns, setIngestionRuns] = useState<IngestionRun[]>([]);
   const [topLineMetrics, setTopLineMetrics] = useState<OperatorTopLineMetric[]>([]);
   const [topLineSuggestions, setTopLineSuggestions] = useState<OperatorTopLineSuggestion[]>([]);
+  const [synthesis, setSynthesis] = useState<OperatorSynthesisSnapshot>({ stories: [], claims: [] });
   const [search, setSearch] = useState("");
   const [focusedEventId, setFocusedEventId] = useState<string | null>(null);
   const [focusedEvent, setFocusedEvent] = useState<EventRecord | null>(null);
@@ -298,18 +300,20 @@ export default function App() {
 
     loadingRef.current.add("operator");
     try {
-      const [queue, summary, runs, metrics, suggestions] = await Promise.all([
+      const [queue, summary, runs, metrics, suggestions, synthesisSnapshot] = await Promise.all([
         api.reviewQueue(),
         api.reviewQueueSummary(),
         api.ingestionRuns(),
         api.topLineMetrics(),
-        api.topLineSuggestions()
+        api.topLineSuggestions(),
+        api.synthesis()
       ]);
       setReviewQueue(queue);
       setReviewQueueSummary(summary);
       setIngestionRuns(runs);
       setTopLineMetrics(metrics);
       setTopLineSuggestions(suggestions);
+      setSynthesis(synthesisSnapshot);
       if (queue.length && !queue.some((item) => item.id === selectedQueueId)) {
         setSelectedQueueId(queue[0].id);
       }
@@ -731,18 +735,20 @@ export default function App() {
                 queue={reviewQueue}
                 queueSummary={reviewQueueSummary}
                 runs={ingestionRuns}
-              topLineMetrics={topLineMetrics}
-              topLineSuggestions={topLineSuggestions}
-              selectedQueueId={selectedQueueId}
-              reviewQueueDetail={reviewQueueDetail}
-              onApprove={handleApprove}
-              onReject={handleReject}
-              onIngest={handleRunIngest}
-              onSelectQueueItem={setSelectedQueueId}
-              onOpenEvent={handleOpenEventById}
-              onPublishMetric={handlePublishTopLineMetric}
-              publishingMetricKey={publishingMetricKey}
-              operatorError={operatorError}
+                topLineMetrics={topLineMetrics}
+                topLineSuggestions={topLineSuggestions}
+                synthesis={synthesis}
+                selectedQueueId={selectedQueueId}
+                reviewQueueDetail={reviewQueueDetail}
+                onApprove={handleApprove}
+                onReject={handleReject}
+                onIngest={handleRunIngest}
+                onSelectQueueItem={setSelectedQueueId}
+                onOpenEvent={handleOpenEventById}
+                onOpenEntity={handleOpenEntity}
+                onPublishMetric={handlePublishTopLineMetric}
+                publishingMetricKey={publishingMetricKey}
+                operatorError={operatorError}
               />
             </Suspense>
           )}

@@ -272,7 +272,7 @@ function writeBoardHtml(captures: CaptureTarget[]) {
       <section class="hero">
         <div class="panel meta">
           <div class="eyebrow">WarWatch V4 Preview Board</div>
-          <h1>Current visual proof for the snapshot, dossier, command, signals, and operator lanes.</h1>
+          <h1>Current visual proof for the snapshot, dossier, command, signals, operator, and synthesis lanes.</h1>
           <p class="copy">
             This board is generated from the built app so COO updates can show concrete UI state, not just commit messages and markdown artifacts.
           </p>
@@ -430,8 +430,15 @@ async function main() {
     {
       title: "Operator Surface",
       fileName: "operator-desktop.png",
-      notes: "Operator surface with top-line controls, review queue, and ingestion health",
+      notes: "Operator surface with top-line controls, synthesis lane, review queue, and ingestion health",
       surface: "operator"
+    },
+    {
+      title: "Synthesis Lane",
+      fileName: "operator-synthesis.png",
+      notes: "Graph-aware story and claim promotion candidates built from recent event evidence",
+      surface: "operator",
+      selector: '[data-preview="operator-synthesis"]'
     },
     {
       title: "Review Dossier",

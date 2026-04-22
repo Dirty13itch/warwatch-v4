@@ -119,4 +119,11 @@ describe("WarWatch API", () => {
     expect(Array.isArray(response.body)).toBe(true);
     expect(response.body.length).toBeGreaterThan(0);
   });
+
+  it("exposes operator synthesis suggestions", async () => {
+    const response = await request(app).get("/api/operator/synthesis");
+    expect(response.status).toBe(200);
+    expect(Array.isArray(response.body.stories)).toBe(true);
+    expect(Array.isArray(response.body.claims)).toBe(true);
+  });
 });

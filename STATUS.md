@@ -27,6 +27,7 @@
 - Daily SITREP refresh now folds in live market movement when current market snapshots exist
 - Operator-reviewed top-line metric publishing is live for `total_strikes`, `oil_brent`, `hormuz_daily_cap`, and `iran_casualties_estimate`
 - Operator KPI lane now includes evidence-backed suggestion cards with extracted candidates when current event evidence supports them
+- Operator synthesis lane is now live: recent graph-aware evidence can surface story-promotion and claim-promotion candidates before the operator has to reason from raw event rows alone
 - Operator queue aging is now explicit: queue items carry age buckets, the operator console shows backlog pressure cards, and the heartbeat reports pending, critical, >24h, >72h, and oldest-item age
 - Operator review is now selection-aware: queue items open into a dossier with canonical object detail, feed/source metadata, recommended next action, superseding briefing context, and related evidence events
 - The operator lane can now hand directly into timeline evidence from both KPI suggestion cards and queue dossiers, which makes tranche-1 review work faster and less abstract
@@ -40,6 +41,7 @@
 - Visual proof now captures the canonical handoff slice, so the timeline, signals, and briefing lanes can be shown as one connected reading flow instead of isolated screens
 - Visual proof now also includes the dossiers lane, so actor/claim graph progress is visible alongside the public shell and operator workflow
 - Visual proof now also includes focused Snapshot dossier-entry and source-reader captures so graph-entry improvements are visible even when they sit below the default viewport
+- Visual proof now also includes the operator synthesis panel so backend graph-promotion work remains visible in human-facing artifacts
 - Verification contract is green locally via `npm run verify`
 
 ## Current Goal
