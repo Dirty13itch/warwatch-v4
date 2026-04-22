@@ -1,19 +1,20 @@
 # Next Steps
 
-## Highest Leverage
-1. Add a real deployment target and set `PUBLIC_BASE_URL` so public verification stops skipping
-2. Use the new operator-reviewed KPI lane and suggestion cards to publish defensible current values for strikes, Hormuz throughput, and casualty indicators
-3. Tighten ingestion quality further with better matching rules, source scoring, and operator-safe story/claim synthesis from merged feed evidence
-4. Reduce the remaining MapLibre vendor cost with deeper geospatial isolation, render-budget cleanup, or a lighter map strategy
-5. Extend the preview lane from local screenshots to deployment-aware visual proof once the public URL exists
-6. Add before/after preview diffs once the board artifact is stable enough to compare across slices
-7. Extend the new public handoff lane deeper with canonical entity, claim, and story drill-down so Snapshot, Timeline, Briefings, and Signals can all resolve into the same explorable graph
+## Current Autonomous Order
+1. Clear the stale top-line truth bottleneck by resolving reviewed current values for strikes, Hormuz throughput, and casualties.
+2. Reduce the critical review queue items that block a fully current public SITREP and headline posture.
+3. Turn entities, claims, and relationships into a real canonical graph with public/operator drill-down.
+4. Harden ingestion synthesis so live evidence upgrades the graph cleanly and produces better operator suggestions.
+5. Land a real deployment target, set `PUBLIC_BASE_URL`, and stop skipping live public verification.
+6. Reduce the MapLibre vendor cost and keep the public/demo shell fast on desktop and mobile.
+7. Extend preview proof from local screenshots to deploy-aware and diff-aware artifacts.
 
-## After First Milestone
-- richer map animation and geospatial timeline
-- broader curated source network
-- briefing quality improvements
-- push/email delivery for briefing alerts
-- deeper historical metric backfill
-- production-safe operator auth and review workflow hardening
-- queue escalation and reminder rules once operator auth exists
+## External Boundaries
+- Deployment work that needs provider configuration or secrets
+- Live public verification until `PUBLIC_BASE_URL` exists
+- Publication decisions that require defensible current evidence or explicit review
+
+## Explicit Depriorities
+- broader source expansion before synthesis quality improves
+- delivery/notification features before deployment and operator auth exist
+- map animation polish before the current map bundle cost is reduced
