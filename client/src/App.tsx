@@ -46,6 +46,7 @@ type LoadedState = {
   briefings: boolean;
   mapLayers: boolean;
   history: boolean;
+  marketSignals: boolean;
   operator: boolean;
 };
 
@@ -57,6 +58,7 @@ const initialLoadedState: LoadedState = {
   briefings: false,
   mapLayers: false,
   history: false,
+  marketSignals: false,
   operator: false
 };
 
@@ -77,6 +79,7 @@ export default function App() {
   const [briefings, setBriefings] = useState<BriefingRecord[]>([]);
   const [mapLayers, setMapLayers] = useState<Record<string, MapFeature[]>>({});
   const [history, setHistory] = useState<MetricSnapshot[]>([]);
+  const [marketSignals, setMarketSignals] = useState<Record<string, MetricSnapshot[]>>({});
   const [reviewQueue, setReviewQueue] = useState<ReviewQueueItem[]>([]);
   const [ingestionRuns, setIngestionRuns] = useState<IngestionRun[]>([]);
   const [search, setSearch] = useState("");
@@ -187,6 +190,29 @@ export default function App() {
     }
   }
 
+  async function fetchMarketSignals(force = false) {
+    if (!force && (loaded.marketSignals || loadingRef.current.has("marketSignals"))) {
+      return;
+    }
+
+    loadingRef.current.add("marketSignals");
+    try {
+      const [brent, wti, gold] = await Promise.all([
+        api.metricHistory("oil_brent"),
+        api.metricHistory("oil_wti"),
+        api.metricHistory("gold_price")
+      ]);
+      setMarketSignals({
+        oil_brent: brent,
+        oil_wti: wti,
+        gold_price: gold
+      });
+      markLoaded({ marketSignals: true });
+    } finally {
+      loadingRef.current.delete("marketSignals");
+    }
+  }
+
   async function fetchOperator(force = false) {
     if (!force && (loaded.operator || loadingRef.current.has("operator"))) {
       return;
@@ -219,7 +245,7 @@ export default function App() {
     }
 
     if (target === "signals") {
-      await Promise.all([fetchStories(force), fetchSources(force)]);
+      await Promise.all([fetchStories(force), fetchSources(force), fetchMarketSignals(force)]);
       return;
     }
 
@@ -244,9 +270,10 @@ export default function App() {
   async function refreshAfterMutation() {
     await Promise.all([
       fetchOverview(true),
-      loaded.events ? fetchEvents(true) : Promise.resolve(),
-      loaded.briefings ? fetchBriefings(true) : Promise.resolve(),
-      loaded.operator ? fetchOperator(true) : Promise.resolve()
+              loaded.events ? fetchEvents(true) : Promise.resolve(),
+              loaded.briefings ? fetchBriefings(true) : Promise.resolve(),
+              loaded.marketSignals ? fetchMarketSignals(true) : Promise.resolve(),
+              loaded.operator ? fetchOperator(true) : Promise.resolve()
     ]);
   }
 
@@ -392,6 +419,7 @@ export default function App() {
             <SignalsSurface
               indicators={indicatorStories}
               sources={sources}
+              marketSignals={marketSignals}
             />
           )}
 

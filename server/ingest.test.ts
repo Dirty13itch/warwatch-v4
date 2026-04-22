@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { loadConfig } from "./config";
 import { openDatabase } from "./db";
-import { upsertPreparedFeedEvent } from "./ingest";
+import {
+  extractYahooMetricSnapshots,
+  upsertPreparedFeedEvent,
+  upsertPreparedMetricSnapshot
+} from "./ingest";
 import { getOverview } from "./store";
 
 function makeDb() {
@@ -52,5 +56,70 @@ describe("ingestion merge behavior", () => {
     expect(JSON.parse(row.source_refs_json)).toContain("Fresh Wire");
     db.close();
   });
-});
 
+  it("extracts Yahoo chart payloads into ingested market snapshots", () => {
+    const snapshots = extractYahooMetricSnapshots(
+      {
+        feedName: "Yahoo Finance Brent",
+        metricKey: "oil_brent",
+        symbol: "BZ=F",
+        unit: "usd_per_barrel",
+        decimals: 2
+      },
+      {
+        chart: {
+          result: [
+            {
+              meta: {
+                currency: "USD",
+                exchangeName: "NYM",
+                symbol: "BZ=F"
+              },
+              timestamp: [1776806400, 1776892800],
+              indicators: {
+                quote: [
+                  {
+                    close: [91.25, 93.31]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    );
+
+    expect(snapshots).toHaveLength(2);
+    expect(snapshots[1].metricKey).toBe("oil_brent");
+    expect(snapshots[1].valueText).toBe("$93.31");
+    expect(snapshots[1].freshness).toBe("ingested");
+  });
+
+  it("upserts ingested market snapshots so overview KPIs can refresh without falsely clearing the stale flag", () => {
+    const db = makeDb();
+    const result = upsertPreparedMetricSnapshot(db, {
+      metricKey: "oil_brent",
+      value: 93.31,
+      valueText: "$93.31",
+      unit: "usd_per_barrel",
+      timestamp: "2026-04-22T18:00:00.000Z",
+      sourceText: "Yahoo Finance",
+      confidence: "confirmed",
+      reviewState: "approved",
+      freshness: "ingested",
+      meta: {
+        symbol: "BZ=F",
+        currency: "USD"
+      }
+    });
+
+    expect(result.action).toBe("inserted");
+
+    const overview = getOverview(db);
+    const oil = overview.kpis.find((item) => item.key === "oil_brent");
+    expect(oil?.value).toBe("$93.31");
+    expect(oil?.freshness).toBe("ingested");
+    expect(overview.stale).toBe(true);
+    db.close();
+  });
+});

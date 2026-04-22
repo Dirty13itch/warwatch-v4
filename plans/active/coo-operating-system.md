@@ -21,7 +21,7 @@ Phase zero plus first release foundation:
 - docs reflect current truth
 
 ## Immediate Queue
-1. Land live top-line metric refresh paths so the public shell can move beyond `stale_seed` KPIs
+1. Land the remaining top-line refresh paths so the public shell can move beyond partially live metrics and retire the seeded strike/Hormuz/casualty values
 2. Harden ingestion synthesis: improve merge quality, track corroboration explicitly, and prepare operator-facing claim/story promotion rules
 3. Reduce the remaining command-surface performance cost, especially the map lane
 4. Set a real deployment target and enable live public verification through `PUBLIC_BASE_URL`

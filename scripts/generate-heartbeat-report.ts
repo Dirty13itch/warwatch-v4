@@ -5,6 +5,7 @@ import { openDatabase } from "../server/db.js";
 import {
   getBriefings,
   getIngestionRuns,
+  getMetricHistory,
   getOverview,
   getReviewQueue
 } from "../server/store.js";
@@ -18,8 +19,21 @@ const db = openDatabase({
 
 const overview = getOverview(db);
 const queue = getReviewQueue(db);
-const runs = getIngestionRuns(db).slice(0, 5);
+const runs = getIngestionRuns(db).slice(0, 10);
 const briefings = getBriefings(db).slice(0, 1);
+const marketMetrics = [
+  ["Brent", "oil_brent"],
+  ["WTI", "oil_wti"],
+  ["Gold", "gold_price"]
+] as const;
+const marketLines = marketMetrics.flatMap(([label, key]) => {
+  const latest = getMetricHistory(db, key).at(-1);
+  if (!latest?.valueText) {
+    return [];
+  }
+
+  return [`- ${label}: ${latest.valueText} :: ${latest.freshness} :: ${latest.timestamp}`];
+});
 
 const lines = [
   "# WarWatch Heartbeat",
@@ -33,6 +47,9 @@ const lines = [
   "",
   "## Queue",
   ...queue.slice(0, 6).map((item) => `- [${item.severity}] ${item.title} :: ${item.status}`),
+  "",
+  "## Markets",
+  ...(marketLines.length ? marketLines : ["- No live market metrics ingested yet"]),
   "",
   "## Ingestion",
   ...runs.map(

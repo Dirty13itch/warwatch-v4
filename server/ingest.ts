@@ -13,6 +13,8 @@ import {
 
 const parser = new Parser();
 
+const MARKET_SOURCE_NAME = "Yahoo Finance";
+
 function toId(prefix: string, value: string): string {
   return `${prefix}_${crypto.createHash("sha1").update(value).digest("hex").slice(0, 12)}`;
 }
@@ -48,6 +50,199 @@ interface PreparedFeedEvent {
   feedName: string;
   link: string | null;
   createdAt: string;
+}
+
+export interface PreparedMetricSnapshot {
+  metricKey: string;
+  value: number;
+  valueText: string;
+  unit: string;
+  timestamp: string;
+  sourceText: string;
+  confidence: "confirmed" | "reported";
+  reviewState: "approved";
+  freshness: "ingested" | "live";
+  meta: Record<string, unknown>;
+}
+
+interface MarketSignalDefinition {
+  feedName: string;
+  metricKey: string;
+  symbol: string;
+  unit: string;
+  decimals: number;
+}
+
+interface YahooChartPayload {
+  chart?: {
+    result?: Array<{
+      meta?: {
+        currency?: string;
+        exchangeName?: string;
+        regularMarketPrice?: number;
+        regularMarketTime?: number;
+        symbol?: string;
+      };
+      timestamp?: number[];
+      indicators?: {
+        quote?: Array<{
+          close?: Array<number | null>;
+        }>;
+      };
+    }>;
+  };
+}
+
+const marketSignalDefinitions: MarketSignalDefinition[] = [
+  {
+    feedName: "Yahoo Finance Brent",
+    metricKey: "oil_brent",
+    symbol: "BZ=F",
+    unit: "usd_per_barrel",
+    decimals: 2
+  },
+  {
+    feedName: "Yahoo Finance WTI",
+    metricKey: "oil_wti",
+    symbol: "CL=F",
+    unit: "usd_per_barrel",
+    decimals: 2
+  },
+  {
+    feedName: "Yahoo Finance Gold",
+    metricKey: "gold_price",
+    symbol: "GC=F",
+    unit: "usd_per_ounce",
+    decimals: 2
+  }
+];
+
+function ensureSourceProfile(
+  db: DatabaseSync,
+  source: {
+    name: string;
+    slug: string;
+    type: string;
+    reliabilityScore: number;
+    biasDirection: string;
+    notes: string;
+  }
+) {
+  db.prepare(`
+    INSERT OR IGNORE INTO sources (
+      id, slug, name, type, reliability_score, bias_direction, notes, review_state
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    toId("src", source.name),
+    source.slug,
+    source.name,
+    source.type,
+    source.reliabilityScore,
+    source.biasDirection,
+    source.notes,
+    "approved"
+  );
+}
+
+function formatCurrencyValue(value: number, decimals: number): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals
+  }).format(value);
+}
+
+export function upsertPreparedMetricSnapshot(
+  db: DatabaseSync,
+  candidate: PreparedMetricSnapshot
+): { action: "inserted" | "updated" | "noop" } {
+  const id = toId("metric", `${candidate.metricKey}:${candidate.timestamp}:${candidate.sourceText}`);
+  const existing = db.prepare(`
+    SELECT value, value_text, unit, confidence, review_state, freshness, meta_json
+    FROM metrics
+    WHERE id = ?
+  `).get(id) as {
+    value: number | null;
+    value_text: string | null;
+    unit: string | null;
+    confidence: string;
+    review_state: string;
+    freshness: string;
+    meta_json: string;
+  } | undefined;
+
+  const metaJson = JSON.stringify(candidate.meta ?? {});
+  if (
+    existing &&
+    existing.value === candidate.value &&
+    existing.value_text === candidate.valueText &&
+    existing.unit === candidate.unit &&
+    existing.confidence === candidate.confidence &&
+    existing.review_state === candidate.reviewState &&
+    existing.freshness === candidate.freshness &&
+    existing.meta_json === metaJson
+  ) {
+    return { action: "noop" };
+  }
+
+  db.prepare(`
+    INSERT OR REPLACE INTO metrics (
+      id, metric_key, value, value_text, unit, timestamp, source_text, confidence, review_state, freshness, meta_json
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    id,
+    candidate.metricKey,
+    candidate.value,
+    candidate.valueText,
+    candidate.unit,
+    candidate.timestamp,
+    candidate.sourceText,
+    candidate.confidence,
+    candidate.reviewState,
+    candidate.freshness,
+    metaJson
+  );
+
+  return { action: existing ? "updated" : "inserted" };
+}
+
+export function extractYahooMetricSnapshots(
+  definition: MarketSignalDefinition,
+  payload: YahooChartPayload
+): PreparedMetricSnapshot[] {
+  const result = payload.chart?.result?.[0];
+  const timestamps = result?.timestamp ?? [];
+  const closes = result?.indicators?.quote?.[0]?.close ?? [];
+  const currency = result?.meta?.currency ?? "USD";
+  const exchange = result?.meta?.exchangeName ?? "unknown";
+  const symbol = result?.meta?.symbol ?? definition.symbol;
+
+  return timestamps.flatMap((timestamp, index) => {
+    const close = closes[index];
+    if (!Number.isFinite(close)) {
+      return [];
+    }
+
+    return [
+      {
+        metricKey: definition.metricKey,
+        value: Number(close),
+        valueText: formatCurrencyValue(Number(close), definition.decimals),
+        unit: definition.unit,
+        timestamp: new Date(timestamp * 1000).toISOString(),
+        sourceText: MARKET_SOURCE_NAME,
+        confidence: "confirmed",
+        reviewState: "approved",
+        freshness: "ingested",
+        meta: {
+          symbol,
+          currency,
+          exchange
+        }
+      }
+    ];
+  });
 }
 
 function findMatchingEvent(
@@ -213,6 +408,78 @@ export const feedDefinitions = [
 ] as const;
 
 export async function runIngestionCycle(db: DatabaseSync): Promise<void> {
+  ensureSourceProfile(db, {
+    name: MARKET_SOURCE_NAME,
+    slug: "yahoo-finance",
+    type: "dataset",
+    reliabilityScore: 0.88,
+    biasDirection: "market_data",
+    notes: "Structured commodity futures feed used for Brent, WTI, and gold snapshots."
+  });
+
+  for (const market of marketSignalDefinitions) {
+    const startedAt = new Date().toISOString();
+    const runId = toId("run", `${market.feedName}:${startedAt}`);
+    let insertedCount = 0;
+    let updatedCount = 0;
+    let status: "success" | "partial" | "error" = "success";
+    let summary = "No market data returned";
+    let errorText: string | null = null;
+
+    try {
+      const response = await fetch(
+        `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(market.symbol)}?interval=1d&range=1mo`,
+        {
+          headers: {
+            "user-agent": "Mozilla/5.0 WarWatch/1.0"
+          }
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const payload = (await response.json()) as YahooChartPayload;
+      const snapshots = extractYahooMetricSnapshots(market, payload);
+      for (const snapshot of snapshots) {
+        const result = upsertPreparedMetricSnapshot(db, snapshot);
+        if (result.action === "inserted") {
+          insertedCount += 1;
+        }
+
+        if (result.action === "updated") {
+          updatedCount += 1;
+        }
+      }
+
+      const latest = snapshots.at(-1);
+      summary = snapshots.length
+        ? `Inserted ${insertedCount}; updated ${updatedCount}; latest ${latest?.valueText ?? "n/a"}`
+        : "No market data returned";
+    } catch (error) {
+      status = "error";
+      summary = "Market ingestion failed";
+      errorText = error instanceof Error ? error.message : String(error);
+    }
+
+    db.prepare(`
+      INSERT INTO ingestion_runs (
+        id, feed_name, run_type, status, started_at, finished_at, summary, inserted_count, queued_count, error_text
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      runId,
+      market.feedName,
+      "market",
+      status,
+      startedAt,
+      new Date().toISOString(),
+      summary,
+      insertedCount,
+      0,
+      errorText
+    );
+  }
+
   for (const feed of feedDefinitions) {
     const startedAt = new Date().toISOString();
     const runId = toId("run", `${feed.name}:${startedAt}`);
@@ -342,4 +609,4 @@ export async function runIngestionCycle(db: DatabaseSync): Promise<void> {
   }
 }
 
-export { normalizeForMatch, deriveConfidenceFromCorroboration };
+export { normalizeForMatch, deriveConfidenceFromCorroboration, marketSignalDefinitions };

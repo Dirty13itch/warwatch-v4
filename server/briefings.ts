@@ -9,11 +9,57 @@ function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+function getLatestMetricPair(db: DatabaseSync, key: string): Array<{
+  value: number | null;
+  valueText: string | null;
+}> {
+  return db.prepare(`
+    SELECT value, value_text AS valueText
+    FROM metrics
+    WHERE metric_key = ?
+    ORDER BY timestamp DESC
+    LIMIT 2
+  `).all(key) as Array<{
+    value: number | null;
+    valueText: string | null;
+  }>;
+}
+
+function formatDelta(current: number | null, previous: number | null): string | null {
+  if (current === null || previous === null || previous === 0) {
+    return null;
+  }
+
+  const deltaPct = ((current - previous) / previous) * 100;
+  const sign = deltaPct >= 0 ? "+" : "";
+  return `${sign}${deltaPct.toFixed(1)}%`;
+}
+
+function buildMarketSentence(db: DatabaseSync): string | null {
+  const definitions = [
+    ["Brent", "oil_brent"],
+    ["WTI", "oil_wti"],
+    ["Gold", "gold_price"]
+  ] as const;
+
+  const parts = definitions.flatMap(([label, key]) => {
+    const [latest, previous] = getLatestMetricPair(db, key);
+    if (!latest?.valueText) {
+      return [];
+    }
+
+    const delta = formatDelta(latest.value, previous?.value ?? null);
+    return [`${label} ${latest.valueText}${delta ? ` (${delta} vs prior print)` : ""}`];
+  });
+
+  return parts.length ? `Market signals: ${parts.join("; ")}.` : null;
+}
+
 export function generateDailyBriefing(db: DatabaseSync, briefingDate = todayIso()): string {
   const existing = db.prepare(`
-    SELECT id FROM briefings WHERE briefing_date = ?
-  `).get(briefingDate) as { id?: string } | undefined;
-  if (existing?.id) {
+    SELECT id, title FROM briefings WHERE briefing_date = ?
+  `).get(briefingDate) as { id?: string; title?: string } | undefined;
+  if (existing?.id && existing.title !== `WarWatch SITREP ${briefingDate}`) {
     return existing.id;
   }
 
@@ -39,12 +85,14 @@ export function generateDailyBriefing(db: DatabaseSync, briefingDate = todayIso(
   const queue = db.prepare(`
     SELECT COUNT(*) AS pending FROM review_queue WHERE status = 'pending'
   `).get() as { pending: number };
+  const marketSentence = buildMarketSentence(db);
 
   const briefingBody = [
     "SITUATION",
     recentEvents.length
       ? `Recent reviewed/public events: ${recentEvents.map((event) => event.title).join("; ")}.`
       : "No newly reviewed public events are available for this cycle.",
+    marketSentence ?? "Market-signal lane is still running on seeded values.",
     "",
     "ENEMY",
     `High-risk activity mix: ${counts.iran_strike ?? 0} Iran/proxy strike items, ${counts.cyber ?? 0} cyber/signal items.`,
@@ -60,9 +108,9 @@ export function generateDailyBriefing(db: DatabaseSync, briefingDate = todayIso(
   ].join("\n");
 
   const now = new Date().toISOString();
-  const id = toId(briefingDate);
+  const id = existing?.id ?? toId(briefingDate);
   db.prepare(`
-    INSERT INTO briefings (
+    INSERT OR REPLACE INTO briefings (
       id, briefing_date, title, body, source_refs_json, review_state, publish_state, created_at
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `).run(

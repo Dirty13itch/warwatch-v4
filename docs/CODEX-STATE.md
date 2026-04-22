@@ -28,6 +28,9 @@ Primary repo: `C:\Codex Projects\Iran War`
   - timeline, signals, and briefings fetch only the data they need
 - Overview freshness is derived from top-line KPI freshness, not just latest event activity
 - RSS/event ingestion now dedupes by normalized title/category/date window and upgrades corroboration/source refs on merge
+- Market ingestion now writes canonical metric snapshots for Brent, WTI, and gold from Yahoo Finance
+- Signals surface renders live market history directly from the canonical metric store
+- Daily SITREP generation refreshes the same-day briefing and includes market movement when live snapshots exist
 
 ## Operating Assumption
 Twice-daily COO heartbeat remains the default cadence unless the repo contract changes.
@@ -42,5 +45,5 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 
 ## Current Truth
 - Ingestion is healthy on the current default feed set
-- Public stale state remains expected because top-line KPIs are still bootstrap-era values labeled `stale_seed`
+- Public stale state remains expected because only the market lane is live; strike, Hormuz, and casualty top-line metrics are still bootstrap-era values labeled `stale_seed`
 - Critical claims continue to require operator approval before promotion to primary public surfaces

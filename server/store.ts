@@ -189,7 +189,17 @@ export function getOverview(db: DatabaseSync): OverviewResponse {
     WHERE status = 'success'
   `).get() as { latest: string | null };
 
-  const legacyAsOf = metricMap.get("oil_brent")?.timestamp?.slice(0, 10) ?? null;
+  const legacyAsOf = [
+    metricMap.get("total_strikes"),
+    metricMap.get("oil_brent"),
+    metricMap.get("hormuz_daily_cap"),
+    metricMap.get("iran_casualties_estimate")
+  ]
+    .filter((metric): metric is MetricSnapshot => Boolean(metric))
+    .filter((metric) => metric.freshness.includes("seed"))
+    .map((metric) => metric.timestamp.slice(0, 10))
+    .sort()
+    .at(-1) ?? null;
   const topLineFreshnesses = [
     metricMap.get("total_strikes")?.freshness ?? "missing",
     metricMap.get("oil_brent")?.freshness ?? "missing",
@@ -217,7 +227,10 @@ export function getOverview(db: DatabaseSync): OverviewResponse {
     {
       key: "oil_brent",
       label: "Brent marker",
-      supportingText: "Public top-line is freshness-labeled until live economic ingest is active"
+      supportingText:
+        (metricMap.get("oil_brent")?.freshness === "live" || metricMap.get("oil_brent")?.freshness === "ingested")
+          ? "Live market signal from the Yahoo Finance futures feed."
+          : "Public top-line is freshness-labeled until live economic ingest is active"
     },
     {
       key: "hormuz_daily_cap",

@@ -1,23 +1,28 @@
-import type { SourceRecord, StoryRecord } from "@shared/types";
+import type { MetricSnapshot, SourceRecord, StoryRecord } from "@shared/types";
+import { MarketSignalsPanel } from "../components/MarketSignalsPanel";
 import { SourceTable } from "../components/SourceTable";
 import { StoryStrip } from "../components/StoryStrip";
 
 export default function SignalsSurface({
   indicators,
-  sources
+  sources,
+  marketSignals
 }: {
   indicators: StoryRecord[];
   sources: SourceRecord[];
+  marketSignals: Record<string, MetricSnapshot[]>;
 }) {
   return (
-    <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-      <StoryStrip
-        title="Signals"
-        copy="Unconventional indicators with explicit source labeling"
-        items={indicators}
-      />
-      <SourceTable sources={sources} />
+    <div className="space-y-6">
+      <MarketSignalsPanel marketSignals={marketSignals} />
+      <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+        <StoryStrip
+          title="Signals"
+          copy="Unconventional indicators with explicit source labeling"
+          items={indicators}
+        />
+        <SourceTable sources={sources} />
+      </div>
     </div>
   );
 }
-
