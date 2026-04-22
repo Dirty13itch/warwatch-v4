@@ -82,7 +82,7 @@ Tasks:
    - timeline to claim/entity context
    - briefings to story/event/entity context
    - signals to source/story/claim context
-   Current state: timeline, story strips, and briefing readers can already open into the dossier graph; snapshot and source-posture entry remain next.
+   Current state: timeline, story strips, briefing readers, snapshot, and source posture can now open into the dossier graph.
 4. Add UI drill-down for canonical objects without collapsing the current clean shell.
 5. Keep public-safe labeling explicit for disputed or unreviewed nodes.
 
@@ -104,6 +104,7 @@ Supporting lanes:
 Tasks:
 1. Improve event merge quality beyond title/date heuristics.
 2. Strengthen source normalization, mission-scope scoring, and source-to-ledger matching.
+   Current state: entity matching is now shared between client and server, so tranche-3 hardening can build on one canonical matching substrate instead of duplicated heuristics.
 3. Add safer synthesis rules for:
    - claim extraction
    - story promotion candidates

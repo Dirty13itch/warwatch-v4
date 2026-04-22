@@ -13,6 +13,9 @@
 - Canonical actor dossiers are now live as a first-class public surface: entities, claims, and relationships resolve into a dossier graph with linked stories, events, and briefings
 - Timeline events can now hand readers directly into matched actor dossiers, which turns event inspection into graph exploration instead of another dead end
 - Story and briefing readers can now also hand directly into matched actor dossiers, so fronts, signals, and SITREPs all resolve into the same graph instead of forcing a timeline detour
+- Snapshot now exposes dossier-entry cards and graph-backed claim posture, so the public landing lane can open directly into actor context instead of stopping at front summaries
+- Source posture now defaults toward more explanatory sources when possible and can hand readers directly into matched actor dossiers from the signals lane
+- Entity resolution is now driven by a shared matching substrate used by both client and server graph features, reducing heuristic drift before tranche-3 ingestion hardening
 - Live ingestion is active against `BBC Middle East`, `Al Jazeera`, `NPR World`, `Defense News`, `USNI News`, and `USGS Iran Earthquakes`
 - Live market ingestion is active against Yahoo Finance for `oil_brent`, `oil_wti`, and `gold_price`
 - Feed dedupe and corroboration are live: repeated feed hits now merge into existing events instead of inflating duplicates
@@ -34,6 +37,7 @@
 - Visual proof now includes the briefing reader lane so public archive depth is visible in the preview board as well
 - Visual proof now captures the canonical handoff slice, so the timeline, signals, and briefing lanes can be shown as one connected reading flow instead of isolated screens
 - Visual proof now also includes the dossiers lane, so actor/claim graph progress is visible alongside the public shell and operator workflow
+- Visual proof now also includes focused Snapshot dossier-entry and source-reader captures so graph-entry improvements are visible even when they sit below the default viewport
 - Verification contract is green locally via `npm run verify`
 
 ## Current Goal

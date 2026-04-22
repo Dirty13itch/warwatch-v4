@@ -2,6 +2,7 @@ import type { DatabaseSync } from "node:sqlite";
 import { CONFLICT_START_ISO } from "./config.js";
 import { canPublish } from "../shared/review.js";
 import { topLineMetricDefinitions } from "../shared/topline.js";
+import { entityMatchScore } from "../shared/entity-matching.js";
 import type {
   BriefingRecord,
   ClaimRecord,
@@ -236,36 +237,6 @@ function significanceRank(value: string): number {
   }
 
   return 3;
-}
-
-function entityKeywords(entity: EntityRecord): string[] {
-  return Array.from(
-    new Set([
-      entity.name.toLowerCase(),
-      entity.slug.replace(/-/g, " ").toLowerCase(),
-      ...buildKeywordSet([entity.name, entity.slug.replace(/-/g, " ")])
-    ])
-  );
-}
-
-function scoreEntityMatch(entity: EntityRecord, values: Array<string | null | undefined>): number {
-  const haystack = values
-    .map((value) => String(value ?? "").toLowerCase())
-    .join(" ");
-  const keywords = entityKeywords(entity);
-  let score = 0;
-
-  for (const keyword of keywords) {
-    if (!keyword) {
-      continue;
-    }
-
-    if (haystack.includes(keyword)) {
-      score += keyword.includes(" ") ? 4 : 1;
-    }
-  }
-
-  return score;
 }
 
 function rankMatchingEvents(
@@ -697,12 +668,12 @@ export function getEntityDossier(db: DatabaseSync, key: string): EntityDossier |
   const claims = getClaims(db)
     .map((claim) => ({
       claim,
-      score: scoreEntityMatch(entity, [
+      score: entityMatchScore(entity,
         claim.title,
         claim.statement,
         claim.status,
         claim.evidenceRefs.join(" ")
-      ])
+      )
     }))
     .filter((entry) => entry.score > 0)
     .sort(
@@ -715,7 +686,7 @@ export function getEntityDossier(db: DatabaseSync, key: string): EntityDossier |
   const stories = getStories(db)
     .map((story) => ({
       story,
-      score: scoreEntityMatch(entity, [story.title, story.summary, story.detail, story.sourceText])
+      score: entityMatchScore(entity, story.title, story.summary, story.detail, story.sourceText)
     }))
     .filter((entry) => entry.score > 0)
     .sort(
@@ -728,12 +699,12 @@ export function getEntityDossier(db: DatabaseSync, key: string): EntityDossier |
   const events = getEvents(db, { includeHidden: true, limit: 240 })
     .map((event) => ({
       event,
-      score: scoreEntityMatch(entity, [
+      score: entityMatchScore(entity,
         event.title,
         event.detail,
         event.sourceText,
         event.tags.join(" ")
-      ])
+      )
     }))
     .filter((entry) => entry.score > 0)
     .sort(
@@ -748,11 +719,11 @@ export function getEntityDossier(db: DatabaseSync, key: string): EntityDossier |
   const briefings = getBriefings(db)
     .map((briefing) => ({
       briefing,
-      score: scoreEntityMatch(entity, [
+      score: entityMatchScore(entity,
         briefing.title,
         briefing.body,
         briefing.sourceRefs.join(" ")
-      ])
+      )
     }))
     .filter((entry) => entry.score > 0)
     .sort(

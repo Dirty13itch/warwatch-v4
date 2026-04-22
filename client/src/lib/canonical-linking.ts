@@ -1,4 +1,5 @@
 import type { EntityRecord, EventRecord, SourceRecord, StoryRecord } from "@shared/types";
+import { matchEntitiesByText } from "@shared/entity-matching";
 
 function normalizeLookup(value: string): string {
   return value
@@ -39,18 +40,6 @@ export function findSourceByText(
   );
 }
 
-function entityTerms(entity: EntityRecord): string[] {
-  const values = [entity.name, entity.slug.replace(/-/g, " ")];
-  return Array.from(
-    new Set(
-      values
-        .flatMap((value) => normalizeLookup(value).split(" "))
-        .concat(values.map(normalizeLookup))
-        .filter((value) => value.length >= 4)
-    )
-  );
-}
-
 export function relatedStoriesForSource(
   stories: StoryRecord[],
   source: SourceRecord | null
@@ -78,17 +67,5 @@ export function findEntitiesByText(
   entities: EntityRecord[],
   ...values: Array<string | null | undefined>
 ): EntityRecord[] {
-  const haystack = values
-    .map((value) => normalizeLookup(String(value ?? "")))
-    .join(" ");
-
-  return entities
-    .map((entity) => ({
-      entity,
-      score: entityTerms(entity).reduce((sum, term) => sum + (haystack.includes(term) ? (term.includes(" ") ? 4 : 1) : 0), 0)
-    }))
-    .filter((entry) => entry.score > 0)
-    .sort((left, right) => right.score - left.score || left.entity.name.localeCompare(right.entity.name))
-    .map((entry) => entry.entity)
-    .slice(0, 4);
+  return matchEntitiesByText(entities, ...values);
 }
