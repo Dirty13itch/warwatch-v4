@@ -377,6 +377,13 @@ async function main() {
       surface: "preview"
     },
     {
+      title: "Snapshot Dossiers",
+      fileName: "preview-dossiers.png",
+      notes: "Snapshot-level actor and claim posture cards that now open directly into the canonical dossier graph",
+      surface: "preview",
+      selector: '[data-preview="preview-dossiers"]'
+    },
+    {
       title: "Command Surface",
       fileName: "command-desktop.png",
       notes: "Command surface with KPI shell, map lane, and public freshness posture",
@@ -406,6 +413,13 @@ async function main() {
       fileName: "signals-desktop.png",
       notes: "Signals surface with live market cards and source table",
       surface: "signals"
+    },
+    {
+      title: "Source Reader",
+      fileName: "source-reader.png",
+      notes: "Source posture with actor-thread handoff into the dossier graph",
+      surface: "signals",
+      selector: '[data-preview="source-reader"]'
     },
     {
       title: "Briefings Surface",

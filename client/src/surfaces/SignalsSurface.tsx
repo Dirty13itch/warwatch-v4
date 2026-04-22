@@ -39,8 +39,10 @@ export default function SignalsSurface({
         <SourceTable
           sources={sources}
           stories={stories}
+          entities={entities}
           focusedSourceSlug={focusedSourceSlug}
           onFocusSource={onFocusSource}
+          onOpenEntity={onOpenEntity}
         />
       </div>
     </div>

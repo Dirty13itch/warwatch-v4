@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import type { SourceRecord, StoryRecord } from "@shared/types";
+import type { EntityRecord, SourceRecord, StoryRecord } from "@shared/types";
 import { formatTokenLabel } from "../lib/format";
-import { relatedStoriesForSource } from "../lib/canonical-linking";
+import { findEntitiesByText, relatedStoriesForSource } from "../lib/canonical-linking";
 
 function reliabilityLabel(score: number): string {
   if (score >= 0.85) {
@@ -19,28 +19,72 @@ function reliabilityLabel(score: number): string {
 export function SourceTable({
   sources,
   stories,
+  entities,
   focusedSourceSlug,
-  onFocusSource
+  onFocusSource,
+  onOpenEntity
 }: {
   sources: SourceRecord[];
   stories: StoryRecord[];
+  entities: EntityRecord[];
   focusedSourceSlug?: string | null;
   onFocusSource?: (slug: string) => void;
+  onOpenEntity?: (key: string) => void;
 }) {
-  const [selectedSlug, setSelectedSlug] = useState<string | null>(
-    focusedSourceSlug ?? sources[0]?.slug ?? null
-  );
+  const preferredSourceSlug = useMemo(() => {
+    if (focusedSourceSlug) {
+      return focusedSourceSlug;
+    }
+
+    const ranked = sources
+      .map((source) => {
+        const sourceStories = relatedStoriesForSource(stories, source);
+        const actorMatches = findEntitiesByText(
+          entities,
+          source.name,
+          source.notes,
+          sourceStories.map((story) => `${story.title} ${story.summary} ${story.detail}`).join(" ")
+        ).length;
+
+        return {
+          slug: source.slug,
+          score: actorMatches * 5 + sourceStories.length * 2 + source.reliabilityScore
+        };
+      })
+      .sort((left, right) => right.score - left.score);
+
+    return ranked[0]?.slug ?? sources[0]?.slug ?? null;
+  }, [entities, focusedSourceSlug, sources, stories]);
+
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(preferredSourceSlug);
 
   useEffect(() => {
     if (focusedSourceSlug) {
       setSelectedSlug(focusedSourceSlug);
+      return;
     }
-  }, [focusedSourceSlug]);
+
+    if (!selectedSlug || !sources.some((source) => source.slug === selectedSlug)) {
+      setSelectedSlug(preferredSourceSlug);
+    }
+  }, [focusedSourceSlug, preferredSourceSlug, selectedSlug, sources]);
 
   const selectedSource = sources.find((source) => source.slug === selectedSlug) ?? sources[0] ?? null;
   const relatedStories = useMemo(
     () => relatedStoriesForSource(stories, selectedSource).slice(0, 4),
     [stories, selectedSource]
+  );
+  const matchedEntities = useMemo(
+    () =>
+      selectedSource
+        ? findEntitiesByText(
+            entities,
+            selectedSource.name,
+            selectedSource.notes,
+            relatedStories.map((story) => `${story.title} ${story.summary} ${story.detail}`).join(" ")
+          )
+        : [],
+    [entities, relatedStories, selectedSource]
   );
 
   return (
@@ -158,6 +202,48 @@ export function SourceTable({
                   ) : (
                     <p className="text-sm leading-6 text-calm/72">
                       No canonical stories currently point directly at this source.
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="rounded-[20px] border border-white/8 bg-white/[0.03] p-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
+                  Actor threads
+                </p>
+                <p className="mt-3 text-sm leading-6 text-calm/74">
+                  Source posture now resolves into the same canonical actor graph as timeline, stories, and briefings.
+                </p>
+                <div className="mt-4 grid gap-3">
+                  {matchedEntities.length ? (
+                    matchedEntities.map((entity) => (
+                      <div
+                        key={entity.id}
+                        className="rounded-[16px] border border-white/8 bg-white/[0.03] p-3"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <h4 className="text-sm font-semibold text-white">{entity.name}</h4>
+                            <p className="mt-2 text-sm leading-6 text-calm/82">{entity.summary}</p>
+                          </div>
+                          <span className="rounded-full border border-white/8 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/64">
+                            {formatTokenLabel(entity.kind)}
+                          </span>
+                        </div>
+                        {onOpenEntity ? (
+                          <button
+                            type="button"
+                            onClick={() => onOpenEntity(entity.slug)}
+                            className="mt-4 rounded-full border border-signal/18 bg-signal/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-signal"
+                          >
+                            Open dossier
+                          </button>
+                        ) : null}
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm leading-6 text-calm/72">
+                      No canonical actor matches are attached to this source posture yet.
                     </p>
                   )}
                 </div>

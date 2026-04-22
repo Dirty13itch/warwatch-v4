@@ -1,5 +1,13 @@
-import type { BriefingRecord, FrontSummary, MetricSnapshot, OverviewResponse, StoryRecord } from "@shared/types";
+import type {
+  BriefingRecord,
+  FrontSummary,
+  GraphSnapshot,
+  MetricSnapshot,
+  OverviewResponse,
+  StoryRecord
+} from "@shared/types";
 import { formatDate, formatDateTime, formatSignedPercent } from "../lib/format";
+import { findEntitiesByText } from "../lib/canonical-linking";
 
 const marketDefinitions = [
   {
@@ -77,19 +85,63 @@ export default function PreviewSurface({
   frontStories,
   achievementStories,
   briefings,
-  marketSignals
+  marketSignals,
+  graph,
+  onOpenEntity
 }: {
   overview: OverviewResponse | null;
   frontStories: StoryRecord[];
   achievementStories: StoryRecord[];
   briefings: BriefingRecord[];
   marketSignals: Record<string, MetricSnapshot[]>;
+  graph: GraphSnapshot;
+  onOpenEntity?: (key: string) => void;
 }) {
   const latestBriefing = briefings[0] ?? null;
   const briefingHighlights = getBriefingHighlights(briefings);
   const sourceMix = Array.from(
     new Set([...frontStories, ...achievementStories].map((story) => story.sourceText))
   ).slice(0, 4);
+  const dossierEntries = graph.entities
+    .map((entity) => {
+      const relationshipCount = graph.relationships.filter(
+        (relationship) => relationship.fromEntityId === entity.id || relationship.toEntityId === entity.id
+      ).length;
+      const claimCount = graph.claims.filter((claim) =>
+        findEntitiesByText(graph.entities, claim.title, claim.statement, claim.status).some(
+          (candidate) => candidate.id === entity.id
+        )
+      ).length;
+      const storyCount = [...frontStories, ...achievementStories].filter((story) =>
+        findEntitiesByText(graph.entities, story.title, story.summary, story.detail, story.sourceText).some(
+          (candidate) => candidate.id === entity.id
+        )
+      ).length;
+      const briefingCount = latestBriefing
+        ? findEntitiesByText(graph.entities, latestBriefing.title, latestBriefing.body).some(
+            (candidate) => candidate.id === entity.id
+          )
+          ? 1
+          : 0
+        : 0;
+
+      return {
+        entity,
+        relationshipCount,
+        claimCount,
+        storyCount,
+        briefingCount,
+        score: storyCount * 5 + claimCount * 4 + relationshipCount * 2 + briefingCount * 3
+      };
+    })
+    .filter((entry) => entry.score > 0)
+    .sort(
+      (left, right) =>
+        right.score - left.score ||
+        right.relationshipCount - left.relationshipCount ||
+        left.entity.name.localeCompare(right.entity.name)
+    )
+    .slice(0, 4);
 
   return (
     <div
@@ -287,6 +339,107 @@ export default function PreviewSurface({
                 </article>
               );
             })}
+          </div>
+        </article>
+      </section>
+
+      <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+        <article
+          className="rounded-[30px] border border-line/80 bg-shell/72 p-6 shadow-shell"
+          data-preview="preview-dossiers"
+        >
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.32em] text-signal/72">
+                Theater dossiers
+              </p>
+              <h2 className="mt-2 font-display text-3xl text-white">Who is shaping the current picture</h2>
+            </div>
+            <p className="max-w-[18rem] text-sm leading-6 text-calm/78">
+              Snapshot now opens directly into the canonical actor graph instead of stopping at front summaries.
+            </p>
+          </div>
+          <div className="mt-5 grid gap-4 md:grid-cols-2">
+            {dossierEntries.map((entry) => (
+              <article
+                key={entry.entity.id}
+                className="rounded-[20px] border border-white/8 bg-white/[0.03] p-4"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="text-lg font-semibold text-white">{entry.entity.name}</h3>
+                    <p className="mt-2 text-sm leading-6 text-calm/82">{entry.entity.summary}</p>
+                  </div>
+                  <span className="rounded-full border border-white/8 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/64">
+                    {entry.entity.kind}
+                  </span>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <span className="rounded-full border border-white/8 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/64">
+                    {entry.relationshipCount} links
+                  </span>
+                  <span className="rounded-full border border-white/8 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/64">
+                    {entry.claimCount} claims
+                  </span>
+                  <span className="rounded-full border border-white/8 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/64">
+                    {entry.storyCount + entry.briefingCount} public threads
+                  </span>
+                </div>
+                {onOpenEntity ? (
+                  <button
+                    type="button"
+                    onClick={() => onOpenEntity(entry.entity.slug)}
+                    className="mt-4 rounded-full border border-signal/18 bg-signal/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-signal"
+                  >
+                    Open dossier
+                  </button>
+                ) : null}
+              </article>
+            ))}
+          </div>
+        </article>
+
+        <article className="rounded-[30px] border border-line/80 bg-shell/72 p-6 shadow-shell">
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.32em] text-signal/72">
+                Claim posture
+              </p>
+              <h2 className="mt-2 font-display text-3xl text-white">Graph-backed review pressure</h2>
+            </div>
+            <p className="max-w-[18rem] text-sm leading-6 text-calm/78">
+              Snapshot can now surface canonical claim pressure without exposing the operator-only review workflow.
+            </p>
+          </div>
+          <div className="mt-5 grid gap-3">
+            {[
+              [
+                "Tracked actors",
+                String(graph.entities.length),
+                "Canonical actors, chokepoints, and secondary theaters available for dossier drill-down."
+              ],
+              [
+                "Pending claims",
+                String(graph.claims.filter((claim) => claim.reviewState === "pending").length),
+                "Critical or high-signal canonical claims that still require explicit operator posture."
+              ],
+              [
+                "Relationship lanes",
+                String(graph.relationships.length),
+                "Cross-actor influence edges that keep the product from collapsing into a flat news timeline."
+              ]
+            ].map(([label, value, detail]) => (
+              <div
+                key={label}
+                className="rounded-[20px] border border-white/8 bg-white/[0.03] p-4"
+              >
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
+                  {label}
+                </p>
+                <p className="mt-3 font-display text-3xl text-white">{value}</p>
+                <p className="mt-3 text-sm leading-6 text-calm/82">{detail}</p>
+              </div>
+            ))}
           </div>
         </article>
       </section>

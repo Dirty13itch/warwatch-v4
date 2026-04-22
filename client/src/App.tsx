@@ -329,7 +329,8 @@ export default function App() {
         fetchOverview(force),
         fetchStories(force),
         fetchBriefings(force),
-        fetchMarketSignals(force)
+        fetchMarketSignals(force),
+        fetchGraph(force)
       ]);
       return;
     }
@@ -630,6 +631,8 @@ export default function App() {
               achievementStories={achievementStories}
               briefings={briefings}
               marketSignals={marketSignals}
+              graph={{ entities, claims, relationships }}
+              onOpenEntity={handleOpenEntity}
             />
           )}
 
