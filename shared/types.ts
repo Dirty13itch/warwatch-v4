@@ -135,10 +135,13 @@ export interface OperatorStorySuggestion {
   suggestedSection: string;
   significance: Significance;
   summary: string;
+  detail: string;
+  sourceText: string;
   rationale: string;
   matchedStoryId: string | null;
   matchedStoryTitle: string | null;
   entityKeys: string[];
+  queueId: string | null;
   evidence: OperatorSuggestionEvidence[];
 }
 
@@ -154,6 +157,7 @@ export interface OperatorClaimSuggestion {
   matchedClaimId: string | null;
   matchedClaimTitle: string | null;
   entityKeys: string[];
+  queueId: string | null;
   evidence: OperatorSuggestionEvidence[];
 }
 
@@ -263,6 +267,9 @@ export interface ReviewQueueDetail {
   item: ReviewQueueItem;
   event: EventRecord | null;
   claim: ClaimRecord | null;
+  story: StoryRecord | null;
+  claimSuggestion: OperatorClaimSuggestion | null;
+  storySuggestion: OperatorStorySuggestion | null;
   briefing: BriefingRecord | null;
   supportingEvents: EventRecord[];
   supersedingBriefing: BriefingRecord | null;

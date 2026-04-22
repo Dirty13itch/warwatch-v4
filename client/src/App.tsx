@@ -293,7 +293,7 @@ export default function App() {
     }
   }
 
-  async function fetchOperator(force = false) {
+  async function fetchOperator(force = false, preferredQueueId: string | null = selectedQueueId) {
     if (!force && (loaded.operator || loadingRef.current.has("operator"))) {
       return;
     }
@@ -314,8 +314,17 @@ export default function App() {
       setTopLineMetrics(metrics);
       setTopLineSuggestions(suggestions);
       setSynthesis(synthesisSnapshot);
-      if (queue.length && !queue.some((item) => item.id === selectedQueueId)) {
-        setSelectedQueueId(queue[0].id);
+      if (queue.length) {
+        const targetQueueId =
+          preferredQueueId && queue.some((item) => item.id === preferredQueueId)
+            ? preferredQueueId
+            : queue[0].id;
+        if (targetQueueId !== selectedQueueId) {
+          setSelectedQueueId(targetQueueId);
+        }
+      } else {
+        setSelectedQueueId(null);
+        setReviewQueueDetail(null);
       }
       setOperatorError(null);
       markLoaded({ operator: true });
@@ -440,22 +449,25 @@ export default function App() {
     setReviewQueueDetail(await api.reviewQueueDetail(id));
   }
 
-  async function refreshAfterMutation() {
+  async function refreshAfterMutation(targetQueueId: string | null = selectedQueueId) {
     await Promise.all([
       fetchOverview(true),
       loaded.events ? fetchEvents(true) : Promise.resolve(),
       loaded.graph ? fetchGraph(true) : Promise.resolve(),
       loaded.briefings ? fetchBriefings(true) : Promise.resolve(),
       loaded.marketSignals ? fetchMarketSignals(true) : Promise.resolve(),
-      loaded.operator ? fetchOperator(true) : Promise.resolve()
+      loaded.operator ? fetchOperator(true, targetQueueId) : Promise.resolve()
     ]);
 
     if (loaded.graph && focusedEntityKey) {
       await fetchEntityDossier(focusedEntityKey, true);
     }
 
-    if (selectedQueueId) {
-      await fetchReviewQueueDetail(selectedQueueId);
+    if (targetQueueId) {
+      setSelectedQueueId(targetQueueId);
+      await fetchReviewQueueDetail(targetQueueId);
+    } else {
+      setReviewQueueDetail(null);
     }
   }
 
@@ -469,6 +481,21 @@ export default function App() {
     await refreshAfterMutation();
   }
 
+  async function handleQueueStorySuggestion(id: string) {
+    const queued = await api.queueStorySuggestion(id);
+    await refreshAfterMutation(queued.id);
+  }
+
+  async function handleQueueClaimSuggestion(id: string) {
+    const queued = await api.queueClaimSuggestion(id);
+    await refreshAfterMutation(queued.id);
+  }
+
+  async function handleOpenQueuedReview(id: string) {
+    setSelectedQueueId(id);
+    await fetchReviewQueueDetail(id);
+  }
+
   async function handleRunIngest() {
     await api.runIngest();
     await Promise.all([
@@ -476,7 +503,7 @@ export default function App() {
       fetchEvents(true),
       fetchBriefings(true),
       fetchMarketSignals(true),
-      fetchOperator(true)
+      fetchOperator(true, selectedQueueId)
     ]);
     if (loaded.graph && focusedEntityKey) {
       await fetchEntityDossier(focusedEntityKey, true);
@@ -746,6 +773,9 @@ export default function App() {
                 onSelectQueueItem={setSelectedQueueId}
                 onOpenEvent={handleOpenEventById}
                 onOpenEntity={handleOpenEntity}
+                onQueueStorySuggestion={handleQueueStorySuggestion}
+                onQueueClaimSuggestion={handleQueueClaimSuggestion}
+                onOpenQueuedReview={handleOpenQueuedReview}
                 onPublishMetric={handlePublishTopLineMetric}
                 publishingMetricKey={publishingMetricKey}
                 operatorError={operatorError}

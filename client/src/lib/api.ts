@@ -55,6 +55,14 @@ export const api = {
   topLineMetrics: () => requestJson<OperatorTopLineMetric[]>("/api/operator/topline-metrics"),
   topLineSuggestions: () => requestJson<OperatorTopLineSuggestion[]>("/api/operator/topline-suggestions"),
   synthesis: () => requestJson<OperatorSynthesisSnapshot>("/api/operator/synthesis"),
+  queueStorySuggestion: (id: string) =>
+    requestJson<ReviewQueueItem>(`/api/operator/synthesis/stories/${encodeURIComponent(id)}/queue`, {
+      method: "POST"
+    }),
+  queueClaimSuggestion: (id: string) =>
+    requestJson<ReviewQueueItem>(`/api/operator/synthesis/claims/${encodeURIComponent(id)}/queue`, {
+      method: "POST"
+    }),
   approveQueueItem: (id: string) =>
     requestJson<ReviewQueueItem>(`/api/operator/review-queue/${id}/approve`, {
       method: "POST"

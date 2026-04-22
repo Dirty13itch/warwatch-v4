@@ -8,12 +8,21 @@ function entityLabel(key: string): string {
 export function OperatorSynthesisPanel({
   synthesis,
   onOpenEvent,
-  onOpenEntity
+  onOpenEntity,
+  onQueueStorySuggestion,
+  onQueueClaimSuggestion,
+  onOpenQueuedReview
 }: {
   synthesis: OperatorSynthesisSnapshot;
   onOpenEvent?: (eventId: string) => void;
   onOpenEntity?: (key: string) => void;
+  onQueueStorySuggestion?: (suggestionId: string) => void;
+  onQueueClaimSuggestion?: (suggestionId: string) => void;
+  onOpenQueuedReview?: (queueId: string) => void;
 }) {
+  const queuedStories = synthesis.stories.filter((story) => story.queueId).length;
+  const queuedClaims = synthesis.claims.filter((claim) => claim.queueId).length;
+
   return (
     <section
       className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell"
@@ -36,7 +45,7 @@ export function OperatorSynthesisPanel({
           <div className="flex items-center justify-between gap-3">
             <h3 className="font-mono text-[11px] uppercase tracking-[0.24em] text-signal/72">Story candidates</h3>
             <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">
-              {synthesis.stories.length} queued
+              {queuedStories}/{synthesis.stories.length} queued
             </span>
           </div>
           {synthesis.stories.length ? (
@@ -63,6 +72,25 @@ export function OperatorSynthesisPanel({
                 ) : null}
                 <p className="mt-3 text-sm leading-6 text-calm/82">{story.summary}</p>
                 <p className="mt-3 text-sm leading-6 text-calm/72">{story.rationale}</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {story.queueId ? (
+                    <button
+                      type="button"
+                      onClick={() => onOpenQueuedReview?.(story.queueId!)}
+                      className="rounded-full border border-[#2f9d65]/25 bg-[#2f9d65]/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-[#7ef5b0]"
+                    >
+                      Open queued review
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => onQueueStorySuggestion?.(story.id)}
+                      className="rounded-full border border-signal/18 bg-signal/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-signal"
+                    >
+                      Queue review
+                    </button>
+                  )}
+                </div>
                 {story.entityKeys.length ? (
                   <div className="mt-4 flex flex-wrap gap-2">
                     {story.entityKeys.map((key) => (
@@ -112,7 +140,7 @@ export function OperatorSynthesisPanel({
           <div className="flex items-center justify-between gap-3">
             <h3 className="font-mono text-[11px] uppercase tracking-[0.24em] text-signal/72">Claim candidates</h3>
             <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">
-              {synthesis.claims.length} queued
+              {queuedClaims}/{synthesis.claims.length} queued
             </span>
           </div>
           {synthesis.claims.length ? (
@@ -139,6 +167,25 @@ export function OperatorSynthesisPanel({
                 ) : null}
                 <p className="mt-3 text-sm leading-6 text-calm/82">{claim.statement}</p>
                 <p className="mt-3 text-sm leading-6 text-calm/72">{claim.rationale}</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {claim.queueId ? (
+                    <button
+                      type="button"
+                      onClick={() => onOpenQueuedReview?.(claim.queueId!)}
+                      className="rounded-full border border-[#2f9d65]/25 bg-[#2f9d65]/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-[#7ef5b0]"
+                    >
+                      Open queued review
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => onQueueClaimSuggestion?.(claim.id)}
+                      className="rounded-full border border-signal/18 bg-signal/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-signal"
+                    >
+                      Queue review
+                    </button>
+                  )}
+                </div>
                 {claim.entityKeys.length ? (
                   <div className="mt-4 flex flex-wrap gap-2">
                     {claim.entityKeys.map((key) => (

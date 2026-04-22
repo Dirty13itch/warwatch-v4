@@ -125,5 +125,57 @@ describe("WarWatch API", () => {
     expect(response.status).toBe(200);
     expect(Array.isArray(response.body.stories)).toBe(true);
     expect(Array.isArray(response.body.claims)).toBe(true);
+    expect(response.body.stories.length).toBeGreaterThan(0);
+    expect(response.body.claims.length).toBeGreaterThan(0);
+  });
+
+  it("queues and approves synthesis suggestions into canonical records", async () => {
+    const synthesis = await request(app).get("/api/operator/synthesis");
+    const storySuggestion = synthesis.body.stories[0];
+    const claimSuggestion = synthesis.body.claims[0];
+
+    const queuedStory = await request(app)
+      .post(`/api/operator/synthesis/stories/${encodeURIComponent(storySuggestion.id)}/queue`);
+    expect(queuedStory.status).toBe(200);
+    expect(queuedStory.body.itemType).toBe("story_suggestion");
+
+    const synthesisAfterStoryQueue = await request(app).get("/api/operator/synthesis");
+    const queuedStorySuggestion = synthesisAfterStoryQueue.body.stories.find(
+      (item: { id: string; queueId: string | null }) => item.id === storySuggestion.id
+    );
+    expect(queuedStorySuggestion?.queueId).toBe(queuedStory.body.id);
+
+    const storyDetail = await request(app).get(`/api/operator/review-queue/${queuedStory.body.id}`);
+    expect(storyDetail.status).toBe(200);
+    expect(storyDetail.body.storySuggestion.id).toBe(storySuggestion.id);
+    expect(Array.isArray(storyDetail.body.supportingEvents)).toBe(true);
+
+    const approveStory = await request(app).post(`/api/operator/review-queue/${queuedStory.body.id}/approve`);
+    expect(approveStory.status).toBe(200);
+    expect(approveStory.body.status).toBe("approved");
+
+    const stories = await request(app).get("/api/stories");
+    const promotedStory = stories.body.find((item: { title: string; reviewState: string }) => item.title === storySuggestion.title);
+    expect(promotedStory).toBeTruthy();
+    expect(promotedStory.reviewState).toBe("approved");
+
+    const queuedClaim = await request(app)
+      .post(`/api/operator/synthesis/claims/${encodeURIComponent(claimSuggestion.id)}/queue`);
+    expect(queuedClaim.status).toBe(200);
+    expect(queuedClaim.body.itemType).toBe("claim_suggestion");
+
+    const claimDetail = await request(app).get(`/api/operator/review-queue/${queuedClaim.body.id}`);
+    expect(claimDetail.status).toBe(200);
+    expect(claimDetail.body.claimSuggestion.id).toBe(claimSuggestion.id);
+    expect(Array.isArray(claimDetail.body.supportingEvents)).toBe(true);
+
+    const approveClaim = await request(app).post(`/api/operator/review-queue/${queuedClaim.body.id}/approve`);
+    expect(approveClaim.status).toBe(200);
+    expect(approveClaim.body.status).toBe("approved");
+
+    const graph = await request(app).get("/api/graph");
+    const promotedClaim = graph.body.claims.find((item: { title: string; reviewState: string }) => item.title === claimSuggestion.title);
+    expect(promotedClaim).toBeTruthy();
+    expect(promotedClaim.reviewState).toBe("approved");
   });
 });

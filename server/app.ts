@@ -26,7 +26,7 @@ import { generateDailyBriefing } from "./briefings.js";
 import { getTopLineMetricDefinition, isTopLineMetricKey } from "../shared/topline.js";
 import { confidenceLevels, type OperatorMetricPublishInput } from "../shared/types.js";
 import { getTopLineSuggestions } from "./topline.js";
-import { getSynthesisSuggestions } from "./synthesis.js";
+import { getSynthesisSuggestions, queueClaimSuggestion, queueStorySuggestion } from "./synthesis.js";
 
 function operatorAllowed(config: AppConfig, req: express.Request): boolean {
   if (!config.operatorApiKey) {
@@ -158,6 +158,34 @@ export function createApp(db: DatabaseSync, config: AppConfig) {
 
   app.get("/api/operator/synthesis", (_req, res) => {
     res.json(getSynthesisSuggestions(db));
+  });
+
+  app.post("/api/operator/synthesis/stories/:id/queue", (req, res) => {
+    const queueId = queueStorySuggestion(db, req.params.id);
+    if (!queueId) {
+      return res.status(404).json({ error: "Story suggestion not found" });
+    }
+
+    const queueItem = getReviewQueue(db).find((item) => item.id === queueId);
+    if (!queueItem) {
+      return res.status(500).json({ error: "Queued review item missing" });
+    }
+
+    return res.json(queueItem);
+  });
+
+  app.post("/api/operator/synthesis/claims/:id/queue", (req, res) => {
+    const queueId = queueClaimSuggestion(db, req.params.id);
+    if (!queueId) {
+      return res.status(404).json({ error: "Claim suggestion not found" });
+    }
+
+    const queueItem = getReviewQueue(db).find((item) => item.id === queueId);
+    if (!queueItem) {
+      return res.status(500).json({ error: "Queued review item missing" });
+    }
+
+    return res.json(queueItem);
   });
 
   app.post("/api/operator/topline-metrics/:key", (req, res) => {

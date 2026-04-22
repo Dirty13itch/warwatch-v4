@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import type { DatabaseSync } from "node:sqlite";
 import { CONFLICT_START_ISO } from "./config.js";
 import { canPublish } from "../shared/review.js";
@@ -6,6 +7,7 @@ import { entityMatchScore } from "../shared/entity-matching.js";
 import type {
   BriefingRecord,
   ClaimRecord,
+  Confidence,
   EntityDossier,
   EntityRecord,
   EventRecord,
@@ -13,18 +15,36 @@ import type {
   IngestionRun,
   MapFeature,
   MetricSnapshot,
+  OperatorClaimSuggestion,
+  OperatorStorySuggestion,
   OperatorTopLineMetric,
   OverviewResponse,
   RelationshipRecord,
   ReviewQueueDetail,
   ReviewQueueItem,
   ReviewQueueSummary,
+  Significance,
   SourceRecord,
   StoryRecord
 } from "../shared/types.js";
 
 function parseJson<T>(value: string | null): T {
   return JSON.parse(value ?? "null") as T;
+}
+
+function toId(prefix: string, value: string): string {
+  return `${prefix}_${crypto.createHash("sha1").update(value).digest("hex").slice(0, 12)}`;
+}
+
+function slugify(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+function json(value: unknown): string {
+  return JSON.stringify(value ?? null);
 }
 
 function rowToEvent(row: Record<string, any>): EventRecord {
@@ -175,9 +195,258 @@ function getClaimById(db: DatabaseSync, id: string): ClaimRecord | null {
   return row ? rowToClaim(row) : null;
 }
 
+function getClaimByTitle(db: DatabaseSync, title: string): ClaimRecord | null {
+  const row = db.prepare(`
+    SELECT *
+    FROM claims
+    WHERE LOWER(title) = LOWER(?)
+    LIMIT 1
+  `).get(title) as Record<string, any> | undefined;
+
+  return row ? rowToClaim(row) : null;
+}
+
+function getStoryById(db: DatabaseSync, id: string): StoryRecord | null {
+  const row = db.prepare(`SELECT * FROM stories WHERE id = ?`).get(id) as Record<string, any> | undefined;
+  return row ? rowToStory(row) : null;
+}
+
+function getStoryByTitleAndSection(db: DatabaseSync, title: string, section: string): StoryRecord | null {
+  const row = db.prepare(`
+    SELECT *
+    FROM stories
+    WHERE LOWER(title) = LOWER(?) AND section = ?
+    LIMIT 1
+  `).get(title, section) as Record<string, any> | undefined;
+
+  return row ? rowToStory(row) : null;
+}
+
 function getBriefingById(db: DatabaseSync, id: string): BriefingRecord | null {
   const row = db.prepare(`SELECT * FROM briefings WHERE id = ?`).get(id) as Record<string, any> | undefined;
   return row ? rowToBriefing(row) : null;
+}
+
+function uniqueStrings(values: Array<string | null | undefined>): string[] {
+  return Array.from(new Set(values.filter((value): value is string => Boolean(value && value.trim()))));
+}
+
+function readStringArray(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === "string" && item.trim().length > 0)
+    : [];
+}
+
+function mergeSourceText(values: Array<string | null | undefined>): string {
+  return uniqueStrings(values).join(" / ");
+}
+
+function appendDistinct(existing: string, next: string, limit = 900): string {
+  const left = existing.trim();
+  const right = next.trim();
+  if (!left) {
+    return right.slice(0, limit);
+  }
+  if (!right || left.includes(right)) {
+    return left.slice(0, limit);
+  }
+  if (right.includes(left)) {
+    return right.slice(0, limit);
+  }
+
+  return `${left} ${right}`.slice(0, limit);
+}
+
+function confidenceRank(value: Confidence): number {
+  return {
+    confirmed: 0,
+    reported: 1,
+    claimed: 2,
+    disputed: 3,
+    unverified: 4,
+    auto_extracted: 5
+  }[value];
+}
+
+function strongestSignificance(...values: Array<Significance | null | undefined>): Significance {
+  return values
+    .filter((value): value is Significance => Boolean(value))
+    .sort((left, right) => significanceRank(left) - significanceRank(right))[0] ?? "watch";
+}
+
+function preferredConfidence(...values: Array<Confidence | null | undefined>): Confidence {
+  return values
+    .filter((value): value is Confidence => Boolean(value))
+    .sort((left, right) => confidenceRank(left) - confidenceRank(right))[0] ?? "claimed";
+}
+
+function parseQueueSuggestion<T>(metadata: Record<string, unknown>): T | null {
+  const suggestion = metadata.suggestion;
+  return suggestion && typeof suggestion === "object" ? (suggestion as T) : null;
+}
+
+function supportingEventsFromSuggestion(
+  db: DatabaseSync,
+  evidence: Array<{ eventId: string; title: string }>,
+  fallbackValues: Array<string | null | undefined>
+): EventRecord[] {
+  const directMatches = uniqueStrings(evidence.map((item) => item.eventId))
+    .map((eventId) => getEventById(db, eventId))
+    .filter((event): event is EventRecord => Boolean(event));
+
+  if (directMatches.length) {
+    return directMatches;
+  }
+
+  return rankMatchingEvents(
+    db,
+    evidence.map((item) => item.title),
+    fallbackValues
+  );
+}
+
+function buildStorySlug(db: DatabaseSync, title: string, storyId: string): string {
+  const base = slugify(title) || `story-${storyId.slice(-6)}`;
+  const existing = db.prepare(`
+    SELECT id
+    FROM stories
+    WHERE slug = ?
+    LIMIT 1
+  `).get(base) as { id?: string } | undefined;
+
+  if (!existing?.id || existing.id === storyId) {
+    return base;
+  }
+
+  return `${base}-${storyId.slice(-6)}`;
+}
+
+function applyStorySuggestion(
+  db: DatabaseSync,
+  suggestion: OperatorStorySuggestion,
+  now: string
+): string {
+  const existingStory =
+    (suggestion.matchedStoryId ? getStoryById(db, suggestion.matchedStoryId) : null) ??
+    getStoryByTitleAndSection(db, suggestion.title, suggestion.suggestedSection);
+  const evidenceEventIds = uniqueStrings(suggestion.evidence.map((item) => item.eventId));
+  const entityKeys = uniqueStrings(suggestion.entityKeys);
+
+  if (existingStory) {
+    const nextMeta = {
+      ...existingStory.meta,
+      entityKeys: uniqueStrings([
+        ...readStringArray(existingStory.meta.entityKeys),
+        ...entityKeys
+      ]),
+      evidenceEventIds: uniqueStrings([
+        ...readStringArray(existingStory.meta.evidenceEventIds),
+        ...evidenceEventIds
+      ]),
+      lastOperatorPromotionAt: now,
+      promotedFromSuggestionId: suggestion.id
+    };
+
+    db.prepare(`
+      UPDATE stories
+      SET title = ?, section = ?, summary = ?, detail = ?, significance = ?, source_text = ?, review_state = ?, meta_json = ?
+      WHERE id = ?
+    `).run(
+      suggestion.title,
+      suggestion.suggestedSection,
+      appendDistinct(existingStory.summary, suggestion.summary, 320),
+      appendDistinct(existingStory.detail, `${suggestion.detail} Source: ${suggestion.sourceText}.`, 980),
+      strongestSignificance(existingStory.significance, suggestion.significance),
+      mergeSourceText([
+        existingStory.sourceText,
+        suggestion.sourceText,
+        ...suggestion.evidence.map((item) => item.sourceText)
+      ]),
+      "approved",
+      json(nextMeta),
+      existingStory.id
+    );
+
+    return existingStory.id;
+  }
+
+  const storyId = toId("story", `${suggestion.suggestedSection}:${suggestion.title}`);
+  db.prepare(`
+    INSERT INTO stories (
+      id, slug, title, section, summary, detail, significance, source_text, review_state, meta_json
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    storyId,
+    buildStorySlug(db, suggestion.title, storyId),
+    suggestion.title,
+    suggestion.suggestedSection,
+    suggestion.summary,
+    suggestion.detail,
+    suggestion.significance,
+    mergeSourceText([suggestion.sourceText, ...suggestion.evidence.map((item) => item.sourceText)]),
+    "approved",
+    json({
+      entityKeys,
+      evidenceEventIds,
+      lastOperatorPromotionAt: now,
+      promotedFromSuggestionId: suggestion.id
+    })
+  );
+
+  return storyId;
+}
+
+function applyClaimSuggestion(
+  db: DatabaseSync,
+  suggestion: OperatorClaimSuggestion,
+  now: string
+): string {
+  const existingClaim =
+    (suggestion.matchedClaimId ? getClaimById(db, suggestion.matchedClaimId) : null) ??
+    getClaimByTitle(db, suggestion.title);
+  const evidenceRefs = uniqueStrings([
+    ...(existingClaim?.evidenceRefs ?? []),
+    ...suggestion.evidence.map((item) => item.title)
+  ]);
+
+  if (existingClaim) {
+    db.prepare(`
+      UPDATE claims
+      SET title = ?, statement = ?, status = ?, significance = ?, confidence = ?, evidence_refs_json = ?, review_state = ?, last_reviewed_at = ?
+      WHERE id = ?
+    `).run(
+      suggestion.title,
+      suggestion.statement,
+      suggestion.proposedStatus,
+      strongestSignificance(existingClaim.significance, suggestion.significance),
+      preferredConfidence(existingClaim.confidence, suggestion.confidence),
+      json(evidenceRefs),
+      "approved",
+      now,
+      existingClaim.id
+    );
+
+    return existingClaim.id;
+  }
+
+  const claimId = toId("claim", suggestion.title);
+  db.prepare(`
+    INSERT INTO claims (
+      id, title, statement, status, significance, confidence, evidence_refs_json, review_state, last_reviewed_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    claimId,
+    suggestion.title,
+    suggestion.statement,
+    suggestion.proposedStatus,
+    suggestion.significance,
+    suggestion.confidence,
+    json(evidenceRefs),
+    "approved",
+    now
+  );
+
+  return claimId;
 }
 
 function buildKeywordSet(values: Array<string | null | undefined>): string[] {
@@ -305,7 +574,10 @@ function getSupersedingBriefing(db: DatabaseSync, briefingId: string): BriefingR
 
 function reviewRecommendation(detail: {
   itemType: string;
+  story: StoryRecord | null;
   claim: ClaimRecord | null;
+  storySuggestion: OperatorStorySuggestion | null;
+  claimSuggestion: OperatorClaimSuggestion | null;
   briefing: BriefingRecord | null;
   supersedingBriefing: BriefingRecord | null;
 }): string {
@@ -319,6 +591,22 @@ function reviewRecommendation(detail: {
     }
 
     return "Revalidate the claim against current reviewed evidence before changing its public posture.";
+  }
+
+  if (detail.itemType === "story_suggestion") {
+    if (detail.storySuggestion?.status === "update_story" && detail.story) {
+      return "Compare the proposed story update against the canonical story and supporting events, then approve to merge the new evidence into the public narrative or reject to keep the existing story unchanged.";
+    }
+
+    return "Review whether the supporting events justify creating a new canonical story lane, then approve to publish it into the public shell or reject it as premature/noisy.";
+  }
+
+  if (detail.itemType === "claim_suggestion") {
+    if (detail.claimSuggestion?.status === "update_claim" && detail.claim) {
+      return "Compare the proposed claim posture against the existing canonical claim and supporting events, then approve to update the public claim or reject to preserve the current posture.";
+    }
+
+    return "Review whether the supporting events justify a new canonical monitored claim, then approve to add it to the graph or reject it as insufficiently stable.";
   }
 
   if (detail.itemType === "briefing") {
@@ -807,25 +1095,58 @@ export function getReviewQueueDetail(db: DatabaseSync, queueId: string): ReviewQ
   }
 
   const item = rowToQueue(row);
-  const metadata = parseJson<Record<string, string | boolean>>(row.metadata_json);
+  const metadata = parseJson<Record<string, unknown>>(row.metadata_json);
+  const storySuggestion =
+    item.itemType === "story_suggestion"
+      ? parseQueueSuggestion<OperatorStorySuggestion>(metadata)
+      : null;
+  const claimSuggestion =
+    item.itemType === "claim_suggestion"
+      ? parseQueueSuggestion<OperatorClaimSuggestion>(metadata)
+      : null;
+  const appliedObjectId = typeof metadata.appliedObjectId === "string" ? metadata.appliedObjectId : null;
   const event = item.itemType === "event" ? getEventById(db, item.itemId) : null;
-  const claim = item.itemType === "claim" ? getClaimById(db, item.itemId) : null;
+  const claim =
+    item.itemType === "claim"
+      ? getClaimById(db, item.itemId)
+      : item.itemType === "claim_suggestion"
+        ? getClaimById(db, appliedObjectId ?? claimSuggestion?.matchedClaimId ?? "")
+        : null;
+  const story =
+    item.itemType === "story_suggestion"
+      ? getStoryById(db, appliedObjectId ?? storySuggestion?.matchedStoryId ?? "")
+      : null;
   const briefing = item.itemType === "briefing" ? getBriefingById(db, item.itemId) : null;
   const supersedingBriefing = briefing ? getSupersedingBriefing(db, briefing.id) : null;
 
-  const supportingEvents =
-    event
-      ? [event]
-      : claim
-        ? rankMatchingEvents(db, claim.evidenceRefs, [claim.title, claim.status, claim.statement])
-        : briefing
-          ? rankMatchingEvents(db, briefing.sourceRefs, [briefing.title, briefing.body], [])
-          : [];
+  let supportingEvents: EventRecord[] = [];
+  if (event) {
+    supportingEvents = [event];
+  } else if (storySuggestion) {
+    supportingEvents = supportingEventsFromSuggestion(db, storySuggestion.evidence, [
+      storySuggestion.title,
+      storySuggestion.summary,
+      storySuggestion.detail
+    ]);
+  } else if (claimSuggestion) {
+    supportingEvents = supportingEventsFromSuggestion(db, claimSuggestion.evidence, [
+      claimSuggestion.title,
+      claimSuggestion.statement,
+      claimSuggestion.proposedStatus
+    ]);
+  } else if (claim) {
+    supportingEvents = rankMatchingEvents(db, claim.evidenceRefs, [claim.title, claim.status, claim.statement]);
+  } else if (briefing) {
+    supportingEvents = rankMatchingEvents(db, briefing.sourceRefs, [briefing.title, briefing.body], []);
+  }
 
   return {
     item,
     event,
     claim,
+    story,
+    claimSuggestion,
+    storySuggestion,
     briefing,
     supportingEvents,
     supersedingBriefing,
@@ -833,7 +1154,10 @@ export function getReviewQueueDetail(db: DatabaseSync, queueId: string): ReviewQ
     externalLink: typeof metadata.link === "string" ? metadata.link : null,
     recommendedAction: reviewRecommendation({
       itemType: item.itemType,
+      story,
       claim,
+      storySuggestion,
+      claimSuggestion,
       briefing,
       supersedingBriefing
     })
@@ -861,34 +1185,68 @@ export function setQueueStatus(
   }
 
   const now = new Date().toISOString();
-  db.prepare(`
-    UPDATE review_queue
-    SET status = ?, updated_at = ?
-    WHERE id = ?
-  `).run(status, now, queueId);
+  const metadata = parseJson<Record<string, unknown>>(queue.metadata_json);
+  let appliedObjectId: string | null = null;
 
-  if (queue.item_type === "event") {
-    db.prepare(`
-      UPDATE events
-      SET review_state = ?, visibility = ?
-      WHERE id = ?
-    `).run(status === "approved" ? "approved" : "rejected", status === "approved" ? "primary" : "review_only", queue.item_id);
-  }
+  db.exec("BEGIN");
+  try {
+    if (queue.item_type === "event") {
+      db.prepare(`
+        UPDATE events
+        SET review_state = ?, visibility = ?
+        WHERE id = ?
+      `).run(status === "approved" ? "approved" : "rejected", status === "approved" ? "primary" : "review_only", queue.item_id);
+    }
 
-  if (queue.item_type === "claim") {
-    db.prepare(`
-      UPDATE claims
-      SET review_state = ?, last_reviewed_at = ?
-      WHERE id = ?
-    `).run(status === "approved" ? "approved" : "rejected", now, queue.item_id);
-  }
+    if (queue.item_type === "claim") {
+      db.prepare(`
+        UPDATE claims
+        SET review_state = ?, last_reviewed_at = ?
+        WHERE id = ?
+      `).run(status === "approved" ? "approved" : "rejected", now, queue.item_id);
+    }
 
-  if (queue.item_type === "briefing") {
+    if (queue.item_type === "briefing") {
+      db.prepare(`
+        UPDATE briefings
+        SET review_state = ?, publish_state = ?
+        WHERE id = ?
+      `).run(status === "approved" ? "approved" : "rejected", status === "approved" ? "published" : "draft", queue.item_id);
+    }
+
+    if (status === "approved" && queue.item_type === "story_suggestion") {
+      const suggestion = parseQueueSuggestion<OperatorStorySuggestion>(metadata);
+      if (suggestion) {
+        appliedObjectId = applyStorySuggestion(db, suggestion, now);
+      }
+    }
+
+    if (status === "approved" && queue.item_type === "claim_suggestion") {
+      const suggestion = parseQueueSuggestion<OperatorClaimSuggestion>(metadata);
+      if (suggestion) {
+        appliedObjectId = applyClaimSuggestion(db, suggestion, now);
+      }
+    }
+
     db.prepare(`
-      UPDATE briefings
-      SET review_state = ?, publish_state = ?
+      UPDATE review_queue
+      SET status = ?, updated_at = ?, metadata_json = ?
       WHERE id = ?
-    `).run(status === "approved" ? "approved" : "rejected", status === "approved" ? "published" : "draft", queue.item_id);
+    `).run(
+      status,
+      now,
+      json({
+        ...metadata,
+        resolvedAt: now,
+        resolvedStatus: status,
+        ...(appliedObjectId ? { appliedObjectId } : {})
+      }),
+      queueId
+    );
+    db.exec("COMMIT");
+  } catch (error) {
+    db.exec("ROLLBACK");
+    throw error;
   }
 
   const updated = db.prepare(`SELECT * FROM review_queue WHERE id = ?`).get(queueId) as Record<string, any>;

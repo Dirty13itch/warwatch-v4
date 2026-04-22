@@ -1,3 +1,6 @@
+import crypto from "node:crypto";
+import type { DatabaseSync } from "node:sqlite";
+import { severityFromSignificance } from "../shared/review.js";
 import { entityTagsForText } from "../shared/entity-matching.js";
 import type {
   ClaimRecord,
@@ -10,8 +13,20 @@ import type {
   SourceRecord,
   StoryRecord
 } from "../shared/types.js";
-import type { DatabaseSync } from "node:sqlite";
 import { getClaims, getEntities, getEvents, getSources, getStories } from "./store.js";
+
+type SuggestionQueueMaps = {
+  story: Map<string, string>;
+  claim: Map<string, string>;
+};
+
+function toId(prefix: string, value: string): string {
+  return `${prefix}_${crypto.createHash("sha1").update(value).digest("hex").slice(0, 12)}`;
+}
+
+function json(value: unknown): string {
+  return JSON.stringify(value ?? null);
+}
 
 function uniqueStrings(values: Array<string | null | undefined>): string[] {
   return Array.from(new Set(values.filter((value): value is string => Boolean(value))));
@@ -100,10 +115,12 @@ function eventEntityKeys(event: EventRecord, entities: EntityRecord[]): string[]
 }
 
 function sourceReliability(event: EventRecord, sourceMap: Map<string, SourceRecord>): number {
-  return event.sourceText
-    .split("/")
-    .map((value) => sourceMap.get(value.trim())?.reliabilityScore ?? 0)
-    .sort((left, right) => right - left)[0] ?? 0;
+  return (
+    event.sourceText
+      .split("/")
+      .map((value) => sourceMap.get(value.trim())?.reliabilityScore ?? 0)
+      .sort((left, right) => right - left)[0] ?? 0
+  );
 }
 
 function suggestionConfidence(event: EventRecord): Confidence {
@@ -208,6 +225,7 @@ function buildStorySuggestion(
     .sort((left, right) => right.score - left.score)[0];
   const hasStoryMatch = (matchedStory?.score ?? 0) >= 9;
   const title = hasStoryMatch ? matchedStory.story.title : event.title;
+  const detail = event.detail.slice(0, 520);
   const summary = hasStoryMatch
     ? `Update candidate for ${matchedStory.story.title} from ${event.sourceText}. ${event.detail}`
     : `${event.detail} Source: ${event.sourceText}.`;
@@ -232,10 +250,13 @@ function buildStorySuggestion(
       suggestedSection: hasStoryMatch ? matchedStory.story.section : sectionForEvent(event),
       significance: event.significance,
       summary: summary.slice(0, 240),
+      detail,
+      sourceText: event.sourceText,
       rationale,
       matchedStoryId: hasStoryMatch ? matchedStory.story.id : null,
       matchedStoryTitle: hasStoryMatch ? matchedStory.story.title : null,
       entityKeys,
+      queueId: null,
       evidence: evidenceForEvent(event)
     }
   };
@@ -328,17 +349,45 @@ function buildClaimSuggestion(
       significance: event.significance,
       confidence: suggestionConfidence(event),
       rationale: hasClaimMatch
-        ? `Recent evidence fits an existing canonical claim lane and should update operator review instead of creating drift.`
-        : `Recent evidence exposes a stable monitored assertion that is not yet represented as a canonical claim.`,
+        ? "Recent evidence fits an existing canonical claim lane and should update operator review instead of creating drift."
+        : "Recent evidence exposes a stable monitored assertion that is not yet represented as a canonical claim.",
       matchedClaimId: hasClaimMatch ? matchedClaim.claim.id : null,
       matchedClaimTitle: hasClaimMatch ? matchedClaim.claim.title : null,
       entityKeys,
+      queueId: null,
       evidence: evidenceForEvent(event)
     }
   };
 }
 
-export function getSynthesisSuggestions(db: DatabaseSync): OperatorSynthesisSnapshot {
+function loadPendingSuggestionQueues(db: DatabaseSync): SuggestionQueueMaps {
+  const rows = db.prepare(`
+    SELECT id, item_type, item_id
+    FROM review_queue
+    WHERE status = 'pending' AND item_type IN ('story_suggestion', 'claim_suggestion')
+  `).all() as Array<{
+    id: string;
+    item_type: string;
+    item_id: string;
+  }>;
+
+  const story = new Map<string, string>();
+  const claim = new Map<string, string>();
+  for (const row of rows) {
+    if (row.item_type === "story_suggestion") {
+      story.set(row.item_id, row.id);
+    } else if (row.item_type === "claim_suggestion") {
+      claim.set(row.item_id, row.id);
+    }
+  }
+
+  return { story, claim };
+}
+
+function buildSynthesisSnapshot(
+  db: DatabaseSync,
+  options: { includeQueueState?: boolean } = {}
+): OperatorSynthesisSnapshot {
   const entities = getEntities(db);
   const stories = getStories(db);
   const claims = getClaims(db);
@@ -372,14 +421,120 @@ export function getSynthesisSuggestions(db: DatabaseSync): OperatorSynthesisSnap
     }
   }
 
+  const storyList = Array.from(storySuggestions.values())
+    .sort((left, right) => right.rank - left.rank)
+    .map((entry) => entry.suggestion)
+    .slice(0, 4);
+  const claimList = Array.from(claimSuggestions.values())
+    .sort((left, right) => right.rank - left.rank)
+    .map((entry) => entry.suggestion)
+    .slice(0, 4);
+
+  if (options.includeQueueState === false) {
+    return { stories: storyList, claims: claimList };
+  }
+
+  const queueMaps = loadPendingSuggestionQueues(db);
   return {
-    stories: Array.from(storySuggestions.values())
-      .sort((left, right) => right.rank - left.rank)
-      .map((entry) => entry.suggestion)
-      .slice(0, 4),
-    claims: Array.from(claimSuggestions.values())
-      .sort((left, right) => right.rank - left.rank)
-      .map((entry) => entry.suggestion)
-      .slice(0, 4)
+    stories: storyList.map((story) => ({
+      ...story,
+      queueId: queueMaps.story.get(story.id) ?? null
+    })),
+    claims: claimList.map((claim) => ({
+      ...claim,
+      queueId: queueMaps.claim.get(claim.id) ?? null
+    }))
   };
+}
+
+function queueSuggestionRow(
+  db: DatabaseSync,
+  itemType: "story_suggestion" | "claim_suggestion",
+  suggestionId: string,
+  title: string,
+  severity: "critical" | "high" | "medium",
+  reason: string,
+  suggestion: OperatorStorySuggestion | OperatorClaimSuggestion
+): string {
+  const queueId = toId("queue", `${itemType}:${suggestionId}`);
+  const now = new Date().toISOString();
+  const nextMetadata = {
+    suggestion,
+    queuedAt: now,
+    queuedBy: "operator_synthesis"
+  };
+  const existing = db.prepare(`
+    SELECT id
+    FROM review_queue
+    WHERE id = ?
+  `).get(queueId) as { id?: string } | undefined;
+
+  if (existing?.id) {
+    db.prepare(`
+      UPDATE review_queue
+      SET title = ?, severity = ?, reason = ?, status = 'pending', updated_at = ?, metadata_json = ?
+      WHERE id = ?
+    `).run(title, severity, reason, now, json(nextMetadata), queueId);
+    return queueId;
+  }
+
+  db.prepare(`
+    INSERT INTO review_queue (
+      id, item_type, item_id, title, severity, reason, status, created_at, updated_at, metadata_json
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(queueId, itemType, suggestionId, title, severity, reason, "pending", now, now, json(nextMetadata));
+
+  return queueId;
+}
+
+export function getSynthesisSuggestions(db: DatabaseSync): OperatorSynthesisSnapshot {
+  return buildSynthesisSnapshot(db);
+}
+
+export function queueStorySuggestion(db: DatabaseSync, suggestionId: string): string | null {
+  const suggestion = buildSynthesisSnapshot(db, { includeQueueState: false }).stories.find((item) => item.id === suggestionId);
+  if (!suggestion) {
+    return null;
+  }
+
+  const queueId = queueSuggestionRow(
+    db,
+    "story_suggestion",
+    suggestion.id,
+    suggestion.title,
+    severityFromSignificance(suggestion.significance),
+    suggestion.status === "update_story"
+      ? "Graph-aware synthesis proposes updating an existing canonical story from recent evidence."
+      : "Graph-aware synthesis proposes creating a new canonical story from recent evidence.",
+    {
+      ...suggestion,
+      queueId: null
+    }
+  );
+
+  return queueId;
+}
+
+export function queueClaimSuggestion(db: DatabaseSync, suggestionId: string): string | null {
+  const suggestion = buildSynthesisSnapshot(db, { includeQueueState: false }).claims.find((item) => item.id === suggestionId);
+  if (!suggestion) {
+    return null;
+  }
+
+  const queueId = queueSuggestionRow(
+    db,
+    "claim_suggestion",
+    suggestion.id,
+    suggestion.title,
+    severityFromSignificance(suggestion.significance),
+    suggestion.status === "update_claim"
+      ? "Graph-aware synthesis proposes updating an existing canonical claim from recent evidence."
+      : "Graph-aware synthesis proposes creating a new canonical claim from recent evidence.",
+    {
+      ...suggestion,
+      queueId: null
+    }
+  );
+
+  return queueId;
 }

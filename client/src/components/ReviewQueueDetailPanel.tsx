@@ -1,12 +1,18 @@
 import type { ReviewQueueDetail } from "@shared/types";
 import { formatDate, formatDateTime, formatTokenLabel } from "../lib/format";
 
+function entityLabel(key: string): string {
+  return formatTokenLabel(key.replace(/^entity:/, ""));
+}
+
 export function ReviewQueueDetailPanel({
   detail,
-  onOpenEvent
+  onOpenEvent,
+  onOpenEntity
 }: {
   detail: ReviewQueueDetail | null;
   onOpenEvent?: (eventId: string) => void;
+  onOpenEntity?: (key: string) => void;
 }) {
   if (!detail) {
     return (
@@ -74,6 +80,86 @@ export function ReviewQueueDetailPanel({
       </div>
 
       <div className="mt-5 grid gap-4">
+        {detail.storySuggestion ? (
+          <article className="rounded-[22px] border border-signal/16 bg-signal/8 p-4">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
+              Proposed story promotion
+            </p>
+            <div className="mt-3 flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-white">{detail.storySuggestion.title}</h3>
+                <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">
+                  {formatTokenLabel(detail.storySuggestion.status)} | {formatTokenLabel(detail.storySuggestion.suggestedSection)} | {detail.storySuggestion.significance}
+                </p>
+              </div>
+              {detail.storySuggestion.queueId ? (
+                <span className="rounded-full border border-[#2f9d65]/25 bg-[#2f9d65]/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-[#7ef5b0]">
+                  queued
+                </span>
+              ) : null}
+            </div>
+            <p className="mt-4 text-sm leading-7 text-calm/84">{detail.storySuggestion.summary}</p>
+            <p className="mt-4 text-sm leading-7 text-calm/74">{detail.storySuggestion.detail}</p>
+            <p className="mt-4 text-sm leading-7 text-calm/68">{detail.storySuggestion.rationale}</p>
+            <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">
+              Source lane: {detail.storySuggestion.sourceText}
+            </p>
+            {detail.storySuggestion.entityKeys.length ? (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {detail.storySuggestion.entityKeys.map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => onOpenEntity?.(key.replace(/^entity:/, ""))}
+                    className="rounded-full border border-signal/18 bg-signal/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-signal"
+                  >
+                    {entityLabel(key)}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </article>
+        ) : null}
+
+        {detail.claimSuggestion ? (
+          <article className="rounded-[22px] border border-signal/16 bg-signal/8 p-4">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
+              Proposed claim promotion
+            </p>
+            <div className="mt-3 grid gap-3 md:grid-cols-3">
+              <div className="rounded-[16px] border border-white/8 bg-white/[0.03] p-3">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">Type</p>
+                <p className="mt-2 text-sm font-semibold text-white">{formatTokenLabel(detail.claimSuggestion.status)}</p>
+              </div>
+              <div className="rounded-[16px] border border-white/8 bg-white/[0.03] p-3">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">Proposed status</p>
+                <p className="mt-2 text-sm font-semibold text-white">{detail.claimSuggestion.proposedStatus}</p>
+              </div>
+              <div className="rounded-[16px] border border-white/8 bg-white/[0.03] p-3">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">Confidence</p>
+                <p className="mt-2 text-sm font-semibold text-white">{detail.claimSuggestion.confidence}</p>
+              </div>
+            </div>
+            <h3 className="mt-4 text-lg font-semibold text-white">{detail.claimSuggestion.title}</h3>
+            <p className="mt-3 text-sm leading-7 text-calm/84">{detail.claimSuggestion.statement}</p>
+            <p className="mt-4 text-sm leading-7 text-calm/68">{detail.claimSuggestion.rationale}</p>
+            {detail.claimSuggestion.entityKeys.length ? (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {detail.claimSuggestion.entityKeys.map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => onOpenEntity?.(key.replace(/^entity:/, ""))}
+                    className="rounded-full border border-signal/18 bg-signal/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-signal"
+                  >
+                    {entityLabel(key)}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+          </article>
+        ) : null}
+
         {detail.event ? (
           <article className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
@@ -113,6 +199,34 @@ export function ReviewQueueDetailPanel({
                 </span>
               ))}
             </div>
+          </article>
+        ) : null}
+
+        {detail.story ? (
+          <article className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
+              Canonical story
+            </p>
+            <div className="mt-3 grid gap-3 md:grid-cols-3">
+              <div className="rounded-[16px] border border-white/8 bg-white/[0.03] p-3">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">Section</p>
+                <p className="mt-2 text-sm font-semibold text-white">{formatTokenLabel(detail.story.section)}</p>
+              </div>
+              <div className="rounded-[16px] border border-white/8 bg-white/[0.03] p-3">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">Significance</p>
+                <p className="mt-2 text-sm font-semibold text-white">{detail.story.significance}</p>
+              </div>
+              <div className="rounded-[16px] border border-white/8 bg-white/[0.03] p-3">
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">Review state</p>
+                <p className="mt-2 text-sm font-semibold text-white">{detail.story.reviewState}</p>
+              </div>
+            </div>
+            <h3 className="mt-4 text-lg font-semibold text-white">{detail.story.title}</h3>
+            <p className="mt-3 text-sm leading-7 text-calm/84">{detail.story.summary}</p>
+            <p className="mt-4 text-sm leading-7 text-calm/74">{detail.story.detail}</p>
+            <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">
+              Source lane: {detail.story.sourceText}
+            </p>
           </article>
         ) : null}
 

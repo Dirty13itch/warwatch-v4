@@ -29,6 +29,9 @@ export default function OperatorSurface({
   onSelectQueueItem,
   onOpenEvent,
   onOpenEntity,
+  onQueueStorySuggestion,
+  onQueueClaimSuggestion,
+  onOpenQueuedReview,
   onPublishMetric,
   publishingMetricKey,
   operatorError
@@ -47,6 +50,9 @@ export default function OperatorSurface({
   onSelectQueueItem: (id: string) => void;
   onOpenEvent?: (eventId: string) => void;
   onOpenEntity?: (key: string) => void;
+  onQueueStorySuggestion: (suggestionId: string) => Promise<void>;
+  onQueueClaimSuggestion: (suggestionId: string) => Promise<void>;
+  onOpenQueuedReview: (queueId: string) => Promise<void>;
   onPublishMetric: (key: string, payload: OperatorMetricPublishInput) => Promise<void>;
   publishingMetricKey: string | null;
   operatorError: string | null;
@@ -100,6 +106,9 @@ export default function OperatorSurface({
         synthesis={synthesis}
         onOpenEvent={onOpenEvent}
         onOpenEntity={onOpenEntity}
+        onQueueStorySuggestion={onQueueStorySuggestion}
+        onQueueClaimSuggestion={onQueueClaimSuggestion}
+        onOpenQueuedReview={onOpenQueuedReview}
       />
 
       <div className="grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
@@ -196,6 +205,7 @@ export default function OperatorSurface({
           <ReviewQueueDetailPanel
             detail={reviewQueueDetail}
             onOpenEvent={onOpenEvent}
+            onOpenEntity={onOpenEntity}
           />
 
           <section className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell">
