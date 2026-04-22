@@ -34,6 +34,7 @@ Primary repo: `C:\Codex Projects\Iran War`
   - timeline, signals, and briefings fetch only the data they need
 - Overview freshness is derived from top-line KPI freshness, not just latest event activity
 - RSS/event ingestion now dedupes by normalized title/category/date window and upgrades corroboration/source refs on merge
+- RSS/event ingestion now also applies a mission-scope firewall so obviously off-scope general-feed items are skipped or quarantined instead of leaking into public surfaces
 - Market ingestion now writes canonical metric snapshots for Brent, WTI, and gold from Yahoo Finance
 - Signals surface renders live market history directly from the canonical metric store
 - Daily SITREP generation refreshes the same-day briefing and includes market movement when live snapshots exist
@@ -64,10 +65,12 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 
 ## Current Truth
 - Ingestion is healthy on the current default feed set
+- The live feed lane is now materially cleaner: obvious sports, tourism, and unrelated global stories from broad RSS feeds are quarantined away from public surfaces
 - Public stale state remains expected because only the market lane is live; strike, Hormuz, and casualty top-line metrics are still bootstrap-era values labeled `stale_seed`
 - The operator console can now surface current evidence for stale KPIs, but it will not invent values where extraction is not defensible
 - The operator console can now see queue pressure directly through age buckets and SLA summary cards, which gives the COO lane a concrete review-backlog surface
 - The operator console can now turn a queue row into a real review packet and jump straight into timeline evidence from the operator lane
 - The COO lane can now attach actual UI evidence to updates through local preview screenshots instead of relying only on text artifacts
 - Public reader surfaces no longer dead-end as quickly: briefing refs can jump into timeline detail, and timeline detail can jump into source posture when a canonical source match exists
+- Scope gating is still heuristic and rules-based, so borderline regional-spillover judgments remain a tuning lane rather than a solved problem
 - Critical claims continue to require operator approval before promotion to primary public surfaces

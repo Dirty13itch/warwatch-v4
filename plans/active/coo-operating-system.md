@@ -101,7 +101,7 @@ Supporting lanes:
 
 Tasks:
 1. Improve event merge quality beyond title/date heuristics.
-2. Strengthen source normalization and source-to-ledger matching.
+2. Strengthen source normalization, mission-scope scoring, and source-to-ledger matching.
 3. Add safer synthesis rules for:
    - claim extraction
    - story promotion candidates

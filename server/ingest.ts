@@ -5,6 +5,7 @@ import {
   classifyFeedEvent,
   earthquakeSignificance
 } from "./db.js";
+import { assessConflictScope, quarantineOutOfScopeFeedEvents } from "./scope.js";
 import {
   initialReviewState,
   initialVisibility,
@@ -263,6 +264,7 @@ function findMatchingEvent(
     FROM events
     WHERE date BETWEEN date($date, '-1 day') AND date($date, '+1 day')
       AND category = $category
+      AND review_state <> 'rejected'
   `).all({
     date: candidate.eventDate,
     category: candidate.category
@@ -486,6 +488,8 @@ export async function runIngestionCycle(db: DatabaseSync): Promise<void> {
     const runId = toId("run", `${feed.name}:${startedAt}`);
     let insertedCount = 0;
     let mergedCount = 0;
+    let skippedCount = 0;
+    let quarantinedCount = 0;
     let queuedCount = 0;
     let status: "success" | "partial" | "error" = "success";
     let summary = "No new records";
@@ -502,6 +506,12 @@ export async function runIngestionCycle(db: DatabaseSync): Promise<void> {
           }
 
           const detail = item.contentSnippet?.trim() || item.content?.slice(0, 420) || "Auto-ingested feed item.";
+          const scope = assessConflictScope(`${title} ${detail}`);
+          if (!scope.relevant) {
+            skippedCount += 1;
+            continue;
+          }
+
           const classified = classifyFeedEvent(`${title} ${detail}`);
           const eventDate = (item.isoDate ?? item.pubDate ?? new Date().toISOString()).slice(0, 10);
           const result = upsertPreparedFeedEvent(db, {
@@ -527,6 +537,9 @@ export async function runIngestionCycle(db: DatabaseSync): Promise<void> {
             queuedCount += 1;
           }
         }
+
+        const quarantined = quarantineOutOfScopeFeedEvents(db, feed.name);
+        quarantinedCount += quarantined.quarantinedEvents;
       } else {
         const response = await fetch(feed.url);
         if (!response.ok) {
@@ -582,9 +595,10 @@ export async function runIngestionCycle(db: DatabaseSync): Promise<void> {
         }
       }
 
-      summary = insertedCount || mergedCount
-        ? `Inserted ${insertedCount} items; merged ${mergedCount}; queued ${queuedCount} for review`
-        : "No new events were inserted";
+      summary =
+        insertedCount || mergedCount || skippedCount || quarantinedCount
+          ? `Inserted ${insertedCount} items; merged ${mergedCount}; skipped ${skippedCount} off-scope; quarantined ${quarantinedCount} off-scope; queued ${queuedCount} for review`
+          : "No new events were inserted";
     } catch (error) {
       status = "error";
       summary = "Ingestion failed";

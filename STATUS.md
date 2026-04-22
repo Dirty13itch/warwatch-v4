@@ -13,6 +13,7 @@
 - Live ingestion is active against `BBC Middle East`, `Al Jazeera`, `NPR World`, `Defense News`, `USNI News`, and `USGS Iran Earthquakes`
 - Live market ingestion is active against Yahoo Finance for `oil_brent`, `oil_wti`, and `gold_price`
 - Feed dedupe and corroboration are live: repeated feed hits now merge into existing events instead of inflating duplicates
+- Mission-scope filtering is now live on RSS ingestion: clearly off-scope general-news items are skipped before insertion, older auto-ingested noise is quarantined out of public surfaces, and feed-run summaries now report skipped/quarantined counts
 - Freshness truth is corrected: top-line overview state stays stale until the actual KPI metrics are live, even when event ingestion is healthy
 - Signals surface now renders live market cards and sparklines from canonical metric history instead of only seeded indicator stories
 - Daily SITREP refresh now folds in live market movement when current market snapshots exist
@@ -49,3 +50,4 @@ Hold and extend the first milestone:
 - Preview screenshots are local workspace artifacts today; once a public deployment exists, the same visual-proof lane should validate the deployed surface as well
 - The operator refresh lane now surfaces current evidence, but the remaining stale top-line metrics still need actual reviewed publications to clear the public stale flag
 - Several critical review queue items still block promotion of fresher top-line public claims
+- Scope filtering is heuristic rather than model-based, so borderline regional spillover items still need tuning over time even though the obvious sports/tourism/general-feed noise is now suppressed
