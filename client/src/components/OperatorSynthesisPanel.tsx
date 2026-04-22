@@ -70,6 +70,14 @@ export function OperatorSynthesisPanel({
                     Canonical match: {story.matchedStoryTitle}
                   </p>
                 ) : null}
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <span className="rounded-full border border-white/8 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/64">
+                    {story.eventCount} {story.eventCount === 1 ? "event" : "events"}
+                  </span>
+                  <span className="rounded-full border border-white/8 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/64">
+                    {story.sourceCount} {story.sourceCount === 1 ? "source" : "sources"}
+                  </span>
+                </div>
                 <p className="mt-3 text-sm leading-6 text-calm/82">{story.summary}</p>
                 <p className="mt-3 text-sm leading-6 text-calm/72">{story.rationale}</p>
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -165,6 +173,14 @@ export function OperatorSynthesisPanel({
                     Canonical match: {claim.matchedClaimTitle}
                   </p>
                 ) : null}
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <span className="rounded-full border border-white/8 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/64">
+                    {claim.eventCount} {claim.eventCount === 1 ? "event" : "events"}
+                  </span>
+                  <span className="rounded-full border border-white/8 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/64">
+                    {claim.sourceCount} {claim.sourceCount === 1 ? "source" : "sources"}
+                  </span>
+                </div>
                 <p className="mt-3 text-sm leading-6 text-calm/82">{claim.statement}</p>
                 <p className="mt-3 text-sm leading-6 text-calm/72">{claim.rationale}</p>
                 <div className="mt-4 flex flex-wrap gap-2">

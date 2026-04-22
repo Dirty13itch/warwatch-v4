@@ -22,6 +22,8 @@ function insertEvent(
     category: string;
     significance?: string;
     tags?: string[];
+    sourceText?: string;
+    corroboration?: number;
   }
 ) {
   db.prepare(`
@@ -38,9 +40,9 @@ function insertEvent(
     input.category,
     input.significance ?? "high",
     "reported",
-    2,
-    "Operator Test Feed",
-    JSON.stringify(["Operator Test Feed"]),
+    input.corroboration ?? 2,
+    input.sourceText ?? "Operator Test Feed",
+    JSON.stringify([input.sourceText ?? "Operator Test Feed"]),
     "approved",
     "secondary",
     null,
@@ -70,7 +72,9 @@ describe("operator synthesis suggestions", () => {
     expect(story?.suggestedSection).toBe("indicator");
     expect(story?.status).toBe("update_story");
     expect(story?.matchedStoryTitle).toBeTruthy();
+    expect(story?.eventCount).toBe(1);
     expect(claim?.status).toBe("new_claim");
+    expect(claim?.sourceCount).toBe(1);
     expect(claim?.evidence[0]?.eventId).toBe("event_hormuz_story");
 
     db.close();
@@ -95,6 +99,43 @@ describe("operator synthesis suggestions", () => {
 
     expect(claim?.status).toBe("update_claim");
     expect(claim?.matchedClaimTitle).toBe("Ceasefire / Deadline Status");
+
+    db.close();
+  });
+
+  it("clusters related evidence into one stronger synthesis candidate", () => {
+    const db = makeDb();
+    db.exec("DELETE FROM events;");
+
+    insertEvent(db, {
+      id: "event_hormuz_cluster_1",
+      date: "2026-04-22",
+      title: "Strait of Hormuz corridor capped at 18 ships per day",
+      detail: "Iran shipping pressure keeps the Strait of Hormuz corridor capped at 18 ships per day.",
+      category: "economic",
+      sourceText: "Operator Test Feed / Reuters",
+      tags: ["economic", "entity:iran", "entity:strait-of-hormuz"]
+    });
+
+    insertEvent(db, {
+      id: "event_hormuz_cluster_2",
+      date: "2026-04-21",
+      title: "Hormuz shipping corridor remains constrained",
+      detail: "Commercial routing advisories say Strait of Hormuz traffic is still constrained after the latest warning cycle.",
+      category: "economic",
+      significance: "critical",
+      sourceText: "Lloyd's List / Operator Test Feed",
+      corroboration: 3,
+      tags: ["economic", "entity:iran", "entity:strait-of-hormuz"]
+    });
+
+    const suggestions = getSynthesisSuggestions(db);
+    const claim = suggestions.claims.find((item) => item.title === "Hormuz Shipping Constraint");
+
+    expect(claim?.eventCount).toBe(2);
+    expect(claim?.sourceCount).toBeGreaterThanOrEqual(2);
+    expect(claim?.evidence.length).toBe(2);
+    expect(claim?.rationale).toContain("2 events");
 
     db.close();
   });

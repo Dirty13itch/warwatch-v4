@@ -98,6 +98,14 @@ export function ReviewQueueDetailPanel({
                 </span>
               ) : null}
             </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="rounded-full border border-white/8 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/64">
+                {detail.storySuggestion.eventCount} {detail.storySuggestion.eventCount === 1 ? "event" : "events"}
+              </span>
+              <span className="rounded-full border border-white/8 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/64">
+                {detail.storySuggestion.sourceCount} {detail.storySuggestion.sourceCount === 1 ? "source" : "sources"}
+              </span>
+            </div>
             <p className="mt-4 text-sm leading-7 text-calm/84">{detail.storySuggestion.summary}</p>
             <p className="mt-4 text-sm leading-7 text-calm/74">{detail.storySuggestion.detail}</p>
             <p className="mt-4 text-sm leading-7 text-calm/68">{detail.storySuggestion.rationale}</p>
@@ -139,6 +147,14 @@ export function ReviewQueueDetailPanel({
                 <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">Confidence</p>
                 <p className="mt-2 text-sm font-semibold text-white">{detail.claimSuggestion.confidence}</p>
               </div>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="rounded-full border border-white/8 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/64">
+                {detail.claimSuggestion.eventCount} {detail.claimSuggestion.eventCount === 1 ? "event" : "events"}
+              </span>
+              <span className="rounded-full border border-white/8 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/64">
+                {detail.claimSuggestion.sourceCount} {detail.claimSuggestion.sourceCount === 1 ? "source" : "sources"}
+              </span>
             </div>
             <h3 className="mt-4 text-lg font-semibold text-white">{detail.claimSuggestion.title}</h3>
             <p className="mt-3 text-sm leading-7 text-calm/84">{detail.claimSuggestion.statement}</p>

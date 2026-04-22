@@ -134,6 +134,8 @@ export interface OperatorStorySuggestion {
   title: string;
   suggestedSection: string;
   significance: Significance;
+  eventCount: number;
+  sourceCount: number;
   summary: string;
   detail: string;
   sourceText: string;
@@ -153,6 +155,8 @@ export interface OperatorClaimSuggestion {
   statement: string;
   significance: Significance;
   confidence: Confidence;
+  eventCount: number;
+  sourceCount: number;
   rationale: string;
   matchedClaimId: string | null;
   matchedClaimTitle: string | null;

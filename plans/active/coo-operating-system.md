@@ -109,7 +109,7 @@ Tasks:
    - claim extraction
    - story promotion candidates
    - metric suggestions beyond market data
-   Current state: operator top-line suggestions now use entity-aware relevance instead of pure regex matching, which blocks obvious generic-shipping false positives; operator synthesis now also surfaces graph-aware story and claim candidates from recent evidence, can queue them for review, and can persist approved promotions into canonical stories/claims through the normal operator gate.
+   Current state: operator top-line suggestions now use entity-aware relevance instead of pure regex matching, which blocks obvious generic-shipping false positives; operator synthesis now also clusters related recent evidence into graph-aware story and claim candidates, can queue them for review, and can persist approved promotions into canonical stories/claims through the normal operator gate.
 4. Expand structured extractor coverage for public-truth KPIs.
 5. Ensure duplicate suppression, corroboration upgrades, and review-item creation stay idempotent.
 

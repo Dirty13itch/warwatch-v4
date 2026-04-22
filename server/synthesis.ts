@@ -20,6 +20,45 @@ type SuggestionQueueMaps = {
   claim: Map<string, string>;
 };
 
+type ClaimTemplate = {
+  title: string;
+  proposedStatus: string;
+  statement: string;
+};
+
+type RankedSeed = {
+  event: EventRecord;
+  entityKeys: string[];
+  eventRank: number;
+};
+
+type StorySeed = RankedSeed & {
+  key: string;
+  matchedStory: StoryRecord | null;
+  section: string;
+};
+
+type ClaimSeed = RankedSeed & {
+  key: string;
+  matchedClaim: ClaimRecord | null;
+  template: ClaimTemplate;
+};
+
+type StoryCluster = {
+  key: string;
+  matchedStory: StoryRecord | null;
+  section: string;
+  seeds: StorySeed[];
+  entityKeys: Set<string>;
+};
+
+type ClaimCluster = {
+  key: string;
+  matchedClaim: ClaimRecord | null;
+  seeds: ClaimSeed[];
+  entityKeys: Set<string>;
+};
+
 function toId(prefix: string, value: string): string {
   return `${prefix}_${crypto.createHash("sha1").update(value).digest("hex").slice(0, 12)}`;
 }
@@ -30,6 +69,10 @@ function json(value: unknown): string {
 
 function uniqueStrings(values: Array<string | null | undefined>): string[] {
   return Array.from(new Set(values.filter((value): value is string => Boolean(value))));
+}
+
+function pluralize(label: string, count: number): string {
+  return count === 1 ? label : `${label}s`;
 }
 
 function significanceWeight(significance: EventRecord["significance"]): number {
@@ -46,6 +89,28 @@ function significanceWeight(significance: EventRecord["significance"]): number {
   }
 
   return 1;
+}
+
+function significanceRank(significance: EventRecord["significance"]): number {
+  if (significance === "critical") {
+    return 0;
+  }
+
+  if (significance === "high") {
+    return 1;
+  }
+
+  if (significance === "medium") {
+    return 2;
+  }
+
+  return 3;
+}
+
+function strongestSignificance(events: RankedSeed[]): EventRecord["significance"] {
+  return events
+    .map((item) => item.event.significance)
+    .sort((left, right) => significanceRank(left) - significanceRank(right))[0] ?? "watch";
 }
 
 function buildKeywordSet(values: Array<string | null | undefined>): string[] {
@@ -107,19 +172,63 @@ function keywordOverlapScore(left: string[], right: string[]): number {
   return left.reduce((score, keyword) => score + (rightSet.has(keyword) ? 1 : 0), 0);
 }
 
+function topicSignature(...values: Array<string | null | undefined>): string {
+  return buildKeywordSet(values).slice(0, 2).join("-") || "general";
+}
+
+function splitSourceNames(sourceText: string): string[] {
+  return sourceText
+    .split("/")
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
+
+function atomicSourceNames(events: RankedSeed[]): string[] {
+  return uniqueStrings(events.flatMap((item) => splitSourceNames(item.event.sourceText)));
+}
+
+function sourceTextForCluster(events: RankedSeed[]): string {
+  return atomicSourceNames(events).slice(0, 4).join(" / ");
+}
+
+function sourceCountForCluster(events: RankedSeed[]): number {
+  return atomicSourceNames(events).length;
+}
+
 function eventEntityKeys(event: EventRecord, entities: EntityRecord[]): string[] {
   return uniqueStrings([
     ...event.tags.filter((tag) => tag.startsWith("entity:")),
     ...entityTagsForText(entities, event.title, event.detail, event.sourceText)
-  ]).slice(0, 4);
+  ]).slice(0, 6);
 }
 
 function sourceReliability(event: EventRecord, sourceMap: Map<string, SourceRecord>): number {
   return (
-    event.sourceText
-      .split("/")
-      .map((value) => sourceMap.get(value.trim())?.reliabilityScore ?? 0)
+    splitSourceNames(event.sourceText)
+      .map((value) => sourceMap.get(value)?.reliabilityScore ?? 0)
       .sort((left, right) => right - left)[0] ?? 0
+  );
+}
+
+function eventRank(
+  event: EventRecord,
+  entityKeys: string[],
+  sourceMap: Map<string, SourceRecord>
+): number {
+  return (
+    significanceWeight(event.significance) +
+    event.corroboration * 2 +
+    Math.round(sourceReliability(event, sourceMap) * 4) +
+    entityKeys.length
+  );
+}
+
+function sortSeedsBySignal(left: RankedSeed, right: RankedSeed): number {
+  return (
+    right.eventRank - left.eventRank ||
+    right.event.date.localeCompare(left.event.date) ||
+    right.event.corroboration - left.event.corroboration ||
+    right.event.createdAt.localeCompare(left.event.createdAt)
   );
 }
 
@@ -133,6 +242,18 @@ function suggestionConfidence(event: EventRecord): Confidence {
   }
 
   return event.confidence;
+}
+
+function clusterConfidence(events: RankedSeed[]): Confidence {
+  const sourceCount = sourceCountForCluster(events);
+  if (events.length >= 3 || sourceCount >= 3) {
+    return "reported";
+  }
+
+  return suggestionConfidence(events[0]?.event ?? {
+    corroboration: 1,
+    confidence: "claimed"
+  } as EventRecord);
 }
 
 function sectionForEvent(event: EventRecord): string {
@@ -189,25 +310,42 @@ function claimMatchScore(
   return entityOverlap * 5 + keywordOverlap * 2 + (exactTitle ? 6 : 0);
 }
 
-function evidenceForEvent(event: EventRecord) {
-  return [
-    {
-      eventId: event.id,
-      title: event.title,
-      date: event.date,
-      sourceText: event.sourceText,
-      significance: event.significance,
-      excerpt: `${event.title}. ${event.detail}`.replace(/\s+/g, " ").slice(0, 220)
-    }
-  ];
+function evidenceFromSeeds(seeds: RankedSeed[]) {
+  return [...seeds]
+    .sort(sortSeedsBySignal)
+    .slice(0, 3)
+    .map((seed) => ({
+      eventId: seed.event.id,
+      title: seed.event.title,
+      date: seed.event.date,
+      sourceText: seed.event.sourceText,
+      significance: seed.event.significance,
+      excerpt: `${seed.event.title}. ${seed.event.detail}`.replace(/\s+/g, " ").slice(0, 220)
+    }));
 }
 
-function buildStorySuggestion(
+function detailFromSeeds(seeds: RankedSeed[]): string {
+  return [...seeds]
+    .sort(sortSeedsBySignal)
+    .slice(0, 3)
+    .map((seed) => `${seed.event.date}: ${seed.event.title}. ${seed.event.detail}`)
+    .join(" ")
+    .slice(0, 620);
+}
+
+function storyClusterKey(event: EventRecord, entityKeys: string[]): string {
+  const section = sectionForEvent(event);
+  const entityKey = entityKeys[0]?.replace(/^entity:/, "") ?? event.category;
+  const topicKey = topicSignature(event.title, event.detail, event.sourceText);
+  return `${section}:${entityKey}:${topicKey}`;
+}
+
+function buildStorySeed(
   event: EventRecord,
   entities: EntityRecord[],
   stories: StoryRecord[],
   sourceMap: Map<string, SourceRecord>
-): { key: string; rank: number; suggestion: OperatorStorySuggestion } | null {
+): StorySeed | null {
   if (event.reviewState === "rejected" || event.category === "seismic" || event.significance === "watch") {
     return null;
   }
@@ -224,52 +362,21 @@ function buildStorySuggestion(
     }))
     .sort((left, right) => right.score - left.score)[0];
   const hasStoryMatch = (matchedStory?.score ?? 0) >= 9;
-  const title = hasStoryMatch ? matchedStory.story.title : event.title;
-  const detail = event.detail.slice(0, 520);
-  const summary = hasStoryMatch
-    ? `Update candidate for ${matchedStory.story.title} from ${event.sourceText}. ${event.detail}`
-    : `${event.detail} Source: ${event.sourceText}.`;
-  const entityLabels = entityKeys.map((key) => key.replace("entity:", ""));
-  const rationale = hasStoryMatch
-    ? `Entity overlap and keyword match suggest this event should update the existing ${matchedStory.story.section} story rather than create another parallel narrative.`
-    : `High-signal ${sectionForEvent(event)} evidence with ${event.corroboration} corroborating references and canonical actor matches suggests a new story lane is warranted.`;
-  const rank =
-    significanceWeight(event.significance) +
-    event.corroboration * 2 +
-    Math.round(sourceReliability(event, sourceMap) * 4) +
-    (hasStoryMatch ? 2 : 0) +
-    entityKeys.length;
 
   return {
-    key: hasStoryMatch ? matchedStory.story.id : `${sectionForEvent(event)}:${entityLabels[0] ?? event.category}`,
-    rank,
-    suggestion: {
-      id: `story-suggestion:${event.id}`,
-      status: hasStoryMatch ? "update_story" : "new_story",
-      title,
-      suggestedSection: hasStoryMatch ? matchedStory.story.section : sectionForEvent(event),
-      significance: event.significance,
-      summary: summary.slice(0, 240),
-      detail,
-      sourceText: event.sourceText,
-      rationale,
-      matchedStoryId: hasStoryMatch ? matchedStory.story.id : null,
-      matchedStoryTitle: hasStoryMatch ? matchedStory.story.title : null,
-      entityKeys,
-      queueId: null,
-      evidence: evidenceForEvent(event)
-    }
+    key: hasStoryMatch ? matchedStory.story.id : storyClusterKey(event, entityKeys),
+    matchedStory: hasStoryMatch ? matchedStory.story : null,
+    section: hasStoryMatch ? matchedStory.story.section : sectionForEvent(event),
+    event,
+    entityKeys,
+    eventRank: eventRank(event, entityKeys, sourceMap)
   };
 }
 
 function extractClaimTemplate(
   event: EventRecord,
   entityKeys: string[]
-): {
-  title: string;
-  proposedStatus: string;
-  statement: string;
-} | null {
+): ClaimTemplate | null {
   const haystack = `${event.title} ${event.detail}`;
 
   if (event.category === "diplomatic" && /(ceasefire|truce|deadline|brokered|talks|negotiation)/i.test(haystack)) {
@@ -307,12 +414,30 @@ function extractClaimTemplate(
   return null;
 }
 
-function buildClaimSuggestion(
+function claimStatusRank(status: string): number {
+  const normalized = status.toLowerCase();
+  if (normalized.includes("severe") || normalized.includes("critical")) {
+    return 40;
+  }
+  if (normalized.includes("under pressure")) {
+    return 30;
+  }
+  if (normalized.includes("constrained")) {
+    return 20;
+  }
+  if (normalized.includes("active")) {
+    return 10;
+  }
+
+  return 0;
+}
+
+function buildClaimSeed(
   event: EventRecord,
   entities: EntityRecord[],
   claims: ClaimRecord[],
   sourceMap: Map<string, SourceRecord>
-): { key: string; rank: number; suggestion: OperatorClaimSuggestion } | null {
+): ClaimSeed | null {
   if (event.reviewState === "rejected" || event.significance === "watch" || event.category === "seismic") {
     return null;
   }
@@ -330,32 +455,139 @@ function buildClaimSuggestion(
     }))
     .sort((left, right) => right.score - left.score)[0];
   const hasClaimMatch = (matchedClaim?.score ?? 0) >= 9;
-  const rank =
-    significanceWeight(event.significance) +
-    event.corroboration * 2 +
-    Math.round(sourceReliability(event, sourceMap) * 4) +
-    (hasClaimMatch ? 2 : 0) +
-    entityKeys.length;
 
   return {
-    key: template.title,
+    key: hasClaimMatch ? matchedClaim.claim.id : template.title,
+    matchedClaim: hasClaimMatch ? matchedClaim.claim : null,
+    template,
+    event,
+    entityKeys,
+    eventRank: eventRank(event, entityKeys, sourceMap)
+  };
+}
+
+function pushStorySeed(clusters: Map<string, StoryCluster>, seed: StorySeed) {
+  const existing = clusters.get(seed.key);
+  if (!existing) {
+    clusters.set(seed.key, {
+      key: seed.key,
+      matchedStory: seed.matchedStory,
+      section: seed.section,
+      seeds: [seed],
+      entityKeys: new Set(seed.entityKeys)
+    });
+    return;
+  }
+
+  if (existing.seeds.some((item) => item.event.id === seed.event.id)) {
+    return;
+  }
+
+  existing.seeds.push(seed);
+  for (const key of seed.entityKeys) {
+    existing.entityKeys.add(key);
+  }
+}
+
+function pushClaimSeed(clusters: Map<string, ClaimCluster>, seed: ClaimSeed) {
+  const existing = clusters.get(seed.key);
+  if (!existing) {
+    clusters.set(seed.key, {
+      key: seed.key,
+      matchedClaim: seed.matchedClaim,
+      seeds: [seed],
+      entityKeys: new Set(seed.entityKeys)
+    });
+    return;
+  }
+
+  if (existing.seeds.some((item) => item.event.id === seed.event.id)) {
+    return;
+  }
+
+  existing.seeds.push(seed);
+  for (const key of seed.entityKeys) {
+    existing.entityKeys.add(key);
+  }
+}
+
+function buildStorySuggestion(cluster: StoryCluster): { rank: number; suggestion: OperatorStorySuggestion } {
+  const seeds = [...cluster.seeds].sort(sortSeedsBySignal);
+  const lead = seeds[0];
+  const matchedStory = cluster.matchedStory;
+  const eventCount = seeds.length;
+  const sourceCount = sourceCountForCluster(seeds);
+  const significance = strongestSignificance(seeds);
+  const sourceText = sourceTextForCluster(seeds);
+  const detail = detailFromSeeds(seeds);
+  const evidence = evidenceFromSeeds(seeds);
+  const rank = seeds.reduce((total, seed) => total + seed.eventRank, 0) + sourceCount * 2 + (matchedStory ? 4 : 0);
+  const summary = matchedStory
+    ? `${eventCount} recent ${pluralize("event", eventCount)} from ${sourceCount} ${pluralize("source", sourceCount)} reinforce ${matchedStory.title}. Latest: ${lead.event.detail}`.slice(0, 240)
+    : `${eventCount} recent ${pluralize("event", eventCount)} from ${sourceCount} ${pluralize("source", sourceCount)} suggest a new ${cluster.section} story lane. Latest: ${lead.event.detail}`.slice(0, 240);
+  const rationale = matchedStory
+    ? `Clustered evidence across ${eventCount} ${pluralize("event", eventCount)} and ${sourceCount} ${pluralize("source", sourceCount)} hits the same actor/topic lane, so this should update the existing ${cluster.section} story rather than create drift.`
+    : `Clustered evidence across ${eventCount} ${pluralize("event", eventCount)} and ${sourceCount} ${pluralize("source", sourceCount)} with canonical actor overlap suggests a durable new ${cluster.section} story, not a one-off event card.`;
+
+  return {
     rank,
     suggestion: {
-      id: `claim-suggestion:${event.id}`,
-      status: hasClaimMatch ? "update_claim" : "new_claim",
-      title: template.title,
-      proposedStatus: template.proposedStatus,
-      statement: template.statement,
-      significance: event.significance,
-      confidence: suggestionConfidence(event),
-      rationale: hasClaimMatch
-        ? "Recent evidence fits an existing canonical claim lane and should update operator review instead of creating drift."
-        : "Recent evidence exposes a stable monitored assertion that is not yet represented as a canonical claim.",
-      matchedClaimId: hasClaimMatch ? matchedClaim.claim.id : null,
-      matchedClaimTitle: hasClaimMatch ? matchedClaim.claim.title : null,
-      entityKeys,
+      id: toId("story_suggestion", cluster.key),
+      status: matchedStory ? "update_story" : "new_story",
+      title: matchedStory?.title ?? lead.event.title,
+      suggestedSection: matchedStory?.section ?? cluster.section,
+      significance,
+      eventCount,
+      sourceCount,
+      summary,
+      detail,
+      sourceText,
+      rationale,
+      matchedStoryId: matchedStory?.id ?? null,
+      matchedStoryTitle: matchedStory?.title ?? null,
+      entityKeys: Array.from(cluster.entityKeys).slice(0, 6),
       queueId: null,
-      evidence: evidenceForEvent(event)
+      evidence
+    }
+  };
+}
+
+function buildClaimSuggestion(cluster: ClaimCluster): { rank: number; suggestion: OperatorClaimSuggestion } {
+  const seeds = [...cluster.seeds].sort(
+    (left, right) =>
+      (right.eventRank + claimStatusRank(right.template.proposedStatus)) -
+      (left.eventRank + claimStatusRank(left.template.proposedStatus)) ||
+      sortSeedsBySignal(left, right)
+  );
+  const lead = seeds[0];
+  const matchedClaim = cluster.matchedClaim;
+  const eventCount = seeds.length;
+  const sourceCount = sourceCountForCluster(seeds);
+  const significance = strongestSignificance(seeds);
+  const confidence = clusterConfidence(seeds);
+  const rank = seeds.reduce((total, seed) => total + seed.eventRank, 0) + sourceCount * 2 + (matchedClaim ? 4 : 0);
+  const rationale = matchedClaim
+    ? `Clustered evidence across ${eventCount} ${pluralize("event", eventCount)} and ${sourceCount} ${pluralize("source", sourceCount)} fits the existing canonical claim lane and should update operator review instead of creating drift.`
+    : `Clustered evidence across ${eventCount} ${pluralize("event", eventCount)} and ${sourceCount} ${pluralize("source", sourceCount)} exposes a stable monitored assertion that should become a canonical claim.`;
+
+  return {
+    rank,
+    suggestion: {
+      id: toId("claim_suggestion", cluster.key),
+      status: matchedClaim ? "update_claim" : "new_claim",
+      title: matchedClaim?.title ?? lead.template.title,
+      proposedStatus: lead.template.proposedStatus,
+      statement: lead.template.statement,
+      significance,
+      confidence,
+      eventCount,
+      sourceCount,
+      rationale,
+      matchedClaimId: matchedClaim?.id ?? null,
+      matchedClaimTitle: matchedClaim?.title ?? null,
+      entityKeys: Array.from(cluster.entityKeys).slice(0, 6),
+      queueId: null,
+      evidence: evidenceFromSeeds(seeds)
     }
   };
 }
@@ -394,38 +626,28 @@ function buildSynthesisSnapshot(
   const sourceMap = new Map(getSources(db).map((source) => [source.name, source]));
   const recentEvents = getEvents(db, { includeHidden: true, limit: 140 });
 
-  const storySuggestions = new Map<string, { rank: number; suggestion: OperatorStorySuggestion }>();
-  const claimSuggestions = new Map<string, { rank: number; suggestion: OperatorClaimSuggestion }>();
+  const storyClusters = new Map<string, StoryCluster>();
+  const claimClusters = new Map<string, ClaimCluster>();
 
   for (const event of recentEvents) {
-    const storyCandidate = buildStorySuggestion(event, entities, stories, sourceMap);
-    if (storyCandidate) {
-      const existing = storySuggestions.get(storyCandidate.key);
-      if (!existing || storyCandidate.rank > existing.rank) {
-        storySuggestions.set(storyCandidate.key, {
-          rank: storyCandidate.rank,
-          suggestion: storyCandidate.suggestion
-        });
-      }
+    const storySeed = buildStorySeed(event, entities, stories, sourceMap);
+    if (storySeed) {
+      pushStorySeed(storyClusters, storySeed);
     }
 
-    const claimCandidate = buildClaimSuggestion(event, entities, claims, sourceMap);
-    if (claimCandidate) {
-      const existing = claimSuggestions.get(claimCandidate.key);
-      if (!existing || claimCandidate.rank > existing.rank) {
-        claimSuggestions.set(claimCandidate.key, {
-          rank: claimCandidate.rank,
-          suggestion: claimCandidate.suggestion
-        });
-      }
+    const claimSeed = buildClaimSeed(event, entities, claims, sourceMap);
+    if (claimSeed) {
+      pushClaimSeed(claimClusters, claimSeed);
     }
   }
 
-  const storyList = Array.from(storySuggestions.values())
+  const storyList = Array.from(storyClusters.values())
+    .map((cluster) => buildStorySuggestion(cluster))
     .sort((left, right) => right.rank - left.rank)
     .map((entry) => entry.suggestion)
     .slice(0, 4);
-  const claimList = Array.from(claimSuggestions.values())
+  const claimList = Array.from(claimClusters.values())
+    .map((cluster) => buildClaimSuggestion(cluster))
     .sort((left, right) => right.rank - left.rank)
     .map((entry) => entry.suggestion)
     .slice(0, 4);
@@ -504,8 +726,8 @@ export function queueStorySuggestion(db: DatabaseSync, suggestionId: string): st
     suggestion.title,
     severityFromSignificance(suggestion.significance),
     suggestion.status === "update_story"
-      ? "Graph-aware synthesis proposes updating an existing canonical story from recent evidence."
-      : "Graph-aware synthesis proposes creating a new canonical story from recent evidence.",
+      ? "Graph-aware synthesis proposes updating an existing canonical story from clustered recent evidence."
+      : "Graph-aware synthesis proposes creating a new canonical story from clustered recent evidence.",
     {
       ...suggestion,
       queueId: null
@@ -528,8 +750,8 @@ export function queueClaimSuggestion(db: DatabaseSync, suggestionId: string): st
     suggestion.title,
     severityFromSignificance(suggestion.significance),
     suggestion.status === "update_claim"
-      ? "Graph-aware synthesis proposes updating an existing canonical claim from recent evidence."
-      : "Graph-aware synthesis proposes creating a new canonical claim from recent evidence.",
+      ? "Graph-aware synthesis proposes updating an existing canonical claim from clustered recent evidence."
+      : "Graph-aware synthesis proposes creating a new canonical claim from clustered recent evidence.",
     {
       ...suggestion,
       queueId: null

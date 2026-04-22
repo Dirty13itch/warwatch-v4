@@ -29,6 +29,7 @@
 - Operator KPI lane now includes evidence-backed suggestion cards with extracted candidates when current event evidence supports them
 - Operator synthesis lane is now live: recent graph-aware evidence can surface story-promotion and claim-promotion candidates before the operator has to reason from raw event rows alone
 - Operator synthesis is now queue-backed end to end: candidates can be queued straight from the synthesis lane, opened as review dossiers, and approved into canonical stories or claims without silent auto-promotion
+- Operator synthesis is now cluster-based instead of single-event based: related recent events aggregate into one suggestion with event/source counts, richer evidence packets, and stronger promotion rationale
 - Operator queue aging is now explicit: queue items carry age buckets, the operator console shows backlog pressure cards, and the heartbeat reports pending, critical, >24h, >72h, and oldest-item age
 - Operator review is now selection-aware: queue items open into a dossier with canonical object detail, feed/source metadata, recommended next action, superseding briefing context, and related evidence events
 - Suggestion-backed review dossiers now show proposed story/claim payloads plus canonical matches when they exist, which makes promotion review materially faster than reasoning from metadata blobs
@@ -65,4 +66,5 @@ Hold and extend the first milestone:
 - The operator refresh lane now surfaces current evidence, but the remaining stale top-line metrics still need actual reviewed publications to clear the public stale flag
 - Several critical review queue items still block promotion of fresher top-line public claims
 - The synthesis write path is now real, but it still needs better merge/extraction quality before broader feed expansion is safe
+- Clustered synthesis is now stronger than the old single-event lane, but some high-volume canonical lanes still need tighter time/topic window tuning before broader feed expansion is safe
 - Scope filtering is heuristic rather than model-based, so borderline regional spillover items still need tuning over time even though the obvious sports/tourism/general-feed noise is now suppressed
