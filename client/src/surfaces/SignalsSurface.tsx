@@ -5,12 +5,18 @@ import { StoryStrip } from "../components/StoryStrip";
 
 export default function SignalsSurface({
   indicators,
+  stories,
   sources,
-  marketSignals
+  marketSignals,
+  focusedSourceSlug,
+  onFocusSource
 }: {
   indicators: StoryRecord[];
+  stories: StoryRecord[];
   sources: SourceRecord[];
   marketSignals: Record<string, MetricSnapshot[]>;
+  focusedSourceSlug?: string | null;
+  onFocusSource?: (slug: string) => void;
 }) {
   return (
     <div
@@ -24,7 +30,12 @@ export default function SignalsSurface({
           copy="Unconventional indicators with explicit source labeling"
           items={indicators}
         />
-        <SourceTable sources={sources} />
+        <SourceTable
+          sources={sources}
+          stories={stories}
+          focusedSourceSlug={focusedSourceSlug}
+          onFocusSource={onFocusSource}
+        />
       </div>
     </div>
   );

@@ -26,7 +26,10 @@ Primary repo: `C:\Codex Projects\Iran War`
   - snapshot surface now acts as the public/demo-first entry lane
   - command shell lazy-loads heavy map/chart code
   - timeline surface now exposes filters, event inspection, corroboration, and public posture directly in the UI
+  - timeline events can now hand readers into matched source posture when the source ledger has a canonical match
   - story and briefing lanes now provide selection-aware reader depth instead of static text dumps
+  - briefing references can now hand readers into matched timeline events instead of ending at raw citation text
+  - signals now includes a selection-aware source reader tied to canonical stories and source posture
   - operator console is separated from the public bundle
   - timeline, signals, and briefings fetch only the data they need
 - Overview freshness is derived from top-line KPI freshness, not just latest event activity
@@ -45,6 +48,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Preview proof now includes the Snapshot surface as the primary visual/demo lane
 - Preview proof now also includes the upgraded timeline surface so exploration depth is visible in each artifact pass
 - Preview proof now also includes the briefing reader surface so archive usability is visible in each artifact pass
+- Preview proof now also validates the cross-surface handoff lane by keeping timeline, signals, and briefing readers in the same artifact set
 
 ## Operating Assumption
 Twice-daily COO heartbeat remains the default cadence unless the repo contract changes.
@@ -63,4 +67,5 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - The operator console can now surface current evidence for stale KPIs, but it will not invent values where extraction is not defensible
 - The operator console can now see queue pressure directly through age buckets and SLA summary cards, which gives the COO lane a concrete review-backlog surface
 - The COO lane can now attach actual UI evidence to updates through local preview screenshots instead of relying only on text artifacts
+- Public reader surfaces no longer dead-end as quickly: briefing refs can jump into timeline detail, and timeline detail can jump into source posture when a canonical source match exists
 - Critical claims continue to require operator approval before promotion to primary public surfaces

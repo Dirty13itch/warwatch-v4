@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Confidence, EventRecord, Significance } from "@shared/types";
+import type { Confidence, EventRecord, Significance, SourceRecord } from "@shared/types";
 import { EventRow } from "../components/EventRow";
 import { formatDate, formatDateTime, formatTokenLabel } from "../lib/format";
+import { findSourceByText } from "../lib/canonical-linking";
 
 const confidenceFilters: Array<Confidence | "all"> = [
   "all",
@@ -33,12 +34,18 @@ function publicationLabel(event: EventRecord): string {
 
 export default function TimelineSurface({
   events,
+  sources,
   search,
-  onSearch
+  onSearch,
+  focusedEventId,
+  onOpenSource
 }: {
   events: EventRecord[];
+  sources: SourceRecord[];
   search: string;
   onSearch: (value: string) => void;
+  focusedEventId?: string | null;
+  onOpenSource?: (slug: string) => void;
 }) {
   const categories = useMemo(
     () => ["all", ...Array.from(new Set(events.map((event) => event.category))).sort()],
@@ -47,7 +54,7 @@ export default function TimelineSurface({
   const [category, setCategory] = useState<string>("all");
   const [confidence, setConfidence] = useState<Confidence | "all">("all");
   const [significance, setSignificance] = useState<Significance | "all">("all");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(focusedEventId ?? null);
 
   const filteredEvents = useMemo(
     () =>
@@ -67,7 +74,21 @@ export default function TimelineSurface({
   );
 
   const selectedEvent =
-    filteredEvents.find((event) => event.id === selectedId) ?? filteredEvents[0] ?? null;
+    filteredEvents.find((event) => event.id === selectedId) ??
+    events.find((event) => event.id === selectedId) ??
+    filteredEvents[0] ??
+    null;
+
+  const matchedSource = selectedEvent ? findSourceByText(sources, selectedEvent.sourceText) : null;
+
+  useEffect(() => {
+    if (focusedEventId) {
+      setCategory("all");
+      setConfidence("all");
+      setSignificance("all");
+      setSelectedId(focusedEventId);
+    }
+  }, [focusedEventId]);
 
   useEffect(() => {
     if (!selectedEvent) {
@@ -247,6 +268,15 @@ export default function TimelineSurface({
                 <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
                   <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">Source text</p>
                   <p className="mt-3 text-sm leading-6 text-calm/82">{selectedEvent.sourceText}</p>
+                  {matchedSource ? (
+                    <button
+                      type="button"
+                      onClick={() => onOpenSource?.(matchedSource.slug)}
+                      className="mt-4 rounded-full border border-signal/20 bg-signal/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-signal"
+                    >
+                      Open source posture
+                    </button>
+                  ) : null}
                   <div className="mt-4 flex flex-wrap gap-2">
                     {selectedEvent.sourceRefs.map((ref) => (
                       <span

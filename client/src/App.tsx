@@ -24,6 +24,7 @@ import type {
   StoryRecord
 } from "@shared/types";
 import { api } from "./lib/api";
+import { findEventByReference } from "./lib/canonical-linking";
 import PreviewSurface from "./surfaces/PreviewSurface";
 import TimelineSurface from "./surfaces/TimelineSurface";
 import SignalsSurface from "./surfaces/SignalsSurface";
@@ -92,6 +93,8 @@ export default function App() {
   const [topLineMetrics, setTopLineMetrics] = useState<OperatorTopLineMetric[]>([]);
   const [topLineSuggestions, setTopLineSuggestions] = useState<OperatorTopLineSuggestion[]>([]);
   const [search, setSearch] = useState("");
+  const [focusedEventId, setFocusedEventId] = useState<string | null>(null);
+  const [focusedSourceSlug, setFocusedSourceSlug] = useState<string | null>(null);
   const [operatorError, setOperatorError] = useState<string | null>(null);
   const [publishingMetricKey, setPublishingMetricKey] = useState<string | null>(null);
   const [loaded, setLoaded] = useState<LoadedState>(initialLoadedState);
@@ -269,7 +272,7 @@ export default function App() {
     }
 
     if (target === "timeline") {
-      await fetchEvents(force);
+      await Promise.all([fetchEvents(force), fetchSources(force)]);
       return;
     }
 
@@ -279,7 +282,7 @@ export default function App() {
     }
 
     if (target === "briefings") {
-      await fetchBriefings(force);
+      await Promise.all([fetchBriefings(force), fetchEvents(force)]);
       return;
     }
 
@@ -340,6 +343,26 @@ export default function App() {
     } finally {
       setPublishingMetricKey(null);
     }
+  }
+
+  function handleOpenSourceFocus(slug: string) {
+    setFocusedSourceSlug(slug);
+    void ensureSurfaceData("signals");
+    startTransition(() => setSurface("signals"));
+  }
+
+  async function handleOpenEventReference(reference: string) {
+    const nextEvents = loaded.events ? events : await api.events();
+    if (!loaded.events) {
+      setEvents(nextEvents);
+      markLoaded({ events: true });
+    }
+
+    const matchedEvent = findEventByReference(nextEvents, reference);
+    setSearch("");
+    setFocusedEventId(matchedEvent?.id ?? null);
+    void ensureSurfaceData("timeline");
+    startTransition(() => setSurface("timeline"));
   }
 
   const filteredEvents = useMemo(
@@ -465,20 +488,32 @@ export default function App() {
           {surface === "timeline" && (
             <TimelineSurface
               events={filteredEvents}
+              sources={sources}
               search={search}
               onSearch={setSearch}
+              focusedEventId={focusedEventId}
+              onOpenSource={handleOpenSourceFocus}
             />
           )}
 
           {surface === "signals" && (
             <SignalsSurface
               indicators={indicatorStories}
+              stories={stories}
               sources={sources}
               marketSignals={marketSignals}
+              focusedSourceSlug={focusedSourceSlug}
+              onFocusSource={setFocusedSourceSlug}
             />
           )}
 
-          {surface === "briefings" && <BriefingsSurface briefings={briefings} />}
+          {surface === "briefings" && (
+            <BriefingsSurface
+              briefings={briefings}
+              events={events}
+              onOpenEvent={handleOpenEventReference}
+            />
+          )}
 
           {surface === "operator" && (
             <Suspense

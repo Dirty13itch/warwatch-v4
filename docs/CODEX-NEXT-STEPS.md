@@ -7,7 +7,7 @@
 4. Reduce the remaining MapLibre vendor cost with deeper geospatial isolation, render-budget cleanup, or a lighter map strategy
 5. Extend the preview lane from local screenshots to deployment-aware visual proof once the public URL exists
 6. Add before/after preview diffs once the board artifact is stable enough to compare across slices
-7. Add source and story deep-linking so Snapshot, Timeline, and Briefings can hand off into richer canonical context without dead ends
+7. Extend the new public handoff lane deeper with canonical entity, claim, and story drill-down so Snapshot, Timeline, Briefings, and Signals can all resolve into the same explorable graph
 
 ## After First Milestone
 - richer map animation and geospatial timeline

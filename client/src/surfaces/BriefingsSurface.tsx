@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import type { BriefingRecord } from "@shared/types";
+import type { BriefingRecord, EventRecord } from "@shared/types";
 import { formatDate, formatDateTime } from "../lib/format";
+import { findEventByReference } from "../lib/canonical-linking";
 
 type BriefingSection = {
   heading: string | null;
@@ -44,7 +45,15 @@ function briefingHighlights(body: string): BriefingSection[] {
     .slice(0, 4);
 }
 
-export default function BriefingsSurface({ briefings }: { briefings: BriefingRecord[] }) {
+export default function BriefingsSurface({
+  briefings,
+  events,
+  onOpenEvent
+}: {
+  briefings: BriefingRecord[];
+  events: EventRecord[];
+  onOpenEvent?: (reference: string) => void;
+}) {
   const [selectedId, setSelectedId] = useState<string | null>(briefings[0]?.id ?? null);
   const selectedBriefing = briefings.find((briefing) => briefing.id === selectedId) ?? briefings[0] ?? null;
 
@@ -186,16 +195,30 @@ export default function BriefingsSurface({ briefings }: { briefings: BriefingRec
               <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/78">
                 Source references
               </p>
+              <p className="mt-3 text-sm leading-6 text-calm/72">
+                Canonical matches can jump directly into the timeline reader. Unmatched refs stay as raw citation chips.
+              </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {selectedBriefing.sourceRefs.length ? (
-                  selectedBriefing.sourceRefs.map((ref) => (
-                    <span
-                      key={ref}
-                      className="rounded-full border border-white/8 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/68"
-                    >
-                      {ref}
-                    </span>
-                  ))
+                  selectedBriefing.sourceRefs.map((ref) =>
+                    findEventByReference(events, ref) ? (
+                      <button
+                        key={ref}
+                        type="button"
+                        onClick={() => onOpenEvent?.(ref)}
+                        className="rounded-full border border-signal/18 bg-signal/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-signal"
+                      >
+                        {ref}
+                      </button>
+                    ) : (
+                      <span
+                        key={ref}
+                        className="rounded-full border border-white/8 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/68"
+                      >
+                        {ref}
+                      </span>
+                    )
+                  )
                 ) : (
                   <span className="text-sm text-calm/70">No structured source references were attached.</span>
                 )}
