@@ -5,7 +5,7 @@
 2. Use the new operator dossier lane to reduce the critical review queue items that block a fully current public SITREP and headline posture.
 3. Continue tranche-3 hardening by improving structured extraction and safer canonical update rules now that event merge quality and clustered synthesis both have topic/entity guardrails.
 4. Land a real deployment target, set `PUBLIC_BASE_URL`, and stop skipping live public verification.
-5. Use the new build artifact lane to drive MapLibre/vendor reduction and keep the public/demo shell fast on desktop and mobile.
+5. Use the new build artifact lane to drive MapLibre/vendor reduction, then keep pushing tranche-5 mobile density so the public/demo shell reaches payload faster on phones.
 6. Extend preview proof from local screenshots to deploy-aware and diff-aware artifacts.
 
 ## External Boundaries

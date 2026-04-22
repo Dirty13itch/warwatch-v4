@@ -145,40 +145,40 @@ export default function PreviewSurface({
 
   return (
     <div
-      className="space-y-6"
+      className="space-y-8"
       data-preview="preview-surface"
     >
-      <section className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-        <article className="relative overflow-hidden rounded-[32px] border border-line/80 bg-shell/78 p-6 shadow-shell sm:p-7">
+      <section className="grid gap-5 sm:gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+        <article className="shell-panel shell-panel-hero relative overflow-hidden p-5 sm:p-7">
           <div className="absolute inset-0 opacity-70">
             <div className="absolute -left-10 top-0 h-40 w-40 rounded-full bg-signal/12 blur-3xl" />
             <div className="absolute right-0 top-10 h-44 w-44 rounded-full bg-ember/10 blur-3xl" />
           </div>
           <div className="relative">
-            <p className="font-mono text-[11px] uppercase tracking-[0.34em] text-signal/72">
+            <p className="eyebrow-label">
               Snapshot
             </p>
-            <div className="mt-4 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <div className="mt-3 flex flex-col gap-4 md:mt-4 md:flex-row md:items-start md:justify-between">
               <div className="max-w-3xl">
-                <h2 className="font-display text-4xl leading-none text-white sm:text-5xl">
+                <h2 className="font-display text-[clamp(1.95rem,9vw,4.8rem)] leading-[0.92] text-white sm:text-[clamp(2.35rem,10vw,4.8rem)]">
                   {overview?.headline.label ?? "Public war posture"}
                 </h2>
-                <p className="mt-4 max-w-2xl text-lg leading-8 text-calm/84">
+                <p className="mt-3 max-w-2xl text-[0.95rem] leading-6 text-calm/84 sm:mt-4 sm:text-lg sm:leading-8">
                   {overview?.headline.description ??
                     "Public-facing orientation over a review-gated intelligence shell."}
                 </p>
               </div>
-              <div className="rounded-[24px] border border-white/8 bg-white/[0.04] px-4 py-3 text-right">
+              <div className="shell-panel-elevated px-3 py-2 text-right sm:px-4 sm:py-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-calm/60">
                   Current day
                 </p>
-                <p className="mt-2 font-display text-3xl text-white">
+                <p className="mt-1 font-display text-[1.9rem] text-white sm:mt-2 sm:text-3xl">
                   {overview?.currentDay ?? "..."}
                 </p>
               </div>
             </div>
 
-            <div className="mt-6 grid gap-3 md:grid-cols-3">
+            <div className="mt-5 grid gap-3 md:mt-6 md:grid-cols-3">
               {[
                 ["Public stale flag", overview?.stale ? "YES" : "NO", "Whether public top-line truth still carries seed-era values"],
                 [
@@ -196,7 +196,7 @@ export default function PreviewSurface({
               ].map(([label, value, detail]) => (
                 <div
                   key={label}
-                  className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4"
+                  className={`p-4 ${label === "Top-line freshness" ? "subtle-card subtle-card-strong" : "subtle-card"}`}
                 >
                   <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-calm/58">
                     {label}
@@ -209,13 +209,13 @@ export default function PreviewSurface({
           </div>
         </article>
 
-        <article className="rounded-[32px] border border-line/80 bg-shell/78 p-6 shadow-shell sm:p-7">
-          <p className="font-mono text-[11px] uppercase tracking-[0.34em] text-signal/72">
+        <article className="shell-panel shell-panel-editorial p-6 sm:p-7">
+          <p className="eyebrow-label">
             Latest SITREP
           </p>
           <div className="mt-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
             <div>
-              <h2 className="font-display text-3xl text-white">
+              <h2 className="font-display text-[clamp(2.1rem,4vw,3.3rem)] leading-[0.96] text-white">
                 {latestBriefing?.title ?? "Awaiting current briefing"}
               </h2>
               <p className="mt-2 text-sm text-calm/70">
@@ -231,14 +231,14 @@ export default function PreviewSurface({
               (line) => (
                 <div
                   key={line}
-                  className="rounded-[18px] border border-white/8 bg-white/[0.03] px-4 py-3"
+                  className="subtle-card px-4 py-3"
                 >
                   <p className="text-sm leading-6 text-calm/84">{line}</p>
                 </div>
               )
             )}
           </div>
-          <div className="mt-5 rounded-[22px] border border-signal/18 bg-signal/8 p-4">
+          <div className="subtle-card subtle-card-warm mt-5 p-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/80">
               Why this matters
             </p>
@@ -253,9 +253,9 @@ export default function PreviewSurface({
         {overview?.kpis.map((item) => (
           <article
             key={item.key}
-            className="rounded-[26px] border border-line/80 bg-shell/72 p-5 shadow-shell"
+            className="metric-tile p-5"
           >
-            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-signal/72">
+            <p className="eyebrow-label text-[10px]">
               {item.label}
             </p>
             <h3 className="mt-4 font-display text-3xl text-white">{item.value}</h3>
@@ -268,15 +268,15 @@ export default function PreviewSurface({
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <article className="rounded-[30px] border border-line/80 bg-shell/72 p-6 shadow-shell">
+        <article className="shell-panel p-6">
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.32em] text-signal/72">
+              <p className="eyebrow-label">
                 Fronts
               </p>
-              <h2 className="mt-2 font-display text-3xl text-white">Conflict line posture</h2>
+              <h2 className="section-heading mt-2 text-[2.3rem]">Conflict line posture</h2>
             </div>
-            <p className="max-w-[22rem] text-sm leading-6 text-calm/78">
+            <p className="section-copy max-w-[22rem]">
               Curated fronts keep the public shell legible while still reflecting significance and review posture.
             </p>
           </div>
@@ -284,7 +284,7 @@ export default function PreviewSurface({
             {(overview?.fronts ?? []).slice(0, 4).map((front) => (
               <article
                 key={front.id}
-                className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4"
+                className={`p-4 ${front.significance === "critical" ? "subtle-card subtle-card-warm" : front.significance === "high" ? "subtle-card subtle-card-strong" : "subtle-card"}`}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
@@ -303,15 +303,15 @@ export default function PreviewSurface({
           </div>
         </article>
 
-        <article className="rounded-[30px] border border-line/80 bg-shell/72 p-6 shadow-shell">
+        <article className="shell-panel shell-panel-editorial p-6">
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.32em] text-signal/72">
+              <p className="eyebrow-label">
                 Market pressure
               </p>
-              <h2 className="mt-2 font-display text-3xl text-white">Live signals at a glance</h2>
+              <h2 className="section-heading mt-2 text-[2.3rem]">Live signals at a glance</h2>
             </div>
-            <p className="max-w-[18rem] text-sm leading-6 text-calm/78">
+            <p className="section-copy max-w-[18rem]">
               The public preview lane shows whether market stress is reinforcing the current conflict story.
             </p>
           </div>
@@ -321,7 +321,7 @@ export default function PreviewSurface({
               return (
                 <article
                   key={definition.key}
-                  className="rounded-[20px] border border-white/8 bg-white/[0.03] p-4"
+                  className="subtle-card p-4"
                 >
                   <div className="flex items-end justify-between gap-4">
                     <div>
@@ -345,17 +345,17 @@ export default function PreviewSurface({
 
       <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <article
-          className="rounded-[30px] border border-line/80 bg-shell/72 p-6 shadow-shell"
+          className="shell-panel p-6"
           data-preview="preview-dossiers"
         >
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.32em] text-signal/72">
+              <p className="eyebrow-label">
                 Theater dossiers
               </p>
-              <h2 className="mt-2 font-display text-3xl text-white">Who is shaping the current picture</h2>
+              <h2 className="section-heading mt-2 text-[2.3rem]">Who is shaping the current picture</h2>
             </div>
-            <p className="max-w-[18rem] text-sm leading-6 text-calm/78">
+            <p className="section-copy max-w-[18rem]">
               Snapshot now opens directly into the canonical actor graph instead of stopping at front summaries.
             </p>
           </div>
@@ -363,7 +363,7 @@ export default function PreviewSurface({
             {dossierEntries.map((entry) => (
               <article
                 key={entry.entity.id}
-                className="rounded-[20px] border border-white/8 bg-white/[0.03] p-4"
+                className="subtle-card p-4"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -399,15 +399,15 @@ export default function PreviewSurface({
           </div>
         </article>
 
-        <article className="rounded-[30px] border border-line/80 bg-shell/72 p-6 shadow-shell">
+        <article className="shell-panel shell-panel-editorial p-6">
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.32em] text-signal/72">
+              <p className="eyebrow-label">
                 Claim posture
               </p>
-              <h2 className="mt-2 font-display text-3xl text-white">Graph-backed review pressure</h2>
+              <h2 className="section-heading mt-2 text-[2.3rem]">Graph-backed review pressure</h2>
             </div>
-            <p className="max-w-[18rem] text-sm leading-6 text-calm/78">
+            <p className="section-copy max-w-[18rem]">
               Snapshot can now surface canonical claim pressure without exposing the operator-only review workflow.
             </p>
           </div>
@@ -431,7 +431,7 @@ export default function PreviewSurface({
             ].map(([label, value, detail]) => (
               <div
                 key={label}
-                className="rounded-[20px] border border-white/8 bg-white/[0.03] p-4"
+                className="subtle-card p-4"
               >
                 <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
                   {label}

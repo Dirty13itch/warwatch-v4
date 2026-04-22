@@ -16,11 +16,11 @@ export function ReviewQueueDetailPanel({
 }) {
   if (!detail) {
     return (
-      <section className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell">
-        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
+      <section className="shell-panel p-5">
+        <p className="eyebrow-label">
           Review dossier
         </p>
-        <div className="mt-5 rounded-[22px] border border-white/8 bg-white/[0.03] p-5 text-sm leading-6 text-calm/76">
+        <div className="subtle-card mt-5 p-5 text-sm leading-6 text-calm/76">
           Select a queue item to inspect the canonical object, related evidence, and recommended next action.
         </div>
       </section>
@@ -29,15 +29,15 @@ export function ReviewQueueDetailPanel({
 
   return (
     <section
-      className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell"
+      className="shell-panel p-5"
       data-preview="operator-review-detail"
     >
       <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
+          <p className="eyebrow-label">
             Review dossier
           </p>
-          <h2 className="mt-2 font-display text-2xl text-white">{detail.item.title}</h2>
+          <h2 className="section-heading mt-2 text-[2rem]">{detail.item.title}</h2>
         </div>
         <div className="grid gap-2 text-right">
           <span className="rounded-full border border-hostile/25 bg-hostile/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.22em] text-hostile">
@@ -49,7 +49,7 @@ export function ReviewQueueDetailPanel({
         </div>
       </div>
 
-      <div className="mt-5 rounded-[20px] border border-white/8 bg-[#08111b]/90 p-4">
+      <div className="detail-panel mt-5 p-4">
         <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
           Recommended action
         </p>
@@ -81,7 +81,7 @@ export function ReviewQueueDetailPanel({
 
       <div className="mt-5 grid gap-4">
         {detail.storySuggestion ? (
-          <article className="rounded-[22px] border border-signal/16 bg-signal/8 p-4">
+          <article className="subtle-card subtle-card-strong p-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
               Proposed story promotion
             </p>
@@ -130,20 +130,20 @@ export function ReviewQueueDetailPanel({
         ) : null}
 
         {detail.claimSuggestion ? (
-          <article className="rounded-[22px] border border-signal/16 bg-signal/8 p-4">
+          <article className="subtle-card subtle-card-strong p-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
               Proposed claim promotion
             </p>
             <div className="mt-3 grid gap-3 md:grid-cols-3">
-              <div className="rounded-[16px] border border-white/8 bg-white/[0.03] p-3">
+              <div className="subtle-card p-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">Type</p>
                 <p className="mt-2 text-sm font-semibold text-white">{formatTokenLabel(detail.claimSuggestion.status)}</p>
               </div>
-              <div className="rounded-[16px] border border-white/8 bg-white/[0.03] p-3">
+              <div className="subtle-card p-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">Proposed status</p>
                 <p className="mt-2 text-sm font-semibold text-white">{detail.claimSuggestion.proposedStatus}</p>
               </div>
-              <div className="rounded-[16px] border border-white/8 bg-white/[0.03] p-3">
+              <div className="subtle-card p-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">Confidence</p>
                 <p className="mt-2 text-sm font-semibold text-white">{detail.claimSuggestion.confidence}</p>
               </div>
@@ -177,7 +177,7 @@ export function ReviewQueueDetailPanel({
         ) : null}
 
         {detail.event ? (
-          <article className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+          <article className="subtle-card p-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
               Canonical event
             </p>
@@ -190,16 +190,16 @@ export function ReviewQueueDetailPanel({
         ) : null}
 
         {detail.claim ? (
-          <article className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+          <article className="subtle-card p-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
               Canonical claim
             </p>
             <div className="mt-3 grid gap-3 md:grid-cols-2">
-              <div className="rounded-[16px] border border-white/8 bg-white/[0.03] p-3">
+              <div className="subtle-card p-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">Status</p>
                 <p className="mt-2 text-sm font-semibold text-white">{detail.claim.status}</p>
               </div>
-              <div className="rounded-[16px] border border-white/8 bg-white/[0.03] p-3">
+              <div className="subtle-card p-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">Review state</p>
                 <p className="mt-2 text-sm font-semibold text-white">{detail.claim.reviewState}</p>
               </div>
@@ -219,20 +219,20 @@ export function ReviewQueueDetailPanel({
         ) : null}
 
         {detail.story ? (
-          <article className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+          <article className="subtle-card p-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
               Canonical story
             </p>
             <div className="mt-3 grid gap-3 md:grid-cols-3">
-              <div className="rounded-[16px] border border-white/8 bg-white/[0.03] p-3">
+              <div className="subtle-card p-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">Section</p>
                 <p className="mt-2 text-sm font-semibold text-white">{formatTokenLabel(detail.story.section)}</p>
               </div>
-              <div className="rounded-[16px] border border-white/8 bg-white/[0.03] p-3">
+              <div className="subtle-card p-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">Significance</p>
                 <p className="mt-2 text-sm font-semibold text-white">{detail.story.significance}</p>
               </div>
-              <div className="rounded-[16px] border border-white/8 bg-white/[0.03] p-3">
+              <div className="subtle-card p-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">Review state</p>
                 <p className="mt-2 text-sm font-semibold text-white">{detail.story.reviewState}</p>
               </div>
@@ -247,7 +247,7 @@ export function ReviewQueueDetailPanel({
         ) : null}
 
         {detail.briefing ? (
-          <article className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+          <article className="subtle-card subtle-card-warm p-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
               Canonical briefing
             </p>
@@ -275,7 +275,7 @@ export function ReviewQueueDetailPanel({
         ) : null}
       </div>
 
-      <div className="mt-5 rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+      <div className="subtle-card mt-5 p-4">
         <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
           Related evidence
         </p>
@@ -284,7 +284,7 @@ export function ReviewQueueDetailPanel({
             detail.supportingEvents.map((event) => (
               <article
                 key={event.id}
-                className="rounded-[18px] border border-white/8 bg-white/[0.03] p-4"
+                className="subtle-card p-4"
               >
                 <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                   <div>

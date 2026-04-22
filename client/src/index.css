@@ -4,6 +4,11 @@
 
 :root {
   color-scheme: dark;
+  --shell-focus-ring: rgba(89, 211, 255, 0.18);
+  --shell-focus-border: rgba(89, 211, 255, 0.52);
+  --shell-border: rgba(32, 56, 74, 0.78);
+  --shell-panel: rgba(11, 22, 33, 0.74);
+  --shell-card: rgba(255, 255, 255, 0.04);
 }
 
 html,
@@ -12,13 +17,236 @@ body,
   min-height: 100%;
 }
 
+html {
+  background: #07111b;
+  scrollbar-color: rgba(89, 211, 255, 0.28) rgba(7, 17, 27, 0.8);
+}
+
 body {
   margin: 0;
-  background: #07111b;
+  color: #b7c7d6;
+  background:
+    radial-gradient(circle at top left, rgba(89, 211, 255, 0.12), transparent 28%),
+    radial-gradient(circle at top right, rgba(255, 122, 89, 0.08), transparent 24%),
+    linear-gradient(180deg, #111924 0%, #0a131d 38%, #07111b 100%);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 * {
   box-sizing: border-box;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p,
+li {
+  text-wrap: pretty;
+}
+
+::selection {
+  background: rgba(89, 211, 255, 0.2);
+  color: #ffffff;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a,
+button,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  border-color: var(--shell-focus-border) !important;
+  box-shadow:
+    0 0 0 1px rgba(89, 211, 255, 0.34),
+    0 0 0 4px var(--shell-focus-ring);
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -3rem;
+  z-index: 50;
+  border-radius: 9999px;
+  border: 1px solid rgba(89, 211, 255, 0.4);
+  background: rgba(7, 17, 27, 0.96);
+  color: #ffffff;
+  padding: 0.7rem 1rem;
+  font: 500 0.75rem/1.1 "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+.shell-panel {
+  border: 1px solid var(--shell-border);
+  border-radius: 28px;
+  background: var(--shell-panel);
+  box-shadow: 0 24px 64px rgba(4, 11, 18, 0.48);
+  backdrop-filter: blur(18px);
+}
+
+.shell-panel-hero {
+  border-radius: 36px;
+  background:
+    radial-gradient(circle at top left, rgba(89, 211, 255, 0.12), transparent 30%),
+    radial-gradient(circle at top right, rgba(255, 122, 89, 0.1), transparent 24%),
+    linear-gradient(135deg, rgba(11, 28, 41, 0.96), rgba(8, 17, 27, 0.94) 55%, rgba(23, 26, 36, 0.92));
+}
+
+.shell-panel-editorial {
+  background:
+    radial-gradient(circle at top right, rgba(255, 122, 89, 0.12), transparent 30%),
+    linear-gradient(150deg, rgba(20, 22, 31, 0.94), rgba(12, 18, 29, 0.94));
+}
+
+.shell-panel-elevated {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 18px 38px rgba(4, 11, 18, 0.22);
+  backdrop-filter: blur(18px);
+}
+
+.detail-panel {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(10, 18, 28, 0.96), rgba(7, 14, 22, 0.94));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 24px 64px rgba(4, 11, 18, 0.44);
+}
+
+.subtle-card {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  background: var(--shell-card);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.subtle-card-strong {
+  background:
+    linear-gradient(180deg, rgba(15, 31, 44, 0.88), rgba(12, 24, 37, 0.8));
+  border-color: rgba(89, 211, 255, 0.12);
+}
+
+.subtle-card-warm {
+  background:
+    linear-gradient(180deg, rgba(33, 27, 31, 0.86), rgba(14, 21, 32, 0.82));
+  border-color: rgba(255, 122, 89, 0.12);
+}
+
+.metric-tile {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(16, 32, 47, 0.86), rgba(11, 22, 33, 0.78));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 18px 40px rgba(4, 11, 18, 0.28);
+}
+
+.metric-tile::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(89, 211, 255, 0.72), rgba(255, 122, 89, 0.4));
+  opacity: 0.9;
+}
+
+.eyebrow-label {
+  font: 500 0.6875rem/1 "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(89, 211, 255, 0.72);
+}
+
+.section-heading {
+  color: #ffffff;
+  font-family: "Rajdhani", system-ui, sans-serif;
+  font-size: clamp(1.75rem, 2.8vw, 2.5rem);
+  line-height: 0.94;
+}
+
+.section-copy {
+  color: rgba(183, 199, 214, 0.8);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.interactive-pill {
+  border-radius: 9999px;
+  border-width: 1px;
+  padding: 0.5rem 0.72rem;
+  font: 500 0.5625rem/1 "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease,
+    transform 140ms ease;
+}
+
+.interactive-pill:hover {
+  transform: translateY(-1px);
+}
+
+@media (min-width: 640px) {
+  .interactive-pill {
+    padding: 0.65rem 1rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.22em;
+  }
+}
+
+.interactive-pill--active {
+  border-color: rgba(89, 211, 255, 0.32);
+  background: rgba(89, 211, 255, 0.12);
+  color: #59d3ff;
+  box-shadow: inset 0 0 0 1px rgba(89, 211, 255, 0.08);
+}
+
+.interactive-pill--idle {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(183, 199, 214, 0.74);
+}
+
+.interactive-pill--idle:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
 }
 
 .grid-radar {
@@ -37,3 +265,13 @@ body {
   border-top-color: #081018;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

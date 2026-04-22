@@ -70,21 +70,21 @@ export default function OperatorSurface({
 
   return (
     <div
-      className="space-y-5"
+      className="space-y-6"
       data-preview="operator-surface"
     >
       <section
-        className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell"
+        className="shell-panel p-5"
         data-preview="topline-control"
       >
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
+            <p className="eyebrow-label">
               Top-line control
             </p>
-            <h2 className="font-display text-2xl text-white">Reviewed KPI refresh lane</h2>
+            <h2 className="section-heading text-[2rem]">Reviewed KPI refresh lane</h2>
           </div>
-          <p className="max-w-[28rem] text-sm leading-6 text-calm/80">
+          <p className="section-copy max-w-[28rem]">
             Use the operator lane to replace seeded strike, Hormuz, casualty, or oil values with reviewed snapshots. The public stale flag only clears when every top-line metric is current.
           </p>
         </div>
@@ -113,20 +113,20 @@ export default function OperatorSurface({
 
       <div className="grid gap-5 xl:grid-cols-[1.2fr_0.8fr]">
         <section
-          className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell"
+          className="shell-panel p-5"
           data-preview="operator-queue"
         >
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
+              <p className="eyebrow-label">
                 Review queue
               </p>
-              <h2 className="font-display text-2xl text-white">Critical promotion gate</h2>
+              <h2 className="section-heading text-[2rem]">Critical promotion gate</h2>
             </div>
             <button
               type="button"
               onClick={onIngest}
-              className="rounded-full border border-signal/25 bg-signal/12 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.24em] text-signal transition hover:bg-signal/18"
+              className="interactive-pill interactive-pill--active"
             >
               Run ingest
             </button>
@@ -143,7 +143,7 @@ export default function OperatorSurface({
             ].map(([label, value]) => (
               <div
                 key={label}
-                className="rounded-[18px] border border-white/8 bg-white/[0.03] p-3"
+                className={`p-3 ${label === "Critical" ? "subtle-card subtle-card-warm" : label === "Pending" ? "subtle-card subtle-card-strong" : "subtle-card"}`}
               >
                 <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-calm/60">{label}</p>
                 <p className="mt-2 font-display text-2xl text-white">{value}</p>
@@ -158,8 +158,8 @@ export default function OperatorSurface({
                 className={clsx(
                   "rounded-[22px] border p-4 transition",
                   selectedQueueId === item.id
-                    ? "border-signal/20 bg-signal/8"
-                    : "border-white/8 bg-white/[0.025] hover:border-white/14 hover:bg-white/[0.04]"
+                    ? "subtle-card subtle-card-strong border-signal/20"
+                    : "subtle-card hover:border-white/14 hover:bg-white/[0.05]"
                 )}
               >
                 <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
@@ -208,16 +208,16 @@ export default function OperatorSurface({
             onOpenEntity={onOpenEntity}
           />
 
-          <section className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell">
-            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
+          <section className="shell-panel shell-panel-editorial p-5">
+            <p className="eyebrow-label">
               Ingestion runs
             </p>
-            <h2 className="mt-2 font-display text-2xl text-white">Feed health</h2>
+            <h2 className="section-heading mt-2 text-[2rem]">Feed health</h2>
             <div className="mt-5 space-y-4">
               {runs.map((run) => (
                 <article
                   key={run.id}
-                  className="rounded-[22px] border border-white/8 bg-white/[0.025] p-4"
+                  className="subtle-card p-4"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <div>

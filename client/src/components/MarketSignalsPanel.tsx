@@ -73,15 +73,15 @@ export function MarketSignalsPanel({
   marketSignals: Record<string, MetricSnapshot[]>;
 }) {
   return (
-    <section className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell">
+    <section className="shell-panel shell-panel-editorial p-5">
       <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
+          <p className="eyebrow-label">
             Market signals
           </p>
-          <h2 className="font-display text-2xl text-white">Live economic pressure lane</h2>
+          <h2 className="section-heading text-[2rem]">Live economic pressure lane</h2>
         </div>
-        <p className="max-w-[24rem] text-sm text-calm/78">
+        <p className="section-copy max-w-[24rem]">
           Structured commodity snapshots now flow into the canonical metric store instead of leaving oil and safe-haven signals frozen in the legacy bundle.
         </p>
       </div>

@@ -89,17 +89,17 @@ export function SourceTable({
 
   return (
     <section
-      className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell"
+      className="shell-panel p-5"
       data-preview="source-reader"
     >
       <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
+          <p className="eyebrow-label">
             Source posture
           </p>
-          <h2 className="font-display text-2xl text-white">Reliability ledger and source reader</h2>
+          <h2 className="section-heading text-[2rem]">Reliability ledger and source reader</h2>
         </div>
-        <p className="max-w-[22rem] text-sm text-calm/78">
+        <p className="section-copy max-w-[22rem]">
           Public shell now separates source weighting from event display and can hand readers into the underlying source posture.
         </p>
       </div>
@@ -110,14 +110,15 @@ export function SourceTable({
             <button
               key={source.id}
               type="button"
+              aria-pressed={selectedSource?.id === source.id}
               onClick={() => {
                 setSelectedSlug(source.slug);
                 onFocusSource?.(source.slug);
               }}
               className={`w-full rounded-[20px] border p-4 text-left transition ${
                 selectedSource?.id === source.id
-                  ? "border-signal/22 bg-signal/8"
-                  : "border-white/8 bg-white/[0.03] hover:border-white/14 hover:bg-white/[0.04]"
+                  ? "subtle-card subtle-card-strong border-signal/22"
+                  : "subtle-card hover:border-white/14 hover:bg-white/[0.05]"
               }`}
             >
               <div className="flex items-start justify-between gap-3">
@@ -141,7 +142,7 @@ export function SourceTable({
           ))}
         </div>
 
-        <div className="rounded-[24px] border border-white/8 bg-[#08111b]/90 p-5">
+        <div className="detail-panel p-5">
           {selectedSource ? (
             <div className="space-y-5">
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
@@ -162,24 +163,21 @@ export function SourceTable({
                   ["Confidence band", reliabilityLabel(selectedSource.reliabilityScore)],
                   ["Bias", selectedSource.biasDirection]
                 ].map(([label, value]) => (
-                  <div
-                    key={label}
-                    className="rounded-[18px] border border-white/8 bg-white/[0.03] p-3"
-                  >
+                  <div key={label} className="subtle-card p-3">
                     <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-calm/60">{label}</p>
                     <p className="mt-2 text-sm font-semibold text-white">{value}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="rounded-[20px] border border-white/8 bg-white/[0.03] p-4">
+              <div className="subtle-card p-4">
                 <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
                   Assessment
                 </p>
                 <p className="mt-3 text-sm leading-7 text-calm/84">{selectedSource.notes}</p>
               </div>
 
-              <div className="rounded-[20px] border border-white/8 bg-white/[0.03] p-4">
+              <div className="subtle-card p-4">
                 <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
                   Related stories
                 </p>
@@ -188,7 +186,7 @@ export function SourceTable({
                     relatedStories.map((story) => (
                       <div
                         key={story.id}
-                        className="rounded-[16px] border border-white/8 bg-white/[0.03] p-3"
+                        className="subtle-card p-3"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <h4 className="text-sm font-semibold text-white">{story.title}</h4>
@@ -207,7 +205,7 @@ export function SourceTable({
                 </div>
               </div>
 
-              <div className="rounded-[20px] border border-white/8 bg-white/[0.03] p-4">
+              <div className="subtle-card subtle-card-strong p-4">
                 <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
                   Actor threads
                 </p>
@@ -219,7 +217,7 @@ export function SourceTable({
                     matchedEntities.map((entity) => (
                       <div
                         key={entity.id}
-                        className="rounded-[16px] border border-white/8 bg-white/[0.03] p-3"
+                        className="subtle-card p-3"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div>

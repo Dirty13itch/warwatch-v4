@@ -47,15 +47,15 @@ export default function DossiersSurface({
 
   return (
     <div className="space-y-6" data-preview="dossiers-surface">
-      <section className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell">
+      <section className="shell-panel p-5">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
+            <p className="eyebrow-label">
               Dossiers
             </p>
-            <h2 className="font-display text-2xl text-white">Canonical actor and claim graph</h2>
+            <h2 className="section-heading text-[2rem]">Canonical actor and claim graph</h2>
           </div>
-          <p className="max-w-[24rem] text-sm leading-6 text-calm/78">
+          <p className="section-copy max-w-[24rem]">
             This is the product shift from feed reader to explorable intelligence graph: actors, claims, influence lanes, and the public evidence stack live in one surface.
           </p>
         </div>
@@ -69,7 +69,7 @@ export default function DossiersSurface({
           ].map(([label, value]) => (
             <div
               key={label}
-              className="rounded-[18px] border border-white/8 bg-white/[0.03] p-4"
+              className="subtle-card p-4"
             >
               <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-calm/58">{label}</p>
               <p className="mt-3 font-display text-2xl text-white">{value}</p>
@@ -79,15 +79,15 @@ export default function DossiersSurface({
       </section>
 
       <div className="grid gap-5 xl:grid-cols-[0.72fr_1.28fr]">
-        <section className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell">
+        <section className="shell-panel p-5">
           <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
+              <p className="eyebrow-label">
                 Actor rail
               </p>
-              <h2 className="font-display text-2xl text-white">Campaign participants and chokepoints</h2>
+              <h2 className="section-heading text-[2rem]">Campaign participants and chokepoints</h2>
             </div>
-            <p className="max-w-[16rem] text-sm leading-6 text-calm/76">
+            <p className="section-copy max-w-[16rem]">
               Each dossier resolves into relationships, claims, and the latest public evidence.
             </p>
           </div>
@@ -99,11 +99,12 @@ export default function DossiersSurface({
                 <button
                   key={entity.id}
                   type="button"
+                  aria-pressed={selected}
                   onClick={() => onSelectEntity(entity.slug)}
                   className={`w-full rounded-[22px] border p-4 text-left transition ${
                     selected
-                      ? "border-signal/22 bg-signal/8"
-                      : "border-white/8 bg-white/[0.03] hover:border-white/14 hover:bg-white/[0.04]"
+                      ? "subtle-card subtle-card-strong border-signal/22"
+                      : "subtle-card hover:border-white/14 hover:bg-white/[0.05]"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -130,17 +131,17 @@ export default function DossiersSurface({
         </section>
 
         <section
-          className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell"
+          className="shell-panel p-5"
           data-preview="dossiers-detail"
         >
           {dossier ? (
             <div className="space-y-5">
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                 <div>
-                  <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
+                  <p className="eyebrow-label">
                     Selected dossier
                   </p>
-                  <h2 className="mt-2 font-display text-3xl text-white">{dossier.entity.name}</h2>
+                  <h2 className="section-heading mt-2 text-[2.3rem]">{dossier.entity.name}</h2>
                   <p className="mt-3 max-w-3xl text-sm leading-7 text-calm/82">{dossier.entity.summary}</p>
                 </div>
                 <span className="rounded-full border border-white/8 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/64">
@@ -157,17 +158,14 @@ export default function DossiersSurface({
                     freshestEvidence ? formatDate(freshestEvidence) : "No linked public evidence"
                   ]
                 ].map(([label, value]) => (
-                  <div
-                    key={label}
-                    className="rounded-[18px] border border-white/8 bg-white/[0.03] p-3"
-                  >
+                  <div key={label} className="subtle-card p-3">
                     <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-calm/60">{label}</p>
                     <p className="mt-2 text-sm font-semibold text-white">{value}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="rounded-[24px] border border-white/8 bg-[#08111b]/90 p-5">
+              <div className="detail-panel p-5">
                 <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
                   <div>
                     <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
@@ -185,7 +183,7 @@ export default function DossiersSurface({
                     dossier.relationships.map((link) => (
                       <div
                         key={link.relationship.id}
-                        className="rounded-[18px] border border-white/8 bg-white/[0.03] p-4"
+                        className="subtle-card p-4"
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div>
@@ -207,7 +205,7 @@ export default function DossiersSurface({
                       </div>
                     ))
                   ) : (
-                    <div className="rounded-[18px] border border-white/8 bg-white/[0.03] p-4 text-sm leading-6 text-calm/76">
+                    <div className="subtle-card p-4 text-sm leading-6 text-calm/76">
                       No canonical relationship lanes are attached to this actor yet.
                     </div>
                   )}

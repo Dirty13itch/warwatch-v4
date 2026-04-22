@@ -39,9 +39,9 @@ export default function CommandSurface({
         {overview?.kpis.map((item) => (
           <article
             key={item.key}
-            className="rounded-[24px] border border-line/80 bg-shell/72 p-5 shadow-shell"
+            className="metric-tile p-5"
           >
-            <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-signal/72">
+            <p className="eyebrow-label">
               {item.label}
             </p>
             <h2 className="mt-4 font-display text-3xl text-white">{item.value}</h2>
@@ -83,25 +83,25 @@ export default function CommandSurface({
       </section>
 
       <section className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
-        <article className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell">
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
+        <article className="shell-panel p-5">
+          <p className="eyebrow-label">
             Freshness
           </p>
-          <h2 className="mt-2 font-display text-2xl text-white">Public truth posture</h2>
+          <h2 className="section-heading mt-2 text-[2rem]">Public truth posture</h2>
           <div className="mt-5 grid gap-4 sm:grid-cols-3">
-            <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+            <div className="subtle-card p-4">
               <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-calm/60">Stale flag</p>
               <p className="mt-3 font-display text-3xl text-white">
                 {overview?.stale ? "YES" : "NO"}
               </p>
             </div>
-            <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+            <div className="subtle-card subtle-card-strong p-4">
               <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-calm/60">Top-line freshness</p>
               <p className="mt-3 font-display text-3xl text-white">
                 {overview?.freshness.topLine ?? "unknown"}
               </p>
             </div>
-            <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+            <div className="subtle-card p-4">
               <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-calm/60">Last successful ingest</p>
               <p className="mt-3 text-sm leading-6 text-calm/82">
                 {overview?.freshness.lastSuccessfulIngestionAt ?? "none yet"}
@@ -110,21 +110,21 @@ export default function CommandSurface({
           </div>
         </article>
 
-        <article className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell">
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
+        <article className="shell-panel shell-panel-editorial p-5">
+          <p className="eyebrow-label">
             Review pressure
           </p>
-          <h2 className="mt-2 font-display text-2xl text-white">Queue heat</h2>
+          <h2 className="section-heading mt-2 text-[2rem]">Queue heat</h2>
           <div className="mt-5 space-y-4">
-            <div className="flex items-center justify-between rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+            <div className="subtle-card subtle-card-warm flex items-center justify-between p-4">
               <span className="text-sm text-calm/82">Pending review items</span>
               <span className="font-display text-3xl text-white">{overview?.queue.pending ?? 0}</span>
             </div>
-            <div className="flex items-center justify-between rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+            <div className="subtle-card subtle-card-warm flex items-center justify-between p-4">
               <span className="text-sm text-calm/82">Critical review items</span>
               <span className="font-display text-3xl text-white">{overview?.queue.critical ?? 0}</span>
             </div>
-            <div className="flex items-center justify-between rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+            <div className="subtle-card flex items-center justify-between p-4">
               <span className="text-sm text-calm/82">Latest ingestion status</span>
               <span className="font-mono text-[11px] uppercase tracking-[0.22em] text-signal">
                 {overview?.queue.lastIngestionStatus ?? "seed-only"}

@@ -162,6 +162,7 @@ Tasks:
 1. Reduce the MapLibre vendor burden with deeper isolation or a lighter strategy.
    Current state: build pressure is now explicit through `reports/build/LATEST.md` and heartbeat bundle summaries, so the MapLibre lane has a durable proof surface instead of a transient warning.
 2. Improve mobile layout where dense public surfaces still compress poorly.
+   Current state: the shell hierarchy pass has landed differentiated panel roles, explicit focus-visible treatment, and a tighter mobile hero/nav/status header; the next follow-through is deeper above-the-fold payload efficiency after the oversized-first-screen issue.
 3. Add preview diffs and higher-signal visual proof for before/after slices.
 4. Tighten accessibility, readability, and interaction clarity.
 5. Keep Snapshot strong as the default public/demo lane while command remains the deeper operational surface.

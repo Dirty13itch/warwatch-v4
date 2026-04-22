@@ -117,21 +117,22 @@ export default function TimelineSurface({
 
   return (
     <section
-      className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell"
+      className="shell-panel p-5"
       data-preview="timeline-surface"
     >
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
+          <p className="eyebrow-label">
             Timeline
           </p>
-          <h2 className="font-display text-2xl text-white">Chronology explorer with review and corroboration context</h2>
+          <h2 className="section-heading text-[2rem]">Chronology explorer with review and corroboration context</h2>
         </div>
         <input
           value={search}
           onChange={(event) => onSearch(event.target.value)}
-          placeholder="Search events, sources, categories"
-          className="w-full rounded-full border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none placeholder:text-calm/40 md:max-w-sm"
+          aria-label="Search timeline events"
+          placeholder="Search events, sources, categories…"
+          className="w-full rounded-full border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-calm/40 md:max-w-sm"
         />
       </div>
 
@@ -144,7 +145,7 @@ export default function TimelineSurface({
         ].map(([label, value]) => (
           <div
             key={label}
-            className="rounded-[18px] border border-white/8 bg-white/[0.03] p-3"
+            className="subtle-card p-3"
           >
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-calm/60">{label}</p>
             <p className="mt-2 font-display text-2xl text-white">{value}</p>
@@ -159,10 +160,11 @@ export default function TimelineSurface({
               key={item}
               type="button"
               onClick={() => setCategory(item)}
-              className={`rounded-full border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.22em] ${
+              aria-pressed={category === item}
+              className={`interactive-pill px-3 py-2 text-[10px] ${
                 category === item
-                  ? "border-signal/24 bg-signal/12 text-signal"
-                  : "border-white/8 bg-white/[0.03] text-calm/70"
+                  ? "interactive-pill--active"
+                  : "interactive-pill--idle"
               }`}
             >
               {item === "all" ? "All categories" : formatTokenLabel(item)}
@@ -176,10 +178,11 @@ export default function TimelineSurface({
               key={item}
               type="button"
               onClick={() => setSignificance(item)}
-              className={`rounded-full border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.22em] ${
+              aria-pressed={significance === item}
+              className={`interactive-pill px-3 py-2 text-[10px] ${
                 significance === item
-                  ? "border-warning/24 bg-warning/10 text-warning"
-                  : "border-white/8 bg-white/[0.03] text-calm/70"
+                  ? "border-warning/28 bg-warning/12 text-warning"
+                  : "interactive-pill--idle"
               }`}
             >
               {item === "all" ? "All significance" : item}
@@ -190,10 +193,11 @@ export default function TimelineSurface({
               key={item}
               type="button"
               onClick={() => setConfidence(item)}
-              className={`rounded-full border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.22em] ${
+              aria-pressed={confidence === item}
+              className={`interactive-pill px-3 py-2 text-[10px] ${
                 confidence === item
-                  ? "border-signal/24 bg-signal/12 text-signal"
-                  : "border-white/8 bg-white/[0.03] text-calm/70"
+                  ? "interactive-pill--active"
+                  : "interactive-pill--idle"
               }`}
             >
               {item === "all" ? "All confidence" : item}
@@ -221,7 +225,7 @@ export default function TimelineSurface({
         </div>
 
         <aside
-          className="rounded-[26px] border border-line/80 bg-[#08111b]/90 p-5 shadow-shell"
+          className="detail-panel p-5"
           data-preview="timeline-detail"
         >
           {selectedEvent ? (
@@ -233,7 +237,7 @@ export default function TimelineSurface({
                   </p>
                   <h3 className="mt-2 text-2xl font-semibold text-white">{selectedEvent.title}</h3>
                 </div>
-                <div className="rounded-[18px] border border-white/8 bg-white/[0.03] px-3 py-2 text-right">
+                <div className="subtle-card subtle-card-strong px-3 py-2 text-right">
                   <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-calm/60">Public posture</p>
                   <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.2em] text-white">
                     {publicationLabel(selectedEvent)}
@@ -250,17 +254,14 @@ export default function TimelineSurface({
                   ["Corroboration", `${selectedEvent.corroboration} refs`],
                   ["Review state", selectedEvent.reviewState]
                 ].map(([label, value]) => (
-                  <div
-                    key={label}
-                    className="rounded-[18px] border border-white/8 bg-white/[0.03] p-3"
-                  >
+                  <div key={label} className="subtle-card p-3">
                     <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-calm/60">{label}</p>
                     <p className="mt-2 text-sm font-semibold text-white">{value}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+              <div className="subtle-card p-4">
                 <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">What happened</p>
                 <div className="mt-3 space-y-3">
                   {detailLines(selectedEvent).map((line) => (
@@ -275,7 +276,7 @@ export default function TimelineSurface({
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
-                <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+                <div className="subtle-card p-4">
                   <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">Source text</p>
                   <p className="mt-3 text-sm leading-6 text-calm/82">{selectedEvent.sourceText}</p>
                   {matchedSource ? (
@@ -299,7 +300,7 @@ export default function TimelineSurface({
                   </div>
                 </div>
 
-                <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+                <div className="subtle-card subtle-card-strong p-4">
                   <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">Actor threads and ingest timing</p>
                   {matchedEntities.length ? (
                     <div className="mt-3 flex flex-wrap gap-2">

@@ -25,17 +25,17 @@ export function OperatorSynthesisPanel({
 
   return (
     <section
-      className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell"
+      className="shell-panel shell-panel-editorial p-5"
       data-preview="operator-synthesis"
     >
       <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
+          <p className="eyebrow-label">
             Synthesis lane
           </p>
-          <h2 className="font-display text-2xl text-white">Story and claim promotion candidates</h2>
+          <h2 className="section-heading text-[2rem]">Story and claim promotion candidates</h2>
         </div>
-        <p className="max-w-[34rem] text-sm leading-6 text-calm/80">
+        <p className="section-copy max-w-[34rem]">
           Graph-aware synthesis turns recent evidence into suggested story and claim updates before the operator has to reason from raw event rows alone.
         </p>
       </div>
@@ -52,7 +52,7 @@ export function OperatorSynthesisPanel({
             synthesis.stories.map((story) => (
               <article
                 key={story.id}
-                className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4"
+                className="subtle-card p-4"
               >
                 <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                   <div>
@@ -117,7 +117,7 @@ export function OperatorSynthesisPanel({
                   {story.evidence.map((event) => (
                     <div
                       key={event.eventId}
-                      className="rounded-[18px] border border-white/8 bg-[#08111b]/90 p-3"
+                      className="detail-panel p-3"
                     >
                       <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
                         <div>
@@ -138,7 +138,7 @@ export function OperatorSynthesisPanel({
               </article>
             ))
           ) : (
-            <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4 text-sm leading-6 text-calm/72">
+            <div className="subtle-card p-4 text-sm leading-6 text-calm/72">
               No current story candidates cleared the synthesis threshold.
             </div>
           )}
@@ -155,7 +155,7 @@ export function OperatorSynthesisPanel({
             synthesis.claims.map((claim) => (
               <article
                 key={claim.id}
-                className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4"
+                className="subtle-card p-4"
               >
                 <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                   <div>
@@ -220,7 +220,7 @@ export function OperatorSynthesisPanel({
                   {claim.evidence.map((event) => (
                     <div
                       key={event.eventId}
-                      className="rounded-[18px] border border-white/8 bg-[#08111b]/90 p-3"
+                      className="detail-panel p-3"
                     >
                       <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
                         <div>
@@ -241,7 +241,7 @@ export function OperatorSynthesisPanel({
               </article>
             ))
           ) : (
-            <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4 text-sm leading-6 text-calm/72">
+            <div className="subtle-card p-4 text-sm leading-6 text-calm/72">
               No current claim candidates cleared the synthesis threshold.
             </div>
           )}

@@ -44,15 +44,15 @@ export function StoryStrip({
   }, [selectedId, selectedStory]);
 
   return (
-    <section className="space-y-5 rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell">
+    <section className="shell-panel space-y-5 p-5">
       <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
+          <p className="eyebrow-label">
             {title}
           </p>
-          <h2 className="font-display text-2xl text-white">{copy}</h2>
+          <h2 className="section-heading text-[2rem]">{copy}</h2>
         </div>
-        <p className="max-w-[20rem] text-sm text-calm/78">
+        <p className="section-copy max-w-[20rem]">
           Public-facing working set backed by the canonical store.
         </p>
       </div>
@@ -63,11 +63,12 @@ export function StoryStrip({
             <button
               key={item.id}
               type="button"
+              aria-pressed={selectedStory?.id === item.id}
               onClick={() => setSelectedId(item.id)}
               className={`w-full rounded-[22px] border p-4 text-left transition ${
                 selectedStory?.id === item.id
-                  ? "border-signal/22 bg-signal/8"
-                  : "border-white/8 bg-white/[0.03] hover:border-white/14 hover:bg-white/[0.04]"
+                  ? "subtle-card subtle-card-strong border-signal/22"
+                  : "subtle-card hover:border-white/14 hover:bg-white/[0.05]"
               }`}
             >
               <div className="flex items-start justify-between gap-3">
@@ -91,7 +92,7 @@ export function StoryStrip({
           ))}
         </div>
 
-        <div className="rounded-[24px] border border-white/8 bg-[#08111b]/90 p-5">
+        <div className="detail-panel p-5">
           {selectedStory ? (
             <div className="space-y-5">
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
@@ -112,24 +113,21 @@ export function StoryStrip({
                   ["Review state", selectedStory.reviewState],
                   ["Source", selectedStory.sourceText]
                 ].map(([label, value]) => (
-                  <div
-                    key={label}
-                    className="rounded-[18px] border border-white/8 bg-white/[0.03] p-3"
-                  >
+                  <div key={label} className="subtle-card p-3">
                     <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-calm/60">{label}</p>
                     <p className="mt-2 text-sm font-semibold text-white">{value}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="rounded-[20px] border border-white/8 bg-white/[0.03] p-4">
+              <div className="subtle-card p-4">
                 <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/78">
                   Summary
                 </p>
                 <p className="mt-3 text-sm leading-7 text-calm/84">{selectedStory.summary}</p>
               </div>
 
-              <div className="rounded-[20px] border border-white/8 bg-white/[0.03] p-4">
+              <div className="subtle-card p-4">
                 <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/78">
                   Detail
                 </p>
@@ -137,7 +135,7 @@ export function StoryStrip({
               </div>
 
               {matchedEntities.length ? (
-                <div className="rounded-[20px] border border-white/8 bg-white/[0.03] p-4">
+                <div className="subtle-card subtle-card-strong p-4">
                   <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/78">
                     Actor threads
                   </p>

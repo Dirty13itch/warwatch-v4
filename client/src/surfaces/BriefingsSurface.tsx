@@ -80,15 +80,15 @@ export default function BriefingsSurface({
       className="grid gap-5 xl:grid-cols-[0.76fr_1.24fr]"
       data-preview="briefings-surface"
     >
-      <section className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell">
+      <section className="shell-panel p-5">
         <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
+            <p className="eyebrow-label">
               Briefing archive
             </p>
-            <h2 className="font-display text-2xl text-white">Published SITREPs and archive state</h2>
+            <h2 className="section-heading text-[2rem]">Published SITREPs and archive state</h2>
           </div>
-          <p className="max-w-[16rem] text-sm leading-6 text-calm/78">
+          <p className="section-copy max-w-[16rem]">
             Archive selection now opens the reader instead of dumping every full briefing inline.
           </p>
         </div>
@@ -100,11 +100,12 @@ export default function BriefingsSurface({
               <button
                 key={briefing.id}
                 type="button"
+                aria-pressed={selectedBriefing?.id === briefing.id}
                 onClick={() => setSelectedId(briefing.id)}
                 className={`w-full rounded-[22px] border p-4 text-left transition ${
                   selectedBriefing?.id === briefing.id
-                    ? "border-signal/22 bg-signal/8"
-                    : "border-white/8 bg-white/[0.03] hover:border-white/14 hover:bg-white/[0.04]"
+                    ? "subtle-card subtle-card-strong border-signal/22"
+                    : "subtle-card hover:border-white/14 hover:bg-white/[0.05]"
                 }`}
               >
                 <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
@@ -129,20 +130,20 @@ export default function BriefingsSurface({
         </div>
       </section>
 
-      <section className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell">
+      <section className="shell-panel shell-panel-editorial p-5">
         {selectedBriefing ? (
           <div className="space-y-5">
             <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
               <div>
-                <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
+                <p className="eyebrow-label">
                   Reader
                 </p>
-                <h2 className="mt-2 font-display text-3xl text-white">{selectedBriefing.title}</h2>
+                <h2 className="section-heading mt-2 text-[2.3rem]">{selectedBriefing.title}</h2>
                 <p className="mt-2 text-sm text-calm/68">
                   {formatDate(selectedBriefing.briefingDate)}
                 </p>
               </div>
-              <div className="grid gap-2 rounded-[22px] border border-white/8 bg-white/[0.03] px-4 py-3 text-right">
+              <div className="shell-panel-elevated grid gap-2 px-4 py-3 text-right">
                 <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-calm/60">
                   {selectedBriefing.reviewState} / {selectedBriefing.publishState}
                 </p>
@@ -156,7 +157,7 @@ export default function BriefingsSurface({
               {briefingHighlights(selectedBriefing.body).map((section, index) => (
                 <div
                   key={`${selectedBriefing.id}-highlight-${index}`}
-                  className="rounded-[18px] border border-white/8 bg-white/[0.03] p-4"
+                  className="subtle-card p-4"
                 >
                   {section.heading ? (
                     <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
@@ -168,7 +169,7 @@ export default function BriefingsSurface({
               ))}
             </div>
 
-            <div className="rounded-[24px] border border-white/8 bg-[#08111b]/90 p-5">
+            <div className="detail-panel p-5">
               <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/78">
                 Full briefing
               </p>
@@ -176,7 +177,7 @@ export default function BriefingsSurface({
                 {briefingSections(selectedBriefing.body).map((section, index) => (
                   <div
                     key={`${selectedBriefing.id}-section-${index}`}
-                    className="rounded-[18px] border border-white/8 bg-white/[0.03] p-4"
+                    className="subtle-card p-4"
                   >
                     {section.heading ? (
                       <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/76">
@@ -198,7 +199,7 @@ export default function BriefingsSurface({
               </div>
             </div>
 
-            <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+            <div className="subtle-card p-4">
               <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/78">
                 Source references
               </p>
@@ -233,7 +234,7 @@ export default function BriefingsSurface({
             </div>
 
             {matchedEntities.length ? (
-              <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-4">
+              <div className="subtle-card subtle-card-strong p-4">
                 <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/78">
                   Actor threads
                 </p>
@@ -256,7 +257,7 @@ export default function BriefingsSurface({
             ) : null}
           </div>
         ) : (
-          <div className="rounded-[22px] border border-white/8 bg-white/[0.03] p-5 text-sm leading-6 text-calm/76">
+          <div className="subtle-card p-5 text-sm leading-6 text-calm/76">
             No published briefings are available yet.
           </div>
         )}

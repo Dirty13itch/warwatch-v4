@@ -6,6 +6,8 @@
 - V4 blueprint copied into `docs/reference/`
 - Fullstack V4 runtime is implemented: React/Vite public shell, Express API, SQLite seed/bootstrap, operator review queue, ingestion runner, heartbeat report script
 - The public shell now opens on a curated `Snapshot` surface that packages posture, SITREP context, fronts, live market signals, and trust framing before the deeper command/operator lanes
+- The public shell now has a stronger visual system: panel roles are differentiated, severity states hit harder, focus-visible treatment is explicit, and repeated dark-card sameness is reduced across public and operator lanes
+- The mobile shell now reaches product payload sooner: the header hero is tighter, surface navigation appears earlier, and the top status strip is denser instead of consuming a full-card stack before Snapshot content
 - Public shell is now surface-aware: overview loads first, timeline/signals/briefings/operator data load on demand, and heavy map/chart/operator code is split out of the initial bundle
 - The timeline is now a real explorer: filterable chronology, selection-aware event detail, corroboration counts, and public-posture context are all visible without leaving the surface
 - Story and briefing lanes now have real drill-down: shared story strips expose selection-aware readers, and the briefing archive opens into a structured SITREP reader instead of dumping full text inline
@@ -48,6 +50,7 @@
 - Visual proof now also includes focused Snapshot dossier-entry and source-reader captures so graph-entry improvements are visible even when they sit below the default viewport
 - Visual proof now also includes the operator synthesis panel so backend graph-promotion work remains visible in human-facing artifacts
 - Build proof is now first-class too: every build writes `reports/build/LATEST.md` and `LATEST.json`, and the heartbeat surfaces bundle totals plus the largest client assets so performance pressure stays reviewable
+- Preview and build proof have both been refreshed after the UI hierarchy pass, so the current artifact lane reflects the stronger shell and tighter mobile header instead of the older flatter card treatment
 - Verification contract is green locally via `npm run verify`
 
 ## Current Goal
@@ -66,6 +69,7 @@ Hold and extend the first milestone:
 - Public deployment verification requires `PUBLIC_BASE_URL` to be set
 - Client bundle shaping is improved through vendor/manual chunking and lazy map boot, but the MapLibre vendor chunk still breaches the warning threshold and remains a performance follow-up
 - Preview screenshots are local workspace artifacts today; once a public deployment exists, the same visual-proof lane should validate the deployed surface as well
+- Mobile shell density is materially better than the earlier oversized hero pass, but above-the-fold efficiency is still a tranche-5 follow-up rather than a solved lane
 - The operator refresh lane now surfaces current evidence, but the remaining stale top-line metrics still need actual reviewed publications to clear the public stale flag
 - Several critical review queue items still block promotion of fresher top-line public claims
 - The synthesis write path is now real, but it still needs better merge/extraction quality before broader feed expansion is safe

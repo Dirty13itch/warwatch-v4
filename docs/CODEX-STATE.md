@@ -24,6 +24,8 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Reporting path: heartbeat script writes a reviewable markdown artifact
 - Client runtime is surface-aware and split by lane:
   - snapshot surface now acts as the public/demo-first entry lane
+  - snapshot and operator/public reader lanes now use differentiated panel roles, stronger severity hierarchy, and explicit focus-visible treatment instead of one repeated shell-card pattern
+  - the mobile shell header is now compressed enough to surface navigation and status earlier, so Snapshot content starts sooner on phones
   - snapshot surface now also exposes graph-backed dossier entry cards and claim posture so the landing lane can open directly into actor context
   - command shell lazy-loads heavy map/chart code
   - timeline surface now exposes filters, event inspection, corroboration, and public posture directly in the UI
@@ -93,6 +95,7 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - The operator console can now see queue pressure directly through age buckets and SLA summary cards, which gives the COO lane a concrete review-backlog surface
 - The operator console can now turn a queue row into a real review packet and jump straight into timeline evidence from the operator lane
 - The COO lane can now attach actual UI evidence to updates through local preview screenshots instead of relying only on text artifacts
+- The preview lane now reflects the stronger hierarchy pass instead of the older flatter card system, and the mobile artifact shows the tighter hero/nav/status shell rather than the earlier oversized first screen
 - Public reader surfaces no longer dead-end as quickly: snapshot, source posture, briefing refs, events, stories, and briefings can all jump into dossier graph detail
 - Shared entity matching now reduces drift between what the client thinks is related and what the server uses for dossier context
 - Canonical entity tagging is now persisted into the event store instead of remaining only an on-the-fly graph helper
