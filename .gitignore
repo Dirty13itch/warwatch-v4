@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.DS_Store
+.env
+data/*.sqlite
+data/*.sqlite-*
+reports/heartbeat/LATEST.md
+coverage/
+*.log
+

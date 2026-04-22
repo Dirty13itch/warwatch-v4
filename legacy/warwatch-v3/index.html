@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WarWatch V3 — Iran Conflict Command Center</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='14' fill='none' stroke='%2300d4ff' stroke-width='2'/><circle cx='16' cy='16' r='3' fill='%2300d4ff'/><line x1='16' y1='2' x2='16' y2='8' stroke='%2300d4ff' stroke-width='1.5'/><line x1='16' y1='24' x2='16' y2='30' stroke='%2300d4ff' stroke-width='1.5'/><line x1='2' y1='16' x2='8' y2='16' stroke='%2300d4ff' stroke-width='1.5'/><line x1='24' y1='16' x2='30' y2='16' stroke='%2300d4ff' stroke-width='1.5'/></svg>">
+
+  <!-- MapLibre GL JS -->
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/map.css">
+  <link rel="stylesheet" href="css/v3.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══════════ DEADLINE BANNER ═══════════ -->
+  <div id="deadline-banner" class="deadline-banner">
+    <div class="deadline-banner-inner">
+      <div class="deadline-label">
+        <span class="pulse-dot" style="color:#ff3b3b;width:8px;height:8px"></span>
+        <span>APRIL 7 DEADLINE</span>
+      </div>
+      <div class="deadline-countdown" id="deadline-countdown">
+        <div class="countdown-unit"><span id="cd-days">--</span><small>DAYS</small></div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit"><span id="cd-hours">--</span><small>HRS</small></div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit"><span id="cd-mins">--</span><small>MIN</small></div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit"><span id="cd-secs">--</span><small>SEC</small></div>
+      </div>
+      <div class="deadline-threat" id="deadline-threat">Trump: "Obliterate power plants, oil wells, Kharg Island" if no deal</div>
+      <div class="deadline-status">
+        <span class="deadline-status-tag">Pakistan channel</span>
+        <span class="deadline-status-tag tag-red">Iran: "No talks"</span>
+        <span class="deadline-status-tag tag-blue">US: "Great progress"</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TOP BAR ═══════════ -->
+  <header id="topbar">
+    <div class="scanline-overlay"></div>
+    <div class="topbar-logo">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
+        <circle cx="16" cy="16" r="8" stroke="currentColor" stroke-width="1" opacity="0.25"/>
+        <circle cx="16" cy="16" r="2.5" fill="currentColor"/>
+        <line x1="16" y1="1" x2="16" y2="7" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="16" y1="25" x2="16" y2="31" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="1" y1="16" x2="7" y2="16" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="25" y1="16" x2="31" y2="16" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="16" y1="16" x2="27" y2="8" stroke="currentColor" stroke-width="1" opacity="0.6">
+          <animateTransform attributeName="transform" type="rotate" from="0 16 16" to="360 16 16" dur="4s" repeatCount="indefinite"/>
+        </line>
+      </svg>
+      <span>WarWatch <small style="font-size:9px;opacity:0.4">V3</small></span>
+    </div>
+
+    <div class="topbar-threat threat-critical">
+      <span class="pulse-dot" style="color:var(--color-danger);width:6px;height:6px"></span>
+      <span>THREAT: CRITICAL</span>
+    </div>
+
+    <div class="topbar-clocks">
+      <div>
+        <div class="clock-label">UTC</div>
+        <div class="clock-value" id="clock-utc">--:--:--Z</div>
+      </div>
+      <div>
+        <div class="clock-label">LOCAL</div>
+        <div class="clock-value" id="clock-local">--:--:--</div>
+      </div>
+      <div>
+        <div class="clock-label">UPDATED</div>
+        <div class="clock-value" id="last-updated">--:--:--</div>
+      </div>
+    </div>
+
+    <div class="topbar-controls">
+      <button id="btn-theme" title="Toggle theme">☀</button>
+    </div>
+  </header>
+
+  <!-- ═══════════ LEFT SIDEBAR ═══════════ -->
+  <aside id="sidebar">
+    <div class="sidebar-section-title">Situation KPIs</div>
+
+    <div class="kpi-card">
+      <div class="kpi-label"><span class="pulse-dot" style="color:var(--color-primary)"></span> Conflict Day</div>
+      <div class="kpi-value text-primary glow-text" id="kpi-conflict-day">DAY --</div>
+      <div class="kpi-sub">Since Feb 28, 2026 (Operation Epic Fury)</div>
+    </div>
+
+    <div class="kpi-card kpi-critical">
+      <div class="kpi-label"><span class="pulse-dot" style="color:var(--color-danger)"></span> Threat Level</div>
+      <div class="kpi-value text-danger">CRITICAL</div>
+      <div class="kpi-sub">Fragile ceasefire — Lebanon excluded — Islamabad talks April 10</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">🎯 Total Strikes</div>
+      <div class="kpi-value" style="font-size:18px;color:var(--color-warning)">>13,000</div>
+      <div class="kpi-sub">CENTCOM confirmed 13,000+ strikes (Admiral Cooper, Apr 9); ceasefire paused strikes</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">🛢️ Oil Price (Brent)</div>
+      <div class="kpi-value text-danger" style="font-size:14px">$109 / $95 spot</div>
+      <div class="kpi-sub">Brent -13% on ceasefire (Apr 8); rebounding to $97–98 as Hormuz re-closed Apr 9. Peak: $144.42 record.</div>
+    </div>
+
+    <div class="kpi-card kpi-critical">
+      <div class="kpi-label">🚢 Hormuz Status</div>
+      <div class="kpi-value text-danger" style="font-size:14px">PARTIAL — ≤15/DAY</div>
+      <div class="kpi-sub">Re-closed Apr 8 after Lebanon strikes; mine charts published; IRGC approval required; 400+ tankers stuck</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">⚓ Carrier Strike Groups</div>
+      <div class="kpi-value">3</div>
+      <div class="kpi-sub">Lincoln active; Ford (Crete repairs); GHWB ON STATION; 3 CSGs in theater</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">💰 War Cost</div>
+      <div class="kpi-value" style="font-size:18px;color:var(--color-warning)">$28B+</div>
+      <div class="kpi-sub">Through Day 39; CSAR ~$400M; $1.8B/day burn rate</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">💀 Casualties (All Parties)</div>
+      <div class="kpi-value text-danger" style="font-size:14px">21,000+ Iran alone</div>
+      <div class="kpi-sub">Iranian Red Crescent: 21,000+ killed in Iran; Lebanon: 1,784+ killed; US: 13 KIA (CENTCOM Apr 9)</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">🌐 Iran Internet</div>
+      <div class="kpi-value text-danger" style="font-size:16px">~1%</div>
+      <div class="kpi-sub">Near-total blackout since Day 1 (41 days)</div>
+    </div>
+
+    <div class="kpi-card kpi-critical">
+      <div class="kpi-label">💥 US Equipment Losses</div>
+      <div class="kpi-value text-danger" style="font-size:16px">$2.4–$5.0B+</div>
+      <div class="kpi-sub">21+ aircraft; F-15E+A-10+CSAR losses Day 35; $200B requested</div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-label">🎯 Countries Targeted</div>
+      <div class="kpi-value text-danger">14</div>
+      <div class="kpi-sub">By Iran within first 6 days</div>
+    </div>
+
+    <div style="font-family:var(--font-mono);font-size:8px;color:var(--color-text-faint);text-align:center;padding:var(--sp-2) 0;border-top:1px solid var(--color-divider);margin-top:var(--sp-1);letter-spacing:0.1em">
+      DATA AS OF: APR 9, 2026 · DAY 41
+    </div>
+
+    <div class="sidebar-section-title" style="margin-top:var(--sp-1)">Quick Links</div>
+    <div id="quick-links" class="quick-links-section"></div>
+  </aside>
+
+  <!-- ═══════════ MAIN CONTENT ═══════════ -->
+  <main id="main">
+
+    <!-- ── TAB: MAP ── -->
+    <div class="tab-content active" data-tab="map">
+      <div id="map-container">
+        <div id="map"></div>
+
+        <!-- Layer Toggle Panel -->
+        <div class="layer-panel">
+          <div class="layer-panel-title">Map Layers</div>
+          <label class="layer-toggle">
+            <input type="checkbox" data-layer="nuclear" checked>
+            <span class="layer-color-dot" style="background:#ffd600"></span>
+            Nuclear Facilities
+          </label>
+          <label class="layer-toggle">
+            <input type="checkbox" data-layer="iran-bases" checked>
+            <span class="layer-color-dot" style="background:#ef5350"></span>
+            Iran Air Bases
+          </label>
+          <label class="layer-toggle">
+            <input type="checkbox" data-layer="us-bases" checked>
+            <span class="layer-color-dot" style="background:#4fc3f7"></span>
+            US/Coalition Bases
+          </label>
+          <label class="layer-toggle">
+            <input type="checkbox" data-layer="oil" checked>
+            <span class="layer-color-dot" style="background:#ff9100"></span>
+            Oil Infrastructure
+          </label>
+          <label class="layer-toggle">
+            <input type="checkbox" data-layer="attacks" checked>
+            <span class="layer-color-dot" style="background:#e040fb"></span>
+            Iranian Attacks
+          </label>
+          <label class="layer-toggle">
+            <input type="checkbox" data-layer="hormuz" checked>
+            <span class="layer-color-dot" style="background:#ff9100"></span>
+            Strait of Hormuz
+          </label>
+          <label class="layer-toggle">
+            <input type="checkbox" data-layer="seismic" checked>
+            <span class="layer-color-dot" style="background:#ff3b3b"></span>
+            Seismic Events (USGS)
+          </label>
+        </div>
+
+        <!-- Legend -->
+        <div class="map-legend">
+          <div style="margin-bottom:4px;font-weight:700;letter-spacing:0.1em">LEGEND</div>
+          <div style="display:flex;align-items:center;gap:4px;margin:2px 0"><span style="width:8px;height:8px;border-radius:50%;background:#ffd600;display:inline-block"></span> Nuclear</div>
+          <div style="display:flex;align-items:center;gap:4px;margin:2px 0"><span style="width:8px;height:8px;border-radius:50%;background:#ef5350;display:inline-block"></span> Hostile</div>
+          <div style="display:flex;align-items:center;gap:4px;margin:2px 0"><span style="width:8px;height:8px;border-radius:50%;background:#4fc3f7;display:inline-block"></span> Friendly</div>
+          <div style="display:flex;align-items:center;gap:4px;margin:2px 0"><span style="width:8px;height:8px;border-radius:2px;background:#ff9100;display:inline-block"></span> Oil/Energy</div>
+          <div style="display:flex;align-items:center;gap:4px;margin:2px 0"><span style="width:8px;height:8px;border-radius:50%;background:#e040fb;display:inline-block"></span> Iranian Attacks</div>
+          <div style="display:flex;align-items:center;gap:4px;margin:2px 0"><span style="width:8px;height:8px;border-radius:50%;background:rgba(255,59,59,0.5);display:inline-block"></span> Seismic</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: FRONTS ── (NEW V3) -->
+    <div class="tab-content" data-tab="fronts">
+      <div style="padding:var(--sp-4);overflow-y:auto;max-height:calc(100vh - var(--topbar-h) - var(--bottombar-h) - 44px)">
+
+        <!-- Multi-Front Status -->
+        <div class="section-heading">
+          <span class="pulse-dot" style="color:var(--color-danger)"></span>
+          Active War Fronts — Day <span id="fronts-day">31</span>
+        </div>
+        <div id="fronts-grid" class="fronts-grid"></div>
+
+        <!-- Casualty Tracker -->
+        <div class="section-heading" style="margin-top:var(--sp-6)">
+          💀 Casualty Tracker
+          <span style="font-size:10px;font-weight:400;color:var(--color-text-faint);margin-left:8px">As of April 7, 2026</span>
+        </div>
+        <div id="casualties-panel" class="casualties-panel"></div>
+
+        <!-- Country Attack Dashboard -->
+        <div class="section-heading" style="margin-top:var(--sp-6)">
+          🎯 Iranian Attack Dashboard — Per Country
+          <span style="font-size:10px;font-weight:400;color:var(--color-text-faint);margin-left:8px">Ballistic + cruise missiles and drones fired</span>
+        </div>
+        <div id="country-attacks" class="country-attacks-grid"></div>
+
+        <!-- Interceptor Depletion -->
+        <div class="section-heading" style="margin-top:var(--sp-6)">
+          🛡️ Interceptor Depletion — Critical Strategic Indicator
+          <span style="font-size:10px;font-weight:400;color:var(--color-text-faint);margin-left:8px">Production cannot replace consumption rate</span>
+        </div>
+        <div id="depletion-panel" class="depletion-grid"></div>
+
+        <!-- Carrier Status -->
+        <div class="section-heading" style="margin-top:var(--sp-6)">
+          ⚓ Carrier Strike Group Status
+        </div>
+        <div id="csg-panel" class="csg-grid"></div>
+
+        <!-- US/Coalition Losses (NEW — REBALANCING) -->
+        <div class="section-heading" style="margin-top:var(--sp-6);color:var(--color-danger)">
+          <span class="pulse-dot" style="color:var(--color-danger)"></span>
+          US/Coalition Losses — The Other Side of the Ledger
+          <span style="font-size:10px;font-weight:400;color:var(--color-text-faint);margin-left:8px">Sources: BBC/CSIS, WSJ/AEI, NYT, CNN, Anadolu</span>
+        </div>
+        <div id="us-losses-panel"></div>
+
+        <!-- Iran Achievements -->
+        <div class="section-heading" style="margin-top:var(--sp-6);color:var(--color-hostile)">
+          🇲🇷 What Iran Has Actually Achieved — Day 39
+          <span style="font-size:10px;font-weight:400;color:var(--color-text-faint);margin-left:8px">Framing often omitted from Western reporting</span>
+        </div>
+        <div id="iran-achievements-panel"></div>
+
+        <!-- HVT Tracker -->
+        <div class="section-heading" style="margin-top:var(--sp-6)">
+          🎯 High-Value Targets — Decapitation Strikes
+        </div>
+        <div id="hvt-panel" class="hvt-grid"></div>
+
+      </div>
+    </div>
+
+    <!-- ── TAB: INTEL ── -->
+    <div class="tab-content" data-tab="intel">
+      <div class="tab-grid" style="grid-template-columns:1fr 300px">
+        <div>
+          <div class="section-heading">
+            <span class="pulse-dot" style="color:var(--color-success)"></span>
+            Intelligence Feed
+          </div>
+          <div class="filter-bar">
+            <button class="filter-btn intel-filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn intel-filter-btn" data-filter="international">International</button>
+            <button class="filter-btn intel-filter-btn" data-filter="defense">Defense</button>
+            <button class="filter-btn intel-filter-btn" data-filter="regional">Regional</button>
+            <button class="filter-btn intel-filter-btn" data-filter="opposition">Opposition</button>
+          </div>
+          <div id="intel-feed" style="display:flex;flex-direction:column;gap:var(--sp-2);max-height:calc(100vh - 220px);overflow-y:auto">
+            <div class="feed-empty">Select INTEL tab to load feeds...</div>
+          </div>
+        </div>
+        <div>
+          <div class="section-heading">CENTCOM Official Feed</div>
+          <div class="panel" style="padding:0;overflow:hidden">
+            <a class="twitter-timeline" href="https://twitter.com/CENTCOM" data-theme="dark" data-height="500" data-width="320" data-chrome="noheader nofooter transparent noborders">Loading CENTCOM feed...</a>
+          </div>
+          <div style="margin-top:var(--sp-4)">
+            <div class="section-heading">OSINT Telegram Channels</div>
+            <div style="display:flex;flex-direction:column;gap:var(--sp-2)">
+              <a href="https://t.me/s/intelslava" target="_blank" rel="noopener" class="quick-link"><span class="quick-link-icon">💬</span> Intel Slava Z (OSINT)</a>
+              <a href="https://t.me/s/MiddleEastEye" target="_blank" rel="noopener" class="quick-link"><span class="quick-link-icon">💬</span> Middle East Eye</a>
+              <a href="https://t.me/s/iranwire" target="_blank" rel="noopener" class="quick-link"><span class="quick-link-icon">💬</span> IranWire</a>
+              <a href="https://t.me/s/Tasnimnews_Fa" target="_blank" rel="noopener" class="quick-link"><span class="quick-link-icon">💬</span> Tasnim News (Farsi)</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: ANALYSIS ── -->
+    <div class="tab-content" data-tab="analysis">
+      <div style="padding:var(--sp-4);overflow-y:auto;max-height:calc(100vh - var(--topbar-h) - var(--bottombar-h) - 44px)">
+
+        <!-- Negotiation Tracker (NEW V3) -->
+        <div class="panel" style="margin-bottom:var(--sp-4);border:1px solid var(--color-danger)">
+          <div class="panel-header">
+            <div class="panel-title">🕊️ Negotiation Tracker — April 7 Deadline</div>
+            <div class="badge badge-editorial" style="background:var(--color-danger)22;color:var(--color-danger)">CRITICAL</div>
+          </div>
+          <div id="negotiation-panel"></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:340px 1fr;gap:var(--sp-4);margin-bottom:var(--sp-4)">
+          <!-- Escalation Ladder -->
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">⚡ Escalation Monitor</div>
+              <div class="badge badge-editorial">LIVE ASSESSMENT</div>
+            </div>
+            <div id="escalation-ladder" class="escalation-ladder"></div>
+            <div style="margin-top:var(--sp-3);padding-top:var(--sp-2);border-top:1px solid var(--color-divider);font-size:10px;color:var(--color-text-faint)">
+              Based on Herman Kahn's escalation framework. Current position: Rungs 3–7 active (proxy warfare + air campaign + energy/telecom infrastructure).
+            </div>
+          </div>
+
+          <!-- Scenario Cards -->
+          <div>
+            <div class="section-heading">📊 Scenario Probability Dashboard</div>
+            <div id="scenario-cards" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3)"></div>
+            <div style="margin-top:var(--sp-2);font-size:10px;color:var(--color-text-faint);font-style:italic">
+              Probabilities based on synthesis of CSIS, ISW, Washington Institute, and MWI assessments. Updated for Day 39: April 7 deadline extended (4th time), Islamabad Accord under review, UNSC veto Apr 7.
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4)">
+          <!-- DIME Framework -->
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">🎯 DIME Framework — Power Comparison</div>
+            </div>
+            <div style="font-size:11px;color:var(--color-text-muted);margin-bottom:var(--sp-3)">
+              Diplomatic, Information, Military, Economic instruments of national power. Scale: 0–10. Iran scores reflect Day 39 status.
+            </div>
+            <div id="dime-chart"></div>
+            <div style="margin-top:var(--sp-3);display:flex;gap:var(--sp-4);font-size:10px">
+              <span style="color:var(--color-friendly)">■ US/Israel Coalition</span>
+              <span style="color:var(--color-hostile)">■ Iran</span>
+            </div>
+          </div>
+
+          <!-- ORBAT -->
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">🪖 Order of Battle — Day 39</div>
+            </div>
+            <div id="orbat-table" style="overflow-x:auto"></div>
+            <div style="margin-top:var(--sp-2);font-size:10px;color:var(--color-text-faint)">
+              Sources: IISS Military Balance, CENTCOM, ISW, WSJ, Small Wars Journal. Updated Day 39. Adds F-15E, A-10, 2 MC-130, 4 MH-6 losses; GHWB arrived; 5 THAAD radars destroyed.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: ECONOMIC ── -->
+    <div class="tab-content" data-tab="economic">
+      <div style="padding:var(--sp-4);overflow-y:auto;max-height:calc(100vh - var(--topbar-h) - var(--bottombar-h) - 44px)">
+
+        <!-- Ticker Tape -->
+        <div class="tv-widget-container" style="margin-bottom:var(--sp-4)">
+          <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+            {
+              "symbols": [
+                {"proName": "NYMEX:CL1!", "title": "WTI Crude"},
+                {"proName": "TVC:UKOIL", "title": "Brent"},
+                {"proName": "TVC:GOLD", "title": "Gold"},
+                {"proName": "NYSE:RTX", "title": "Raytheon"},
+                {"proName": "NYSE:LMT", "title": "Lockheed"},
+                {"proName": "NYSE:NOC", "title": "Northrop"},
+                {"proName": "AMEX:USO", "title": "Oil ETF"}
+              ],
+              "showSymbolLogo": true,
+              "colorTheme": "dark",
+              "isTransparent": true,
+              "displayMode": "adaptive",
+              "locale": "en"
+            }
+            </script>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);margin-bottom:var(--sp-4)">
+          <!-- WTI Oil Chart -->
+          <div class="tv-widget-container" style="height:400px">
+            <div class="tradingview-widget-container" style="height:100%">
+              <div id="tv-oil" style="height:100%"></div>
+              <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+              <script type="text/javascript">
+              new TradingView.widget({
+                "autosize": true,
+                "symbol": "TVC:USOIL",
+                "interval": "60",
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "backgroundColor": "#0f1923",
+                "gridColor": "rgba(30,48,72,0.3)",
+                "hide_top_toolbar": false,
+                "hide_legend": false,
+                "allow_symbol_change": true,
+                "container_id": "tv-oil"
+              });
+              </script>
+            </div>
+          </div>
+
+          <!-- Gold Chart -->
+          <div class="tv-widget-container" style="height:400px">
+            <div class="tradingview-widget-container" style="height:100%">
+              <div id="tv-gold" style="height:100%"></div>
+              <script type="text/javascript">
+              new TradingView.widget({
+                "autosize": true,
+                "symbol": "TVC:GOLD",
+                "interval": "60",
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "backgroundColor": "#0f1923",
+                "gridColor": "rgba(30,48,72,0.3)",
+                "hide_top_toolbar": false,
+                "hide_legend": false,
+                "allow_symbol_change": true,
+                "container_id": "tv-gold"
+              });
+              </script>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);margin-bottom:var(--sp-4)">
+          <!-- ADS-B Exchange Military -->
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">✈️ Military Flight Tracking</div>
+              <div class="live-badge"><span class="pulse-dot" style="width:5px;height:5px"></span> LIVE</div>
+            </div>
+            <div class="embed-frame" style="height:400px">
+              <iframe src="https://globe.adsbexchange.com/?mil&zoom=5&hideSidebar&hideButtons&kiosk&tempTrails=60&lat=30&lon=55" height="400" loading="lazy" title="ADS-B Military Tracker"></iframe>
+            </div>
+            <div style="margin-top:var(--sp-2);font-size:10px;color:var(--color-text-faint)">
+              ADS-B Exchange — Military aircraft filter, Middle East theater.
+            </div>
+          </div>
+
+          <!-- Shipping & Economic -->
+          <div>
+            <div class="panel" style="margin-bottom:var(--sp-4)">
+              <div class="panel-header">
+                <div class="panel-title">🚢 Maritime & Shipping Impact</div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3)">
+                <div class="kpi-card">
+                  <div class="kpi-label">Hormuz Status</div>
+                  <div class="kpi-value" style="font-size:14px;color:var(--color-danger)">≤15/DAY</div>
+                  <div class="kpi-sub">Re-closed Apr 8; mine charts published; 400+ tankers stuck; IRGC approval required</div>
+                </div>
+                <div class="kpi-card">
+                  <div class="kpi-label">War Risk Insurance</div>
+                  <div class="kpi-value" style="font-size:18px;color:var(--color-danger)">~5%</div>
+                  <div class="kpi-sub">Of vessel value ($5M per $100M tanker); 1000%+ increase</div>
+                </div>
+                <div class="kpi-card">
+                  <div class="kpi-label">Ships Affected by GPS Jamming</div>
+                  <div class="kpi-value" style="font-size:18px;color:var(--color-danger)">1,650+</div>
+                  <div class="kpi-sub">1,735 interference events on 655 vessels (Lloyd's List)</div>
+                </div>
+                <div class="kpi-card">
+                  <div class="kpi-label">Iran Passage Fees</div>
+                  <div class="kpi-value" style="font-size:18px;color:var(--color-warning)">26+</div>
+                  <div class="kpi-sub">Vessels paid IRGC for Hormuz passage</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- War Timeline -->
+            <div class="panel">
+              <div class="panel-header">
+                <div class="panel-title">📊 Conflict Timeline — Day 39</div>
+              </div>
+              <div id="war-timeline" class="war-timeline"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: MEDIA ── -->
+    <div class="tab-content" data-tab="media">
+      <div style="padding:var(--sp-4);overflow-y:auto;max-height:calc(100vh - var(--topbar-h) - var(--bottombar-h) - 44px)">
+
+        <div style="display:flex;gap:var(--sp-2);margin-bottom:var(--sp-4);flex-wrap:wrap">
+          <button class="intel-filter-btn active" data-media-filter="all" onclick="App.filterMedia('all')">All Sources</button>
+          <button class="intel-filter-btn" data-media-filter="independent" onclick="App.filterMedia('independent')" style="border-color:var(--color-warning)">⚡ Independent</button>
+          <button class="intel-filter-btn" data-media-filter="osint" onclick="App.filterMedia('osint')" style="border-color:var(--color-primary)">🛰 OSINT</button>
+          <button class="intel-filter-btn" data-media-filter="mainstream" onclick="App.filterMedia('mainstream')">📺 Mainstream</button>
+          <button class="intel-filter-btn" data-media-filter="official" onclick="App.filterMedia('official')">🏛 Official</button>
+        </div>
+
+        <!-- Independent Journalists -->
+        <div class="media-section" data-media-section="independent">
+          <div class="section-heading" style="color:var(--color-warning)">
+            <span class="pulse-dot" style="color:var(--color-warning)"></span>
+            Independent Journalists & Counter-Narrative Sources
+          </div>
+          <div style="font-size:11px;color:var(--color-text-muted);margin-bottom:var(--sp-3);max-width:900px;line-height:1.5">
+            These journalists operate outside mainstream editorial filters. Cross-reference claims against OSINT for verification.
+          </div>
+          <div id="independent-journalists" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-4)"></div>
+
+          <div class="section-heading" style="font-size:12px;margin-top:var(--sp-4)">🎯 Key Recurring Analysts</div>
+          <div id="key-analysts" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-4)"></div>
+
+          <div class="section-heading" style="font-size:12px">📺 Latest Independent Videos</div>
+          <div id="media-youtube-independent" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-6)">
+            <div class="feed-empty" style="grid-column:1/-1">Loading independent video feeds...</div>
+          </div>
+        </div>
+
+        <!-- OSINT -->
+        <div class="media-section" data-media-section="osint">
+          <div class="section-heading" style="color:var(--color-primary)">
+            🛰 OSINT Accounts & Verification Sources
+          </div>
+          <div id="osint-accounts" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-6)"></div>
+        </div>
+
+        <!-- Mainstream -->
+        <div class="media-section" data-media-section="mainstream">
+          <div class="section-heading">
+            <span class="pulse-dot" style="color:var(--color-danger)"></span>
+            Live Streams
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-4);margin-bottom:var(--sp-6)">
+            <div class="panel">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-2)">
+                <div class="panel-title">Al Jazeera English</div>
+                <div class="live-badge"><span class="pulse-dot" style="width:5px;height:5px"></span> LIVE</div>
+              </div>
+              <div class="embed-frame" style="aspect-ratio:16/9">
+                <iframe src="https://www.youtube.com/embed/gCNeDWCI0vo?autoplay=0" allow="autoplay; encrypted-media" allowfullscreen loading="lazy" title="Al Jazeera Live"></iframe>
+              </div>
+            </div>
+            <div class="panel">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-2)">
+                <div class="panel-title">FRANCE 24 English</div>
+                <div class="live-badge"><span class="pulse-dot" style="width:5px;height:5px"></span> LIVE</div>
+              </div>
+              <div class="embed-frame" style="aspect-ratio:16/9">
+                <iframe src="https://www.youtube.com/embed/u9foWyMSETk?autoplay=0" allow="autoplay; encrypted-media" allowfullscreen loading="lazy" title="France 24 Live"></iframe>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-heading">📺 Mainstream Analysis & Coverage</div>
+          <div id="media-youtube" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-6)">
+            <div class="feed-empty" style="grid-column:1/-1">Loading video feeds...</div>
+          </div>
+
+          <div class="section-heading">🎙️ Podcast Feeds</div>
+          <div id="media-podcasts" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:var(--sp-3);margin-bottom:var(--sp-6)">
+            <div class="feed-empty" style="grid-column:1/-1">Loading podcast feeds...</div>
+          </div>
+        </div>
+
+        <!-- Official -->
+        <div class="media-section" data-media-section="official">
+          <div class="section-heading">🏛️ Government & Official Sources</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--sp-3)">
+            <a href="https://www.youtube.com/@DeptofDefense" target="_blank" rel="noopener" class="indicator-card" style="text-decoration:none;color:inherit">
+              <div class="indicator-header"><div class="indicator-icon">🎖️</div><div class="indicator-name">Pentagon Briefings</div></div>
+              <div style="font-size:10px;color:var(--color-text-muted)">US Dept of Defense YouTube</div>
+            </a>
+            <a href="https://www.youtube.com/@StateDept" target="_blank" rel="noopener" class="indicator-card" style="text-decoration:none;color:inherit">
+              <div class="indicator-header"><div class="indicator-icon">🏛️</div><div class="indicator-name">State Department</div></div>
+              <div style="font-size:10px;color:var(--color-text-muted)">US State Dept YouTube</div>
+            </a>
+            <a href="https://www.centcom.mil" target="_blank" rel="noopener" class="indicator-card" style="text-decoration:none;color:inherit">
+              <div class="indicator-header"><div class="indicator-icon">⭐</div><div class="indicator-name">CENTCOM</div></div>
+              <div style="font-size:10px;color:var(--color-text-muted)">US Central Command</div>
+            </a>
+            <a href="https://www.idf.il/en/" target="_blank" rel="noopener" class="indicator-card" style="text-decoration:none;color:inherit">
+              <div class="indicator-header"><div class="indicator-icon">🇮🇱</div><div class="indicator-name">IDF Official</div></div>
+              <div style="font-size:10px;color:var(--color-text-muted)">Israel Defense Forces</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB: TIMELINE ── -->
+    <div class="tab-content" data-tab="timeline">
+      <div style="padding:var(--sp-4);overflow-y:auto;max-height:calc(100vh - var(--topbar-h) - var(--bottombar-h) - 44px)">
+
+        <div class="section-heading">
+          <span class="pulse-dot" style="color:var(--color-primary)"></span>
+          War Timeline — Operation Epic Fury · Day-by-Day Chronology
+          <span style="font-size:10px;font-weight:400;color:var(--color-text-faint);margin-left:8px">Events · Feb 27 – Apr 7, 2026</span>
+        </div>
+
+        <!-- Timeline controls -->
+        <div style="display:flex;gap:var(--sp-2);flex-wrap:wrap;margin-bottom:var(--sp-3);align-items:center">
+          <input
+            id="timeline-search"
+            type="text"
+            placeholder="Search events..."
+            style="padding:6px 10px;background:var(--color-surface);border:1px solid var(--color-divider);color:var(--color-text);border-radius:4px;font-family:var(--font-mono);font-size:11px;width:200px;outline:none"
+          />
+          <span style="font-size:10px;color:var(--color-text-faint);font-family:var(--font-mono)">FILTER:</span>
+          <button class="filter-btn timeline-cat-btn active" data-cat="all">All</button>
+          <button class="filter-btn timeline-cat-btn" data-cat="us_strike" style="--cat-color:#4fc3f7">🇺🇸 US Strikes</button>
+          <button class="filter-btn timeline-cat-btn" data-cat="iran_strike" style="--cat-color:#ef5350">🇮🇷 Iran Strikes</button>
+          <button class="filter-btn timeline-cat-btn" data-cat="diplomatic" style="--cat-color:#00d4ff">🕊️ Diplomatic</button>
+          <button class="filter-btn timeline-cat-btn" data-cat="economic" style="--cat-color:#ffaa00">💰 Economic</button>
+          <button class="filter-btn timeline-cat-btn" data-cat="proxy" style="--cat-color:#ff9100">⚔️ Proxy</button>
+          <button class="filter-btn timeline-cat-btn" data-cat="cyber" style="--cat-color:#ce93d8">🖥️ Cyber</button>
+          <button class="filter-btn timeline-cat-btn" data-cat="humanitarian" style="--cat-color:#66bb6a">🏥 Humanit.</button>
+          <button class="filter-btn timeline-cat-btn" data-cat="intel" style="--cat-color:#90a4ae">🛰 Intel</button>
+        </div>
+
+        <!-- Event count indicator -->
+        <div id="timeline-count" style="font-family:var(--font-mono);font-size:10px;color:var(--color-text-faint);margin-bottom:var(--sp-3)">Loading 92 events...</div>
+
+        <!-- Timeline list -->
+        <div id="war-timeline-tab" class="war-timeline-tab"></div>
+
+      </div>
+    </div>
+
+    <!-- ── TAB: INDICATORS ── -->
+    <div class="tab-content" data-tab="indicators">
+      <div style="padding:var(--sp-4);overflow-y:auto;max-height:calc(100vh - var(--topbar-h) - var(--bottombar-h) - 44px)">
+        <div class="section-heading">
+          <span class="pulse-dot" style="color:var(--color-warning)"></span>
+          Unconventional Signals & Warning Indicators
+        </div>
+        <div style="font-size:12px;color:var(--color-text-muted);margin-bottom:var(--sp-4);max-width:800px">
+          Non-traditional intelligence indicators. Heuristic signals — correlational, not causal.
+        </div>
+        <div id="indicators-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-3)"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══════════ BOTTOM BAR ═══════════ -->
+  <nav id="bottombar">
+    <button class="tab-btn active" data-tab="map">▣ Map</button>
+    <button class="tab-btn" data-tab="fronts">✦ Fronts</button>
+    <button class="tab-btn" data-tab="intel">◉ Intel</button>
+    <button class="tab-btn" data-tab="analysis">◈ Analysis</button>
+    <button class="tab-btn" data-tab="economic">◆ Economic</button>
+    <button class="tab-btn" data-tab="media">▶ Media</button>
+    <button class="tab-btn" data-tab="indicators">⚑ Signals</button>
+    <button class="tab-btn" data-tab="timeline">▤ Timeline</button>
+
+    <div class="bottombar-status">
+      <span><span class="status-dot status-live"></span>MAP</span>
+      <span><span class="status-dot status-cached"></span>FEEDS</span>
+      <span><span class="status-dot status-live"></span>TV</span>
+      <button class="btn-refresh" id="btn-refresh">⟳ Refresh</button>
+    </div>
+  </nav>
+
+</div><!-- /app -->
+
+<!-- Video Modal -->
+<div id="video-modal" class="modal-overlay">
+  <div class="modal-content">
+    <button class="modal-close" onclick="Feeds.closeVideo()">✕</button>
+    <iframe id="video-frame" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  </div>
+</div>
+
+<!-- Twitter widget JS -->
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<!-- App Scripts -->
+<script src="js/data.js"></script>
+<script src="js/timeline-data.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/feeds.js"></script>
+<script src="js/map.js"></script>
+<script src="js/app.js"></script>
+
+<script data-pplx-inline-edit>
+(function(){
+  if(window===window.top)return;
+  function inlineAll(orig,clone){
+    if(orig.nodeType!==1)return;
+    try{
+      var cs=getComputedStyle(orig);
+      var t='';
+      for(var i=0;i<cs.length;i++){t+=cs[i]+':'+cs.getPropertyValue(cs[i])+';';}
+      clone.style.cssText=t;
+    }catch(e){}
+    var oc=orig.children,cc=clone.children;
+    for(var j=0;j<oc.length&&j<cc.length;j++){inlineAll(oc[j],cc[j]);}
+  }
+  function stripExternal(clone){
+    var imgs=clone.querySelectorAll('img');
+    for(var i=0;i<imgs.length;i++){
+      var s=imgs[i].getAttribute('src');
+      if(s&&!s.startsWith('data:'))imgs[i].removeAttribute('src');
+    }
+    var all=clone.querySelectorAll('*');
+    for(var i=0;i<all.length;i++){
+      var st=all[i].style.cssText;
+      if(st&&st.indexOf('url(')>=0){
+        all[i].style.cssText=st.replace(/url\(["']?(?!data:)[^)"']*["']?\)/gi,'none');
+      }
+    }
+  }
+  window.addEventListener('message',function(e){
+    if(!e.data||e.data.type!=='INLINE_EDIT_CAPTURE_REQUEST')return;
+    var scrollX=window.scrollX||window.pageXOffset||0;
+    var scrollY=window.scrollY||window.pageYOffset||0;
+    var w=window.innerWidth,h=window.innerHeight;
+    try{
+      var clone=document.documentElement.cloneNode(true);
+      var rm=clone.querySelectorAll('script,link[rel="stylesheet"],style');
+      for(var i=0;i<rm.length;i++){rm[i].remove();}
+      inlineAll(document.documentElement,clone);
+      stripExternal(clone);
+      var html=new XMLSerializer().serializeToString(clone);
+      var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'">'
+        +'<foreignObject width="100%" height="100%">'
+        +'<div xmlns="http://www.w3.org/1999/xhtml" style="width:'+w+'px;height:'+h+'px;overflow:hidden">'
+        +'<div style="transform:translate(-'+scrollX+'px,-'+scrollY+'px);transform-origin:top left">'
+        +html+'</div></div></foreignObject></svg>';
+      var svgUrl='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+      var img=new Image();
+      img.onload=function(){
+        var c=document.createElement('canvas');c.width=w;c.height=h;
+        c.getContext('2d').drawImage(img,0,0);
+        window.parent.postMessage({type:'INLINE_EDIT_SCREENSHOT_RESULT',dataUrl:c.toDataURL('image/png'),scrollX:scrollX,scrollY:scrollY},'*');
+      };
+      img.onerror=function(){
+        window.parent.postMessage({type:'INLINE_EDIT_SCREENSHOT_RESULT',dataUrl:null,scrollX:scrollX,scrollY:scrollY},'*');
+      };
+      img.src=svgUrl;
+    }catch(err){
+      window.parent.postMessage({type:'INLINE_EDIT_SCREENSHOT_RESULT',dataUrl:null,scrollX:scrollX,scrollY:scrollY},'*');
+    }
+  });
+})();
+</script></body>
+</html>

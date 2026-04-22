@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #07111b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.grid-radar {
+  mask-image: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.88) 18%, rgba(0, 0, 0, 0.88) 82%, transparent);
+}
+
+.maplibregl-popup-content {
+  padding: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #081018;
+  box-shadow: 0 24px 54px rgba(3, 10, 15, 0.6);
+}
+
+.maplibregl-popup-tip {
+  border-top-color: #081018;
+}
+

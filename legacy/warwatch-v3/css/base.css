@@ -1,0 +1,150 @@
+/* WarWatch V2 — Dark Ops Design Tokens & Base Styles */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Dark Ops Palette */
+  --color-bg:             #0a0e14;
+  --color-surface:        #0f1923;
+  --color-surface-2:      #152232;
+  --color-surface-offset: #0d1520;
+  --color-border:         #1e3048;
+  --color-divider:        #162538;
+
+  --color-text:           #c8d6e5;
+  --color-text-muted:     #6b7d8f;
+  --color-text-faint:     #3d5168;
+
+  --color-primary:        #00d4ff;
+  --color-primary-hover:  #00b8e0;
+  --color-primary-dim:    rgba(0,212,255,0.15);
+  --color-primary-glow:   rgba(0,212,255,0.3);
+
+  --color-danger:         #ff3b3b;
+  --color-warning:        #ffaa00;
+  --color-success:        #00e676;
+  --color-info:           #7b68ee;
+
+  --color-friendly:       #4fc3f7;
+  --color-hostile:        #ef5350;
+  --color-neutral:        #78909c;
+  --color-nuclear:        #ffd600;
+  --color-oil:            #ff9100;
+
+  /* Typography */
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'Inter', -apple-system, sans-serif;
+
+  /* Spacing */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 20px; --sp-6: 24px; --sp-8: 32px;
+
+  /* Sizes */
+  --topbar-h: 48px;
+  --sidebar-w: 260px;
+  --bottombar-h: 52px;
+
+  /* Radii */
+  --r-sm: 2px;
+  --r-md: 4px;
+}
+
+/* Light mode */
+[data-theme="light"] {
+  --color-bg: #e8ecf1;
+  --color-surface: #f0f3f7;
+  --color-surface-2: #ffffff;
+  --color-surface-offset: #dde3ea;
+  --color-border: #c0ccd8;
+  --color-divider: #d0dae4;
+  --color-text: #1a2332;
+  --color-text-muted: #5a6a7a;
+  --color-text-faint: #8a9aaa;
+  --color-primary: #0090b3;
+  --color-primary-hover: #007a99;
+  --color-primary-dim: rgba(0,144,179,0.12);
+  --color-primary-glow: rgba(0,144,179,0.2);
+}
+
+html, body {
+  height: 100%; width: 100%;
+  overflow: hidden;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--color-surface-offset); }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-faint); }
+
+/* Typography */
+h1,h2,h3,h4,h5,h6 {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.mono { font-family: var(--font-mono); }
+.tabular { font-variant-numeric: tabular-nums lining-nums; }
+
+a { color: var(--color-primary); text-decoration: none; }
+a:hover { color: var(--color-primary-hover); text-decoration: underline; }
+
+/* Utility */
+.text-muted { color: var(--color-text-muted); }
+.text-faint { color: var(--color-text-faint); }
+.text-primary { color: var(--color-primary); }
+.text-danger { color: var(--color-danger); }
+.text-warning { color: var(--color-warning); }
+.text-success { color: var(--color-success); }
+.text-xs { font-size: 10px; }
+.text-sm { font-size: 11px; }
+.text-md { font-size: 13px; }
+.text-lg { font-size: 16px; }
+.text-xl { font-size: 20px; }
+.text-2xl { font-size: 28px; }
+.uppercase { text-transform: uppercase; }
+.fw-500 { font-weight: 500; }
+.fw-600 { font-weight: 600; }
+.fw-700 { font-weight: 700; }
+
+/* Pulsing dot */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 currentColor; }
+  50% { opacity: 0.6; box-shadow: 0 0 6px 2px currentColor; }
+}
+.pulse-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Scanline effect */
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+.scanline-overlay {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 999;
+}
+.scanline-overlay::before {
+  content: '';
+  position: absolute; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0,212,255,0.06), transparent);
+  animation: scanline 8s linear infinite;
+}
+
+/* Glow */
+.glow { box-shadow: 0 0 12px -2px var(--color-primary-glow); }
+.glow-text { text-shadow: 0 0 8px var(--color-primary-glow); }

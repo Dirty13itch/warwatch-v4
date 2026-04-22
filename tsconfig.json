@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["DOM", "DOM.Iterable", "ES2023"],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@client/*": ["client/src/*"],
+      "@server/*": ["server/*"],
+      "@shared/*": ["shared/*"]
+    }
+  },
+  "include": [
+    "client/src",
+    "server",
+    "shared",
+    "scripts",
+    "vite.config.ts",
+    "tailwind.config.ts"
+  ]
+}
+
