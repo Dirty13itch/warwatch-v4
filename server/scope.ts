@@ -20,7 +20,10 @@ export interface ScopeAssessment {
 const coreSignals: RegexSignal[] = [
   { label: "iran", regex: /\biran(?:ian|ians)?\b/i },
   { label: "hormuz", regex: /\b(?:strait of )?hormuz\b|\bpersian gulf\b/i },
-  { label: "iran_nuclear", regex: /\b(?:natanz|fordow|isfahan|uranium|enrichment|centrifuge|nuclear)\b/i }
+  {
+    label: "iran_nuclear",
+    regex: /\b(?:natanz|fordow|isfahan|uranium|enrichment|centrifuge|iaea|nuclear program|nuclear bomb)\b/i
+  }
 ];
 
 const regionalSignals: RegexSignal[] = [
@@ -65,7 +68,15 @@ const contextSignals: RegexSignal[] = [
 
 const excludedSignals: RegexSignal[] = [
   { label: "sports", regex: /\b(?:football|soccer|world cup|premier league|goal|match|team|tournament|burnley|manchester city)\b/i },
-  { label: "travel_culture", regex: /\b(?:museum|artifact|helmet|tourist|tourism|pyramids|festival|concert)\b/i }
+  { label: "travel_culture", regex: /\b(?:museum|artifact|helmet|tourist|tourism|pyramids|festival|concert)\b/i },
+  {
+    label: "defense_industry",
+    regex: /\b(?:columbia-class|submarine czar|shipbuilding|sea-air-space symposium|battle force deployed underway)\b/i
+  },
+  {
+    label: "force_tracker",
+    regex: /\b(?:fleet and marine tracker|carrier strike groups throughout the world|deployed underway)\b/i
+  }
 ];
 
 function unique<T>(values: T[]): T[] {

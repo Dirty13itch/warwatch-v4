@@ -44,6 +44,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - RSS/event ingestion now dedupes by normalized title/category/date window and upgrades corroboration/source refs on merge
 - RSS/event ingestion now also resolves near-duplicate rewritten feed titles through keyword/entity compatibility and appends distinct corroborating detail when the event row is upgraded
 - RSS/event ingestion now also applies a mission-scope firewall so obviously off-scope general-feed items are skipped or quarantined instead of leaking into public surfaces
+- RSS/event ingestion now also has classifier guardrails for explainers, fleet trackers, and defense-industrial copy, so "bomb", "missile", or "carrier strike group" phrasing stops auto-escalating background articles into the critical strike queue
 - Market ingestion now writes canonical metric snapshots for Brent, WTI, and gold from Yahoo Finance
 - Signals surface renders live market history directly from the canonical metric store
 - Daily SITREP generation refreshes the same-day briefing and includes market movement when live snapshots exist
@@ -56,6 +57,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Operator API now exposes aggregate review-queue SLA summary data for backlog pressure and aging
 - Operator API now also exposes a selection-aware review dossier for each queue item, including canonical object detail, feed/link metadata, related evidence events, and superseding briefing context
 - Review dossiers now also unpack story/claim suggestion payloads and canonical matches, so the operator lane can review promotion candidates as first-class objects instead of opaque metadata
+- Operator auth now hardens automatically once the app is public-facing: if `PUBLIC_BASE_URL` is set, production mode is on, or `WARWATCH_REQUIRE_OPERATOR_KEY=true`, operator routes require `OPERATOR_API_KEY`
 - Aggregate stale-state logic can now clear through a mix of live/ingested and `operator_reviewed` top-line metrics
 - Heartbeat artifact includes explicit top-line metric rows plus queue-aging summary in addition to aggregate freshness state
 - Build output now isolates React, chart, and MapLibre vendor lanes, with MapLibre kept off the initial shell through dynamic import
@@ -92,8 +94,9 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - The operator console can now also queue those graph-aware promotion candidates and approve them into canonical stories/claims through the normal review gate
 - The operator console now also sees clustered event/source counts on synthesis candidates and review dossiers, which makes the strength of each promotion lane more legible
 - The operator synthesis lane is now materially less noisy on high-volume claim classes because stale evidence is pruned and unrelated threat topics split into separate candidates
-- The operator console can now see queue pressure directly through age buckets and SLA summary cards, which gives the COO lane a concrete review-backlog surface
+- The operator console can now see queue pressure directly through age buckets and SLA summary cards, which gave the COO lane a concrete review-backlog surface and is now sitting at zero pending after the reconciliation pass
 - The operator console can now turn a queue row into a real review packet and jump straight into timeline evidence from the operator lane
+- The repo now has a deterministic queue-reconciliation script (`npm run review:reconcile`) that reclassifies bad auto-ingest criticals, promotes matched claim suggestions, and rejects superseded launch briefings instead of leaving backlog cleanup as a manual chat loop
 - The COO lane can now attach actual UI evidence to updates through local preview screenshots instead of relying only on text artifacts
 - The preview lane now reflects the stronger hierarchy pass instead of the older flatter card system, and the mobile artifact shows the tighter hero/nav/status shell rather than the earlier oversized first screen
 - Public reader surfaces no longer dead-end as quickly: snapshot, source posture, briefing refs, events, stories, and briefings can all jump into dossier graph detail

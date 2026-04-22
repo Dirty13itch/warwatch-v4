@@ -724,6 +724,24 @@ export function classifyFeedEvent(text: string): {
   significance: Significance;
 } {
   const normalized = text.toLowerCase();
+  const hostileAction = /\b(?:missile(?!\s+submarine)|strike(?!\s+group)|bomb(?:ed|ing)?|drone|air raid|rocket|shelling|raid|attack(?:ed|s|ing)?|seized?)\b/;
+  const explainerOrBackground = /(?:^what is\b|\bexplainer\b|how quickly could|breaking down the words you're hearing|what you need to know)/;
+  const strategicOrTracker = /(?:holds lessons|commander says|fleet and marine tracker|delivery is .* imperative|sub czar|symposium|shipbuilding|battle force deployed underway)/;
+  const nuclearContext = /\b(?:uranium|enrichment|centrifuge|natanz|fordow|iaea|nuclear program|nuclear bomb)\b/;
+
+  if (explainerOrBackground.test(normalized)) {
+    return {
+      category: "intel",
+      significance: nuclearContext.test(normalized) ? "high" : "medium"
+    };
+  }
+
+  if (strategicOrTracker.test(normalized) && !hostileAction.test(normalized)) {
+    return {
+      category: "intel",
+      significance: "medium"
+    };
+  }
 
   if (/(ceasefire|talks|negotiation|summit|accord|brokered|deadline)/.test(normalized)) {
     return {
@@ -732,7 +750,7 @@ export function classifyFeedEvent(text: string): {
     };
   }
 
-  if (/(missile|strike|bomb|drone|air raid|rocket|shelling)/.test(normalized)) {
+  if (hostileAction.test(normalized)) {
     return {
       category: normalized.includes("iran") ? "iran_strike" : "us_strike",
       significance: /(capital|nuclear|carrier|embassy|killed|major)/.test(normalized)

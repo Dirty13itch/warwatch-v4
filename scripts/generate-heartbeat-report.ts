@@ -96,6 +96,19 @@ const topLineLines = topLineMetrics.map((metric) => {
   const current = metric.current;
   return `- ${metric.label}: ${toAsciiArtifact(current?.valueText ?? "n/a")} :: ${current?.freshness ?? "missing"} :: ${toAsciiArtifact(current?.sourceText ?? "none")} :: ${current?.timestamp ?? "n/a"}`;
 });
+const nextActions = [
+  queueSummary.pending > 0
+    ? "- Reduce pending critical queue items before promoting fresh top-line claims"
+    : "- Pending critical queue is clear; next unlock is reviewed current top-line metrics or an explicit evidence-bound hold state",
+  overview.stale
+    ? "- Clear the remaining stale public KPI lane only where current evidence is defensible"
+    : "- Keep reviewed public top-line metrics fresh as new evidence lands",
+  !config.publicBaseUrl
+    ? "- Set PUBLIC_BASE_URL and a real deploy target so live public verification stops skipping"
+    : "- Keep live public verification green on the deployed surface",
+  "- Keep live ingestion healthy and visible in operator surfaces",
+  "- Maintain docs and state surfaces when runtime truth changes"
+];
 
 const lines = [
   "# WarWatch Heartbeat",
@@ -142,9 +155,7 @@ const lines = [
   ),
   "",
   "## Next Actions",
-  "- Reduce pending critical queue items before promoting fresh top-line claims",
-  "- Keep live ingestion healthy and visible in operator surfaces",
-  "- Maintain docs and state surfaces when runtime truth changes"
+  ...nextActions
 ];
 
 fs.mkdirSync(path.dirname(config.heartbeatReportPath), { recursive: true });

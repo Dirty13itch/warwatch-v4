@@ -49,6 +49,7 @@ Tasks:
    - threat-level banner review
    - first live SITREP refresh
    - current critical external source items
+   Current state: the seeded critical queue is now reconciled to zero pending through classifier hardening plus scripted claim/briefing/event resolution, so the tranche-1 blocker has narrowed to evidence-backed KPI publication rather than backlog pressure.
 3. Tighten operator suggestion quality where evidence is noisy or missing.
 4. Publish defensible reviewed snapshots through the operator lane rather than leaving the public shell in `stale_seed`.
 5. Refresh heartbeat and briefing outputs once reviewed truth materially changes.
@@ -222,6 +223,7 @@ Exit criteria:
 ### Data Ingestion Lead
 - improve merge and normalization rules
 - add more structured extractors for KPI suggestions
+- keep `npm run review:reconcile` aligned with the live queue contract so false-critical ingest items do not reaccumulate
 - widen the feed lane only where review logic is ready
 - keep ingestion runs idempotent and explainable
 
@@ -230,6 +232,7 @@ Exit criteria:
 - improve source scoring and evidence standards
 - tighten publication rules for reviewed KPIs and claims
 - keep public stale-state semantics honest
+- with the pending queue clear, focus on evidence quality for stale KPIs instead of generic backlog cleanup
 
 ### SRE / Release Lead
 - land a real deploy target
@@ -239,11 +242,11 @@ Exit criteria:
 - keep preview/build/smoke artifacts dependable
 
 ## Immediate Sequence To Run Without Stopping
-1. Clear the remaining stale top-line truth gap through the operator lane and current critical queue.
-2. Deepen the live canonical entity/claim/relationship graph and extend the remaining public drill-down lanes into it.
-3. Harden ingestion synthesis so the graph updates cleanly from live evidence.
-4. Wire a real deployment target and live verification.
-5. Reduce the MapLibre/performance burden and improve preview proof.
+1. Clear the remaining stale top-line truth gap through better extractor coverage and reviewed KPI publication.
+2. Harden ingestion synthesis so the graph updates cleanly from live evidence now that the critical queue is clear.
+3. Wire a real deployment target, live verification, and production-safe operator auth.
+4. Reduce the MapLibre/performance burden and improve preview proof.
+5. Deepen the live canonical entity/claim/relationship graph where public drill-down still feels shallow.
 6. Only then widen scope into more feeds, richer history, and distribution features.
 
 ## What Gets Deprioritized Until The Above Is Done

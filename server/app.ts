@@ -28,9 +28,22 @@ import { confidenceLevels, type OperatorMetricPublishInput } from "../shared/typ
 import { getTopLineSuggestions } from "./topline.js";
 import { getSynthesisSuggestions, queueClaimSuggestion, queueStorySuggestion } from "./synthesis.js";
 
+function operatorKeyRequired(config: AppConfig): boolean {
+  return (
+    Boolean(config.operatorApiKey) ||
+    Boolean(config.publicBaseUrl) ||
+    process.env.NODE_ENV === "production" ||
+    process.env.WARWATCH_REQUIRE_OPERATOR_KEY === "true"
+  );
+}
+
 function operatorAllowed(config: AppConfig, req: express.Request): boolean {
+  if (!operatorKeyRequired(config)) {
+    return true;
+  }
+
   if (!config.operatorApiKey) {
-    return process.env.NODE_ENV !== "production";
+    return false;
   }
 
   return req.header("x-warwatch-operator-key") === config.operatorApiKey;

@@ -178,4 +178,21 @@ describe("WarWatch API", () => {
     expect(promotedClaim).toBeTruthy();
     expect(promotedClaim.reviewState).toBe("approved");
   });
+
+  it("requires an operator key once the app has a public base URL", async () => {
+    const securedApp = createApp(db, {
+      ...config,
+      publicBaseUrl: "https://warwatch.example",
+      operatorApiKey: "test-operator-key",
+      enableScheduler: false
+    });
+
+    const denied = await request(securedApp).get("/api/operator/review-queue");
+    expect(denied.status).toBe(401);
+
+    const allowed = await request(securedApp)
+      .get("/api/operator/review-queue")
+      .set("x-warwatch-operator-key", "test-operator-key");
+    expect(allowed.status).toBe(200);
+  });
 });

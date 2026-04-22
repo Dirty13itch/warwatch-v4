@@ -25,6 +25,7 @@
 - Live market ingestion is active against Yahoo Finance for `oil_brent`, `oil_wti`, and `gold_price`
 - Feed dedupe and corroboration are live: repeated feed hits now merge into existing events instead of inflating duplicates
 - Mission-scope filtering is now live on RSS ingestion: clearly off-scope general-news items are skipped before insertion, older auto-ingested noise is quarantined out of public surfaces, and feed-run summaries now report skipped/quarantined counts
+- Feed classification is now less queue-happy on background/explainer/defense-industry copy: explainers, fleet trackers, and submarine-industrial coverage no longer get misread as critical strike items just because they mention bombs, missiles, or carrier strike groups
 - Freshness truth is corrected: top-line overview state stays stale until the actual KPI metrics are live, even when event ingestion is healthy
 - Signals surface now renders live market cards and sparklines from canonical metric history instead of only seeded indicator stories
 - Daily SITREP refresh now folds in live market movement when current market snapshots exist
@@ -38,8 +39,10 @@
 - Operator review is now selection-aware: queue items open into a dossier with canonical object detail, feed/source metadata, recommended next action, superseding briefing context, and related evidence events
 - Suggestion-backed review dossiers now show proposed story/claim payloads plus canonical matches when they exist, which makes promotion review materially faster than reasoning from metadata blobs
 - The operator lane can now hand directly into timeline evidence from both KPI suggestion cards and queue dossiers, which makes tranche-1 review work faster and less abstract
+- The current critical queue has now been reconciled down to zero pending items through a repo script plus claim-suggestion promotion, so stale public truth is no longer blocked by seed-era queue backlog
 - Heartbeat now renders explicit top-line metric values, freshness, source text, and timestamps instead of only aggregate stale-state summaries
 - Heartbeat output is sanitized to an ASCII-safe operator artifact so Windows console review does not corrupt high-signal lines
+- Heartbeat next actions are now queue-aware, so the operator artifact stops telling the repo to reduce pending critical items once the queue is already clear
 - Visual proof is now first-class: `npm run preview:shots` builds the app, captures desktop/mobile screenshots for the command, signals, and operator lanes, and writes a local artifact to `reports/previews/LATEST.md`
 - Preview output now also includes a single `reports/previews/latest/preview-board.png` board artifact so updates can show one readable visual brief instead of a loose image set
 - The preview lane now centers the new Snapshot surface, which gives the product a better public/demo-first entry point than dropping directly into the raw command shell
@@ -52,6 +55,7 @@
 - Build proof is now first-class too: every build writes `reports/build/LATEST.md` and `LATEST.json`, and the heartbeat surfaces bundle totals plus the largest client assets so performance pressure stays reviewable
 - Preview and build proof have both been refreshed after the UI hierarchy pass, so the current artifact lane reflects the stronger shell and tighter mobile header instead of the older flatter card treatment
 - Verification contract is green locally via `npm run verify`
+- Release/auth expectations are tighter: once a public URL exists or production mode is on, operator routes require `OPERATOR_API_KEY` instead of falling open by default
 
 ## Current Goal
 Hold and extend the first milestone:
@@ -71,7 +75,7 @@ Hold and extend the first milestone:
 - Preview screenshots are local workspace artifacts today; once a public deployment exists, the same visual-proof lane should validate the deployed surface as well
 - Mobile shell density is materially better than the earlier oversized hero pass, but above-the-fold efficiency is still a tranche-5 follow-up rather than a solved lane
 - The operator refresh lane now surfaces current evidence, but the remaining stale top-line metrics still need actual reviewed publications to clear the public stale flag
-- Several critical review queue items still block promotion of fresher top-line public claims
+- The critical review queue is cleared, so the remaining stale-truth blocker is evidence quality for the KPI lane rather than review backlog pressure
 - The synthesis write path is now real, but it still needs better merge/extraction quality before broader feed expansion is safe
 - Build pressure is now explicit in repo artifacts, but the MapLibre vendor lane is still the dominant client-weight problem and remains an active tranche-5 follow-up
 - Clustered synthesis now has real time/topic guardrails, but broader structured extraction and canonical merge quality still need hardening before wider feed expansion is safe

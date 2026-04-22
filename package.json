@@ -23,6 +23,7 @@
     "seed": "tsx scripts/rebuild-db.ts",
     "backfill:entity-tags": "tsx scripts/backfill-entity-tags.ts",
     "ingest:once": "tsx scripts/run-ingest.ts",
+    "review:reconcile": "tsx scripts/reconcile-review-queue.ts",
     "heartbeat": "tsx scripts/generate-heartbeat-report.ts"
   },
   "dependencies": {
