@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { setTimeout as delay } from "node:timers/promises";
+import { pathToFileURL } from "node:url";
 import { chromium, devices, type Browser, type BrowserContext, type Page } from "playwright";
 
 const rootDir = process.cwd();
@@ -15,6 +16,7 @@ const serverEntry = path.resolve(rootDir, "dist/server/server/index.js");
 const clientEntry = path.resolve(rootDir, "dist/client/index.html");
 
 type CaptureTarget = {
+  title: string;
   fileName: string;
   notes: string;
   surface?: "command" | "signals" | "operator";
@@ -112,6 +114,219 @@ async function captureSurface(
   await context.close();
 }
 
+function writeBoardHtml(captures: CaptureTarget[]) {
+  const boardHtml = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>WarWatch Preview Board</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg-a: #07111b;
+        --bg-b: #16212f;
+        --shell: rgba(12, 21, 33, 0.86);
+        --line: rgba(120, 160, 190, 0.22);
+        --text: #e8eef4;
+        --muted: #9caebe;
+        --signal: #59d3ff;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Inter, system-ui, sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(89, 211, 255, 0.12), transparent 28%),
+          linear-gradient(160deg, var(--bg-a), var(--bg-b));
+        color: var(--text);
+      }
+      main {
+        padding: 32px;
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 20px;
+        align-items: start;
+        margin-bottom: 24px;
+      }
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background: var(--shell);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+      }
+      .meta {
+        padding: 28px;
+      }
+      .eyebrow {
+        font-size: 12px;
+        letter-spacing: 0.34em;
+        text-transform: uppercase;
+        color: var(--signal);
+      }
+      h1 {
+        margin: 18px 0 0;
+        font-size: 52px;
+        line-height: 0.94;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+      }
+      .copy {
+        margin: 18px 0 0;
+        max-width: 42rem;
+        color: var(--muted);
+        font-size: 19px;
+        line-height: 1.6;
+      }
+      .metrics {
+        display: grid;
+        gap: 12px;
+        padding: 28px;
+      }
+      .metric {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 14px 16px;
+      }
+      .metric-label {
+        color: var(--muted);
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+      .metric-value {
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+      }
+      .card {
+        overflow: hidden;
+      }
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 16px;
+        padding: 18px 20px 0;
+      }
+      .card-title {
+        font-size: 22px;
+        font-weight: 600;
+      }
+      .card-tag {
+        color: var(--signal);
+        font-size: 11px;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+      }
+      .card-copy {
+        padding: 8px 20px 18px;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .frame {
+        padding: 0 14px 14px;
+      }
+      img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: #04101a;
+      }
+      @media (max-width: 1280px) {
+        .hero,
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <div class="panel meta">
+          <div class="eyebrow">WarWatch V4 Preview Board</div>
+          <h1>Current visual proof for the command, signals, and operator lanes.</h1>
+          <p class="copy">
+            This board is generated from the built app so COO updates can show concrete UI state, not just commit messages and markdown artifacts.
+          </p>
+        </div>
+        <div class="panel metrics">
+          <div class="metric">
+            <div class="metric-label">Generated</div>
+            <div class="metric-value">${new Date().toISOString()}</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Base URL</div>
+            <div class="metric-value">${baseUrl}</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Capture count</div>
+            <div class="metric-value">${captures.length}</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Artifacts</div>
+            <div class="metric-value">latest/*.png + preview-board.png</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid">
+        ${captures
+          .map(
+            (capture) => `<article class="panel card">
+          <div class="card-header">
+            <div class="card-title">${capture.title}</div>
+            <div class="card-tag">${capture.mobile ? "Mobile" : "Desktop"}</div>
+          </div>
+          <div class="card-copy">${capture.notes}</div>
+          <div class="frame">
+            <img src="${pathToFileURL(path.join(archiveDir, capture.fileName)).href}" alt="${capture.title}" />
+          </div>
+        </article>`
+          )
+          .join("\n")}
+      </section>
+    </main>
+  </body>
+</html>`;
+
+  const archiveHtmlPath = path.join(archiveDir, "preview-board.html");
+  const latestHtmlPath = path.join(latestDir, "preview-board.html");
+  fs.writeFileSync(archiveHtmlPath, boardHtml, "utf8");
+  fs.writeFileSync(latestHtmlPath, boardHtml, "utf8");
+}
+
+async function captureBoard(browser: Browser) {
+  const context = await browser.newContext({
+    viewport: { width: 1660, height: 2200 },
+    deviceScaleFactor: 1
+  });
+  const page = await context.newPage();
+  await page.goto(pathToFileURL(path.join(archiveDir, "preview-board.html")).href, {
+    waitUntil: "load"
+  });
+  await page.screenshot({
+    path: path.join(archiveDir, "preview-board.png"),
+    fullPage: true
+  });
+  fs.copyFileSync(path.join(archiveDir, "preview-board.png"), path.join(latestDir, "preview-board.png"));
+  await context.close();
+}
+
 function writeLatestReport(captures: CaptureTarget[]) {
   const lines = [
     "# WarWatch Preview Artifact",
@@ -120,13 +335,17 @@ function writeLatestReport(captures: CaptureTarget[]) {
     `Base URL: ${baseUrl}`,
     `Archive: ${archiveDir}`,
     "",
+    "## Board",
+    `- latest/preview-board.png`,
+    "",
     "## Captures",
     ...captures.map(
       (capture) =>
-        `- ${capture.fileName}: ${capture.notes}${capture.mobile ? " (mobile)" : " (desktop)"}`
+        `- ${capture.title} :: ${capture.fileName}: ${capture.notes}${capture.mobile ? " (mobile)" : " (desktop)"}`
     ),
     "",
     "## Latest Files",
+    "- latest/preview-board.png",
     ...captures.map((capture) => `- latest/${capture.fileName}`)
   ];
 
@@ -139,27 +358,32 @@ async function main() {
 
   const captures: CaptureTarget[] = [
     {
+      title: "Command Surface",
       fileName: "command-desktop.png",
       notes: "Command surface with KPI shell, map lane, and public freshness posture",
       surface: "command"
     },
     {
+      title: "Signals Surface",
       fileName: "signals-desktop.png",
       notes: "Signals surface with live market cards and source table",
       surface: "signals"
     },
     {
+      title: "Operator Surface",
       fileName: "operator-desktop.png",
       notes: "Operator surface with top-line controls, review queue, and ingestion health",
       surface: "operator"
     },
     {
+      title: "Queue SLA Summary",
       fileName: "operator-queue-summary.png",
       notes: "Focused queue-SLA summary cards for the review backlog",
       surface: "operator",
       selector: '[data-preview="operator-queue-summary"]'
     },
     {
+      title: "Command Surface Mobile",
       fileName: "command-mobile.png",
       notes: "Command surface on a narrow mobile viewport",
       surface: "command",
@@ -183,6 +407,8 @@ async function main() {
     for (const capture of captures) {
       await captureSurface(browser, capture);
     }
+    writeBoardHtml(captures);
+    await captureBoard(browser);
     writeLatestReport(captures);
     console.log(`Wrote preview artifact to ${path.join(previewRoot, "LATEST.md")}`);
   } catch (error) {

@@ -38,6 +38,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Heartbeat artifact includes explicit top-line metric rows plus queue-aging summary in addition to aggregate freshness state
 - Build output now isolates React, chart, and MapLibre vendor lanes, with MapLibre kept off the initial shell through dynamic import
 - Preview proof now exists as a repo script: `npm run preview:shots` captures desktop/mobile screenshots from the built app and writes `reports/previews/LATEST.md`
+- Preview proof also emits `reports/previews/latest/preview-board.png`, a single stitched board artifact for human-facing updates
 
 ## Operating Assumption
 Twice-daily COO heartbeat remains the default cadence unless the repo contract changes.

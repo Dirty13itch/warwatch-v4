@@ -18,6 +18,7 @@
 - Heartbeat now renders explicit top-line metric values, freshness, source text, and timestamps instead of only aggregate stale-state summaries
 - Heartbeat output is sanitized to an ASCII-safe operator artifact so Windows console review does not corrupt high-signal lines
 - Visual proof is now first-class: `npm run preview:shots` builds the app, captures desktop/mobile screenshots for the command, signals, and operator lanes, and writes a local artifact to `reports/previews/LATEST.md`
+- Preview output now also includes a single `reports/previews/latest/preview-board.png` board artifact so updates can show one readable visual brief instead of a loose image set
 - Verification contract is green locally via `npm run verify`
 
 ## Current Goal
