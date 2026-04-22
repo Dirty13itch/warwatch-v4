@@ -1,6 +1,8 @@
 import type { DatabaseSync } from "node:sqlite";
 import { getTopLineMetricDefinition } from "../shared/topline.js";
+import { entityTagsForText } from "../shared/entity-matching.js";
 import type {
+  EntityRecord,
   EventRecord,
   OperatorMetricPublishInput,
   OperatorSuggestionEvidence,
@@ -8,7 +10,7 @@ import type {
   OperatorTopLineMetric,
   TopLineMetricKey
 } from "../shared/types.js";
-import { getTopLineMetrics } from "./store.js";
+import { getEntities, getTopLineMetrics } from "./store.js";
 
 function parseJson<T>(value: string | null): T {
   return JSON.parse(value ?? "null") as T;
@@ -47,26 +49,105 @@ function loadRecentOperatorEvents(db: DatabaseSync): EventRecord[] {
   return rows.map(rowToEvent);
 }
 
-function eventMatchesMetric(key: TopLineMetricKey, event: EventRecord): boolean {
+function uniqueStrings(values: Array<string | null | undefined>): string[] {
+  return Array.from(new Set(values.filter((value): value is string => Boolean(value))));
+}
+
+function eventEntityTags(event: EventRecord, entities: EntityRecord[]): string[] {
+  return uniqueStrings([
+    ...event.tags.filter((tag) => tag.startsWith("entity:")),
+    ...entityTagsForText(entities, event.title, event.detail, event.sourceText)
+  ]);
+}
+
+function hasEntityTag(tags: string[], slug: string): boolean {
+  return tags.includes(`entity:${slug}`);
+}
+
+function hasAnyEntityTag(tags: string[], slugs: string[]): boolean {
+  return slugs.some((slug) => hasEntityTag(tags, slug));
+}
+
+function metricRelevanceScore(
+  key: TopLineMetricKey,
+  event: EventRecord,
+  entities: EntityRecord[]
+): number {
   const haystack = `${event.title} ${event.detail}`;
+  const entityTags = eventEntityTags(event, entities);
 
   if (key === "total_strikes") {
-    return (
-      /[0-9][0-9,]{2,}\+?\s+(?:strikes|sorties)/i.test(haystack) ||
+    const hasStrikeFigure = /[0-9][0-9,]{2,}\+?\s+(?:strikes|sorties)/i.test(haystack);
+    const hasStrikeContext =
       /(?:total|cumulative|combined|campaign|air campaign).{0,40}(?:strikes|sorties)/i.test(haystack) ||
-      /(?:strikes|sorties).{0,40}(?:total|cumulative|combined|campaign|all theaters)/i.test(haystack)
+      /(?:strikes|sorties).{0,40}(?:total|cumulative|combined|campaign|all theaters)/i.test(haystack);
+    const hasTheaterActor =
+      hasAnyEntityTag(entityTags, ["iran", "israel", "lebanon", "hezbollah", "united-states"]) ||
+      /(?:iran|israel|lebanon|hezbollah|united states|u\.s\.)/i.test(haystack);
+
+    if (!hasStrikeFigure && !hasStrikeContext) {
+      return 0;
+    }
+
+    return (
+      (hasStrikeFigure ? 8 : 0) +
+      (hasStrikeContext ? 5 : 0) +
+      (event.category.endsWith("_strike") ? 3 : 0) +
+      (hasTheaterActor ? 4 : 0) +
+      Math.min(event.corroboration, 3)
     );
   }
 
   if (key === "hormuz_daily_cap") {
-    return /(hormuz|strait of hormuz|shipping corridor|tanker|throughput|vessels?\s+(?:per day|a day|daily)|ships?\s+(?:per day|a day|daily))/i.test(haystack);
+    const hasHormuz = hasEntityTag(entityTags, "strait-of-hormuz") || /(hormuz|strait of hormuz)/i.test(haystack);
+    const hasShippingContext =
+      /(shipping corridor|tanker|throughput|transit|vessels?\s+(?:per day|a day|daily)|ships?\s+(?:per day|a day|daily))/i.test(
+        haystack
+      );
+    const hasNumericCap =
+      /(?:<=|up to|max(?:imum)?|cap(?:ped)?(?: at)?|only)\s*([0-9]{1,3})\s*(?:\/day|per day|ships\/day|vessels\/day)/i.test(
+        haystack
+      ) ||
+      /([0-9]{1,3})\s+(?:ships|vessels)\s+(?:yesterday|a day|per day|daily|passed)/i.test(haystack);
+
+    if (!hasHormuz || (!hasShippingContext && !hasNumericCap)) {
+      return 0;
+    }
+
+    return (
+      (hasEntityTag(entityTags, "strait-of-hormuz") ? 8 : 0) +
+      (/(hormuz|strait of hormuz)/i.test(haystack) ? 6 : 0) +
+      (hasShippingContext ? 4 : 0) +
+      (hasNumericCap ? 5 : 0) +
+      (event.category === "economic" ? 2 : 0) +
+      Math.min(event.corroboration, 3)
+    );
   }
 
   if (key === "iran_casualties_estimate") {
-    return /(?:iran|iranian|irgc).{0,40}(?:casualt|killed|dead|deaths|fatalit)|(?:casualt|killed|dead|deaths|fatalit).{0,40}(?:iran|iranian|irgc)/i.test(haystack);
+    const hasIran = hasEntityTag(entityTags, "iran") || /(?:iran|iranian|irgc)/i.test(haystack);
+    const hasCasualtyContext = /(?:casualt|killed|dead|deaths|fatalit)/i.test(haystack);
+    const hasCasualtyFigure =
+      /([0-9][0-9,]{3,})\+?\s+(?:iran(?:ian)?\s+)?(?:casualties|killed|dead|deaths)/i.test(haystack);
+
+    if (!hasIran || !hasCasualtyContext) {
+      return 0;
+    }
+
+    return (
+      (hasEntityTag(entityTags, "iran") ? 6 : 0) +
+      (hasCasualtyContext ? 4 : 0) +
+      (hasCasualtyFigure ? 7 : 0) +
+      (event.category === "intel" || event.category === "iran_strike" ? 2 : 0) +
+      Math.min(event.corroboration, 3)
+    );
   }
 
-  return /(brent|oil|crude|barrel|market|wti)/i.test(haystack);
+  if (!/(brent|oil|crude|barrel|market|wti)/i.test(haystack)) {
+    return 0;
+  }
+
+  return 4 + Math.min(event.corroboration, 3);
 }
 
 function excerptForEvent(event: EventRecord): string {
@@ -109,7 +190,7 @@ function extractCandidate(
 
   if (key === "hormuz_daily_cap") {
     const match =
-      haystack.match(/(?:≤|<=|up to|max(?:imum)?|cap(?:ped)?(?: at)?|only)\s*([0-9]{1,3})\s*(?:\/day|per day|ships\/day|vessels\/day)/i) ??
+      haystack.match(/(?:<=|up to|max(?:imum)?|cap(?:ped)?(?: at)?|only)\s*([0-9]{1,3})\s*(?:\/day|per day|ships\/day|vessels\/day)/i) ??
       haystack.match(/([0-9]{1,3})\s+(?:ships|vessels)\s+(?:yesterday|a day|per day|daily|passed)/i);
     if (!match) {
       return null;
@@ -118,7 +199,7 @@ function extractCandidate(
     const value = Number(match[1]);
     return {
       value,
-      valueText: `≤${value}/day`,
+      valueText: `<=${value}/day`,
       sourceText: `${event.sourceText} / operator synthesis`,
       confidence: event.corroboration >= 2 ? "reported" : "claimed",
       note: `Candidate extracted from ${event.title}.`
@@ -146,7 +227,8 @@ function extractCandidate(
 
 function buildSuggestion(
   metric: OperatorTopLineMetric,
-  recentEvents: EventRecord[]
+  recentEvents: EventRecord[],
+  entities: EntityRecord[]
 ): OperatorTopLineSuggestion {
   const definition = getTopLineMetricDefinition(metric.key);
   const current = metric.current;
@@ -161,7 +243,20 @@ function buildSuggestion(
     };
   }
 
-  const relevantEvents = recentEvents.filter((event) => eventMatchesMetric(metric.key, event));
+  const relevantEvents = recentEvents
+    .map((event) => ({
+      event,
+      score: metricRelevanceScore(metric.key, event, entities)
+    }))
+    .filter((entry) => entry.score > 0)
+    .sort(
+      (left, right) =>
+        right.score - left.score ||
+        right.event.corroboration - left.event.corroboration ||
+        right.event.date.localeCompare(left.event.date) ||
+        right.event.createdAt.localeCompare(left.event.createdAt)
+    )
+    .map((entry) => entry.event);
   const evidence = evidenceForEvents(relevantEvents);
   const candidateEvent = relevantEvents.find((event) => extractCandidate(metric.key, event));
   const candidate = candidateEvent ? extractCandidate(metric.key, candidateEvent) : null;
@@ -198,5 +293,6 @@ function buildSuggestion(
 export function getTopLineSuggestions(db: DatabaseSync): OperatorTopLineSuggestion[] {
   const metrics = getTopLineMetrics(db);
   const recentEvents = loadRecentOperatorEvents(db);
-  return metrics.map((metric) => buildSuggestion(metric, recentEvents));
+  const entities = getEntities(db);
+  return metrics.map((metric) => buildSuggestion(metric, recentEvents, entities));
 }

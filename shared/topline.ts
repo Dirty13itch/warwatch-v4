@@ -35,7 +35,7 @@ export const topLineMetricDefinitions: TopLineMetricDefinition[] = [
     supportingText: "Current public shell exposes the operating assumption and freshness state",
     unit: "ships_per_day",
     operatorPrompt: "Publish a reviewed shipping-cap estimate when corridor conditions materially change.",
-    valuePlaceholder: "≤15/day",
+    valuePlaceholder: "<=15/day",
     sourcePlaceholder: "Kpler / Lloyd's List / operator review"
   },
   {

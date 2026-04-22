@@ -16,6 +16,8 @@
 - Snapshot now exposes dossier-entry cards and graph-backed claim posture, so the public landing lane can open directly into actor context instead of stopping at front summaries
 - Source posture now defaults toward more explanatory sources when possible and can hand readers directly into matched actor dossiers from the signals lane
 - Entity resolution is now driven by a shared matching substrate used by both client and server graph features, reducing heuristic drift before tranche-3 ingestion hardening
+- Event ingestion now persists canonical `entity:*` tags on new and merged events, and `npm run backfill:entity-tags` can repair the historical event corpus onto the same graph-aware tagging scheme
+- Operator KPI suggestions now rank evidence with entity-aware relevance, which stops generic shipping noise from surfacing as a fake Hormuz candidate and makes stale-metric review safer
 - Live ingestion is active against `BBC Middle East`, `Al Jazeera`, `NPR World`, `Defense News`, `USNI News`, and `USGS Iran Earthquakes`
 - Live market ingestion is active against Yahoo Finance for `oil_brent`, `oil_wti`, and `gold_price`
 - Feed dedupe and corroboration are live: repeated feed hits now merge into existing events instead of inflating duplicates

@@ -59,6 +59,8 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Preview proof now also validates the cross-surface handoff lane by keeping timeline, signals, and briefing readers in the same artifact set
 - Preview proof now also includes the dossiers surface and focused dossier detail so graph progress is visible in each artifact pass
 - Preview proof now also includes focused snapshot-dossier and source-reader captures so graph-entry improvements are visible in each artifact pass
+- Event ingestion now writes canonical `entity:*` tags on insert/merge, and `npm run backfill:entity-tags` can normalize the historical event store onto the same tagging scheme
+- Operator KPI suggestions now use entity-aware relevance instead of pure regex scanning, which reduces false positives in stale-metric review
 
 ## Operating Assumption
 Twice-daily COO heartbeat remains the default cadence unless the repo contract changes.
@@ -81,5 +83,7 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - The COO lane can now attach actual UI evidence to updates through local preview screenshots instead of relying only on text artifacts
 - Public reader surfaces no longer dead-end as quickly: snapshot, source posture, briefing refs, events, stories, and briefings can all jump into dossier graph detail
 - Shared entity matching now reduces drift between what the client thinks is related and what the server uses for dossier context
+- Canonical entity tagging is now persisted into the event store instead of remaining only an on-the-fly graph helper
+- The operator suggestion lane is now safer against off-target shipping/casualty evidence because entity-aware ranking gates the top-line extraction path
 - Scope gating is still heuristic and rules-based, so borderline regional-spillover judgments remain a tuning lane rather than a solved problem
 - Critical claims continue to require operator approval before promotion to primary public surfaces

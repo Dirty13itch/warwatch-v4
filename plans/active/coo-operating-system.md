@@ -104,11 +104,12 @@ Supporting lanes:
 Tasks:
 1. Improve event merge quality beyond title/date heuristics.
 2. Strengthen source normalization, mission-scope scoring, and source-to-ledger matching.
-   Current state: entity matching is now shared between client and server, so tranche-3 hardening can build on one canonical matching substrate instead of duplicated heuristics.
+   Current state: entity matching is now shared between client and server, event ingestion now persists canonical `entity:*` tags, and a repo script can backfill historical rows onto that same tagging scheme.
 3. Add safer synthesis rules for:
    - claim extraction
    - story promotion candidates
    - metric suggestions beyond market data
+   Current state: operator top-line suggestions now use entity-aware relevance instead of pure regex matching, which blocks obvious generic-shipping false positives.
 4. Expand structured extractor coverage for public-truth KPIs.
 5. Ensure duplicate suppression, corroboration upgrades, and review-item creation stay idempotent.
 

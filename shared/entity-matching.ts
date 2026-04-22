@@ -51,3 +51,10 @@ export function matchEntitiesByText(
     .map((entry) => entry.entity)
     .slice(0, 4);
 }
+
+export function entityTagsForText(
+  entities: EntityRecord[],
+  ...values: Array<string | null | undefined>
+): string[] {
+  return matchEntitiesByText(entities, ...values).map((entity) => `entity:${entity.slug}`);
+}

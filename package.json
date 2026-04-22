@@ -21,6 +21,7 @@
     "verify:public": "tsx scripts/verify-public.ts",
     "verify": "npm run integrity && npm run typecheck && npm run test && npm run build && npm run smoke && npm run verify:public",
     "seed": "tsx scripts/rebuild-db.ts",
+    "backfill:entity-tags": "tsx scripts/backfill-entity-tags.ts",
     "ingest:once": "tsx scripts/run-ingest.ts",
     "heartbeat": "tsx scripts/generate-heartbeat-report.ts"
   },

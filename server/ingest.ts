@@ -11,7 +11,8 @@ import {
   initialVisibility,
   severityFromSignificance
 } from "../shared/review.js";
-import type { Confidence, ReviewState } from "../shared/types.js";
+import { entityTagsForText } from "../shared/entity-matching.js";
+import type { Confidence, EntityRecord, ReviewState } from "../shared/types.js";
 
 const parser = new Parser();
 
@@ -43,6 +44,17 @@ function deriveConfidenceFromCorroboration(count: number) {
   return "unverified" as const;
 }
 
+function uniqueStrings(values: Array<string | null | undefined>): string[] {
+  return Array.from(new Set(values.filter((value): value is string => Boolean(value))));
+}
+
+function loadEntities(db: DatabaseSync): EntityRecord[] {
+  return db.prepare(`
+    SELECT * FROM entities
+    ORDER BY name ASC
+  `).all() as unknown as EntityRecord[];
+}
+
 interface PreparedFeedEvent {
   eventDate: string;
   title: string;
@@ -51,6 +63,7 @@ interface PreparedFeedEvent {
   significance: "critical" | "high" | "medium" | "watch";
   feedName: string;
   link: string | null;
+  entityTags: string[];
   createdAt: string;
 }
 
@@ -312,20 +325,15 @@ export function upsertPreparedFeedEvent(
 ): { action: "inserted" | "merged" | "noop"; queueCreated: boolean } {
   const matched = findMatchingEvent(db, candidate);
   if (matched) {
-    const nextSourceRefs = Array.from(
-      new Set([...matched.sourceRefs, candidate.feedName, candidate.link].filter(Boolean))
-    );
-    const nextTags = Array.from(new Set([...matched.tags, "auto_ingest", candidate.feedName]));
+    const nextSourceRefs = uniqueStrings([...matched.sourceRefs, candidate.feedName, candidate.link]);
+    const nextTags = uniqueStrings([...matched.tags, "auto_ingest", candidate.feedName, ...candidate.entityTags]);
     const nextCorroboration = nextSourceRefs.filter((value) => value && !String(value).startsWith("http")).length;
     const nextConfidence = deriveConfidenceFromCorroboration(Math.max(nextCorroboration, matched.corroboration));
-    const nextSourceText = Array.from(
-      new Set(
-        matched.sourceText
-          .split("/")
-          .map((value) => value.trim())
-          .concat(candidate.feedName)
-          .filter(Boolean)
-      )
+    const nextSourceText = uniqueStrings(
+      matched.sourceText
+        .split("/")
+        .map((value) => value.trim())
+        .concat(candidate.feedName)
     ).join(" / ");
 
     db.prepare(`
@@ -364,11 +372,11 @@ export function upsertPreparedFeedEvent(
     "unverified",
     1,
     candidate.feedName,
-    JSON.stringify([candidate.feedName, candidate.link].filter(Boolean)),
+    JSON.stringify(uniqueStrings([candidate.feedName, candidate.link])),
     reviewState,
     visibility,
     null,
-    JSON.stringify(["auto_ingest", candidate.feedName]),
+    JSON.stringify(uniqueStrings(["auto_ingest", candidate.feedName, ...candidate.entityTags])),
     candidate.createdAt
   );
 
@@ -420,6 +428,7 @@ export async function runIngestionCycle(db: DatabaseSync): Promise<void> {
     notes: "Structured commodity futures feed used for Brent, WTI, and gold snapshots."
   });
 
+  const entities = loadEntities(db);
   for (const market of marketSignalDefinitions) {
     const startedAt = new Date().toISOString();
     const runId = toId("run", `${market.feedName}:${startedAt}`);
@@ -522,6 +531,7 @@ export async function runIngestionCycle(db: DatabaseSync): Promise<void> {
             significance: classified.significance,
             feedName: feed.name,
             link: item.link ?? null,
+            entityTags: entityTagsForText(entities, title, detail, feed.name),
             createdAt: new Date().toISOString()
           });
 
@@ -565,6 +575,9 @@ export async function runIngestionCycle(db: DatabaseSync): Promise<void> {
           const visibility = initialVisibility(significance, "ingest");
           const occurredAt = new Date(feature.properties.time).toISOString();
           const title = `Seismic event M${feature.properties.mag.toFixed(1)} near ${feature.properties.place}`;
+          const detail =
+            "USGS seismic monitor item. Public shell should treat seismic signals as monitoring intelligence, not causal proof.";
+          const entityTags = entityTagsForText(entities, title, detail, feed.name);
           db.prepare(`
             INSERT INTO events (
               id, date, time, title, detail, category, significance, confidence, corroboration,
@@ -575,7 +588,7 @@ export async function runIngestionCycle(db: DatabaseSync): Promise<void> {
             occurredAt.slice(0, 10),
             occurredAt.slice(11, 16) + "Z",
             title,
-            "USGS seismic monitor item. Public shell should treat seismic signals as monitoring intelligence, not causal proof.",
+            detail,
             "seismic",
             significance,
             "auto_extracted",
@@ -588,7 +601,7 @@ export async function runIngestionCycle(db: DatabaseSync): Promise<void> {
               lat: feature.geometry.coordinates[1],
               lon: feature.geometry.coordinates[0]
             }),
-            JSON.stringify(["auto_ingest", "usgs"]),
+            JSON.stringify(uniqueStrings(["auto_ingest", "usgs", ...entityTags])),
             occurredAt
           );
           insertedCount += 1;
