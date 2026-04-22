@@ -2,7 +2,7 @@
 
 ## Current Autonomous Order
 1. Clear the stale top-line truth bottleneck by resolving reviewed current values for strikes, Hormuz throughput, and casualties.
-2. Reduce the critical review queue items that block a fully current public SITREP and headline posture.
+2. Use the new operator dossier lane to reduce the critical review queue items that block a fully current public SITREP and headline posture.
 3. Turn entities, claims, and relationships into a real canonical graph with public/operator drill-down.
 4. Harden ingestion synthesis so live evidence upgrades the graph cleanly and produces better operator suggestions.
 5. Land a real deployment target, set `PUBLIC_BASE_URL`, and stop skipping live public verification.

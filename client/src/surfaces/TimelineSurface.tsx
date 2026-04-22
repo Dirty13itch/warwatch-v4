@@ -38,6 +38,7 @@ export default function TimelineSurface({
   search,
   onSearch,
   focusedEventId,
+  focusedEvent,
   onOpenSource
 }: {
   events: EventRecord[];
@@ -45,6 +46,7 @@ export default function TimelineSurface({
   search: string;
   onSearch: (value: string) => void;
   focusedEventId?: string | null;
+  focusedEvent?: EventRecord | null;
   onOpenSource?: (slug: string) => void;
 }) {
   const categories = useMemo(
@@ -76,6 +78,7 @@ export default function TimelineSurface({
   const selectedEvent =
     filteredEvents.find((event) => event.id === selectedId) ??
     events.find((event) => event.id === selectedId) ??
+    (focusedEvent?.id === selectedId ? focusedEvent : null) ??
     filteredEvents[0] ??
     null;
 

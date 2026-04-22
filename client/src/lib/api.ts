@@ -8,6 +8,7 @@ import type {
   OperatorTopLineSuggestion,
   OperatorTopLineMetric,
   OverviewResponse,
+  ReviewQueueDetail,
   ReviewQueueItem,
   ReviewQueueSummary,
   SourceRecord,
@@ -33,6 +34,7 @@ async function requestJson<T>(input: string, init?: RequestInit): Promise<T> {
 export const api = {
   overview: () => requestJson<OverviewResponse>("/api/overview"),
   events: () => requestJson<EventRecord[]>("/api/events?limit=240"),
+  event: (id: string) => requestJson<EventRecord>(`/api/events/${encodeURIComponent(id)}`),
   stories: () => requestJson<StoryRecord[]>("/api/stories"),
   briefings: () => requestJson<BriefingRecord[]>("/api/briefings"),
   sources: () => requestJson<SourceRecord[]>("/api/sources"),
@@ -40,6 +42,8 @@ export const api = {
   metricHistory: (key: string) =>
     requestJson<MetricSnapshot[]>(`/api/metrics/${encodeURIComponent(key)}/history`),
   reviewQueue: () => requestJson<ReviewQueueItem[]>("/api/operator/review-queue"),
+  reviewQueueDetail: (id: string) =>
+    requestJson<ReviewQueueDetail>(`/api/operator/review-queue/${encodeURIComponent(id)}`),
   reviewQueueSummary: () => requestJson<ReviewQueueSummary>("/api/operator/review-queue/summary"),
   ingestionRuns: () => requestJson<IngestionRun[]>("/api/operator/ingestion-runs"),
   topLineMetrics: () => requestJson<OperatorTopLineMetric[]>("/api/operator/topline-metrics"),

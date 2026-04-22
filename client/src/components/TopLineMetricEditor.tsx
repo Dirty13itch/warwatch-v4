@@ -11,11 +11,13 @@ export function TopLineMetricEditor({
   metric,
   suggestion,
   onPublish,
+  onOpenEvent,
   isPublishing
 }: {
   metric: OperatorTopLineMetric;
   suggestion: OperatorTopLineSuggestion | undefined;
   onPublish: (key: string, payload: OperatorMetricPublishInput) => Promise<void>;
+  onOpenEvent?: (eventId: string) => void;
   isPublishing: boolean;
 }) {
   const definition = getTopLineMetricDefinition(metric.key);
@@ -122,9 +124,20 @@ export function TopLineMetricEditor({
                       {evidence.significance}
                     </span>
                   </div>
-                  <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">
-                    {evidence.date} | {evidence.sourceText}
-                  </p>
+                  <div className="mt-2 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">
+                      {evidence.date} | {evidence.sourceText}
+                    </p>
+                    {onOpenEvent ? (
+                      <button
+                        type="button"
+                        onClick={() => onOpenEvent(evidence.eventId)}
+                        className="rounded-full border border-signal/18 bg-signal/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-signal"
+                      >
+                        Open event
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
               ))}
             </div>

@@ -4,10 +4,12 @@ import type {
   OperatorMetricPublishInput,
   OperatorTopLineSuggestion,
   OperatorTopLineMetric,
+  ReviewQueueDetail,
   ReviewQueueItem,
   ReviewQueueSummary
 } from "@shared/types";
 import { formatDateTime, formatRelativeHours } from "../lib/format";
+import { ReviewQueueDetailPanel } from "../components/ReviewQueueDetailPanel";
 import { TopLineMetricEditor } from "../components/TopLineMetricEditor";
 
 export default function OperatorSurface({
@@ -16,9 +18,13 @@ export default function OperatorSurface({
   runs,
   topLineMetrics,
   topLineSuggestions,
+  selectedQueueId,
+  reviewQueueDetail,
   onApprove,
   onReject,
   onIngest,
+  onSelectQueueItem,
+  onOpenEvent,
   onPublishMetric,
   publishingMetricKey,
   operatorError
@@ -28,9 +34,13 @@ export default function OperatorSurface({
   runs: IngestionRun[];
   topLineMetrics: OperatorTopLineMetric[];
   topLineSuggestions: OperatorTopLineSuggestion[];
+  selectedQueueId: string | null;
+  reviewQueueDetail: ReviewQueueDetail | null;
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
   onIngest: () => void;
+  onSelectQueueItem: (id: string) => void;
+  onOpenEvent?: (eventId: string) => void;
   onPublishMetric: (key: string, payload: OperatorMetricPublishInput) => Promise<void>;
   publishingMetricKey: string | null;
   operatorError: string | null;
@@ -73,6 +83,7 @@ export default function OperatorSurface({
               metric={metric}
               suggestion={topLineSuggestions.find((item) => item.key === metric.key)}
               onPublish={onPublishMetric}
+              onOpenEvent={onOpenEvent}
               isPublishing={publishingMetricKey === metric.key}
             />
           ))}
@@ -122,7 +133,13 @@ export default function OperatorSurface({
             {queue.map((item) => (
               <article
                 key={item.id}
-                className="rounded-[22px] border border-white/8 bg-white/[0.025] p-4"
+                onClick={() => onSelectQueueItem(item.id)}
+                className={clsx(
+                  "rounded-[22px] border p-4 transition",
+                  selectedQueueId === item.id
+                    ? "border-signal/20 bg-signal/8"
+                    : "border-white/8 bg-white/[0.025] hover:border-white/14 hover:bg-white/[0.04]"
+                )}
               >
                 <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                   <div>
@@ -135,14 +152,20 @@ export default function OperatorSurface({
                   <div className="flex gap-2">
                     <button
                       type="button"
-                      onClick={() => onApprove(item.id)}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onApprove(item.id);
+                      }}
                       className="rounded-full border border-[#2f9d65]/25 bg-[#2f9d65]/10 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.22em] text-[#7ef5b0]"
                     >
                       Approve
                     </button>
                     <button
                       type="button"
-                      onClick={() => onReject(item.id)}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onReject(item.id);
+                      }}
                       className="rounded-full border border-hostile/25 bg-hostile/10 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.22em] text-hostile"
                     >
                       Reject
@@ -157,40 +180,47 @@ export default function OperatorSurface({
           </div>
         </section>
 
-        <section className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell">
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
-            Ingestion runs
-          </p>
-          <h2 className="mt-2 font-display text-2xl text-white">Feed health</h2>
-          <div className="mt-5 space-y-4">
-            {runs.map((run) => (
-              <article
-                key={run.id}
-                className="rounded-[22px] border border-white/8 bg-white/[0.025] p-4"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <h3 className="text-base font-semibold text-white">{run.feedName}</h3>
-                    <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-calm/58">
-                      {run.runType} | {formatDateTime(run.startedAt)}
-                    </p>
+        <div className="space-y-5">
+          <ReviewQueueDetailPanel
+            detail={reviewQueueDetail}
+            onOpenEvent={onOpenEvent}
+          />
+
+          <section className="rounded-[28px] border border-line/80 bg-shell/72 p-5 shadow-shell">
+            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-signal/68">
+              Ingestion runs
+            </p>
+            <h2 className="mt-2 font-display text-2xl text-white">Feed health</h2>
+            <div className="mt-5 space-y-4">
+              {runs.map((run) => (
+                <article
+                  key={run.id}
+                  className="rounded-[22px] border border-white/8 bg-white/[0.025] p-4"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <h3 className="text-base font-semibold text-white">{run.feedName}</h3>
+                      <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.18em] text-calm/58">
+                        {run.runType} | {formatDateTime(run.startedAt)}
+                      </p>
+                    </div>
+                    <span
+                      className={clsx(
+                        "rounded-full px-2 py-1 font-mono text-[10px] uppercase tracking-[0.24em]",
+                        run.status === "success"
+                          ? "border border-[#2f9d65]/25 bg-[#2f9d65]/10 text-[#7ef5b0]"
+                          : "border border-hostile/25 bg-hostile/10 text-hostile"
+                      )}
+                    >
+                      {run.status}
+                    </span>
                   </div>
-                  <span
-                    className={clsx(
-                      "rounded-full px-2 py-1 font-mono text-[10px] uppercase tracking-[0.24em]",
-                      run.status === "success"
-                        ? "border border-[#2f9d65]/25 bg-[#2f9d65]/10 text-[#7ef5b0]"
-                        : "border border-hostile/25 bg-hostile/10 text-hostile"
-                    )}
-                  >
-                    {run.status}
-                  </span>
-                </div>
-                <p className="mt-3 text-sm leading-6 text-calm/82">{run.summary}</p>
-              </article>
-            ))}
-          </div>
-        </section>
+                  <p className="mt-3 text-sm leading-6 text-calm/82">{run.summary}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   );

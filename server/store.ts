@@ -4,12 +4,14 @@ import { canPublish } from "../shared/review.js";
 import { topLineMetricDefinitions } from "../shared/topline.js";
 import type {
   BriefingRecord,
+  ClaimRecord,
   EventRecord,
   IngestionRun,
   MapFeature,
   MetricSnapshot,
   OperatorTopLineMetric,
   OverviewResponse,
+  ReviewQueueDetail,
   ReviewQueueItem,
   ReviewQueueSummary,
   SourceRecord,
@@ -84,6 +86,20 @@ function rowToStory(row: Record<string, any>): StoryRecord {
   };
 }
 
+function rowToClaim(row: Record<string, any>): ClaimRecord {
+  return {
+    id: row.id,
+    title: row.title,
+    statement: row.statement,
+    status: row.status,
+    significance: row.significance,
+    confidence: row.confidence,
+    evidenceRefs: parseJson<string[]>(row.evidence_refs_json),
+    reviewState: row.review_state,
+    lastReviewedAt: row.last_reviewed_at
+  };
+}
+
 function rowToSource(row: Record<string, any>): SourceRecord {
   return {
     id: row.id,
@@ -126,6 +142,152 @@ function rowToQueue(row: Record<string, any>): ReviewQueueItem {
     ageHours,
     ageBucket: ageHours >= 72 ? "stale" : ageHours >= 24 ? "aging" : "fresh"
   };
+}
+
+function getClaimById(db: DatabaseSync, id: string): ClaimRecord | null {
+  const row = db.prepare(`SELECT * FROM claims WHERE id = ?`).get(id) as Record<string, any> | undefined;
+  return row ? rowToClaim(row) : null;
+}
+
+function getBriefingById(db: DatabaseSync, id: string): BriefingRecord | null {
+  const row = db.prepare(`SELECT * FROM briefings WHERE id = ?`).get(id) as Record<string, any> | undefined;
+  return row ? rowToBriefing(row) : null;
+}
+
+function buildKeywordSet(values: Array<string | null | undefined>): string[] {
+  const stopWords = new Set([
+    "about",
+    "after",
+    "before",
+    "build",
+    "current",
+    "event",
+    "first",
+    "from",
+    "have",
+    "into",
+    "needs",
+    "news",
+    "public",
+    "refresh",
+    "requires",
+    "review",
+    "should",
+    "source",
+    "sources",
+    "status",
+    "that",
+    "their",
+    "this",
+    "what",
+    "with"
+  ]);
+
+  return Array.from(
+    new Set(
+      values
+        .flatMap((value) =>
+          String(value ?? "")
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, " ")
+            .split(/\s+/)
+            .filter((token) => token.length >= 4 && !stopWords.has(token))
+        )
+    )
+  );
+}
+
+function rankMatchingEvents(
+  db: DatabaseSync,
+  refs: string[],
+  values: Array<string | null | undefined>,
+  excludeIds: string[] = []
+): EventRecord[] {
+  const excluded = new Set(excludeIds);
+  const rows = db.prepare(`
+    SELECT * FROM events
+    ORDER BY date DESC, COALESCE(time, '00:00Z') DESC
+    LIMIT 120
+  `).all() as Record<string, any>[];
+  const events = rows.map(rowToEvent).filter((event) => !excluded.has(event.id));
+  const byId = new Map<string, EventRecord>();
+
+  for (const ref of refs.filter(Boolean)) {
+    const normalizedRef = ref.toLowerCase();
+    const match = events.find(
+      (event) =>
+        event.title.toLowerCase() === normalizedRef ||
+        event.title.toLowerCase().includes(normalizedRef)
+    );
+    if (match) {
+      byId.set(match.id, match);
+    }
+  }
+
+  const keywords = buildKeywordSet(values);
+  const scored = events
+    .map((event) => {
+      const haystack = `${event.title} ${event.detail} ${event.sourceText} ${event.tags.join(" ")}`.toLowerCase();
+      let score = byId.has(event.id) ? 100 : 0;
+      for (const keyword of keywords) {
+        if (event.title.toLowerCase().includes(keyword)) {
+          score += 4;
+        } else if (haystack.includes(keyword)) {
+          score += 1;
+        }
+      }
+
+      return { event, score };
+    })
+    .filter((entry) => entry.score > 0)
+    .sort((left, right) => right.score - left.score || right.event.corroboration - left.event.corroboration)
+    .map((entry) => entry.event);
+
+  for (const event of scored) {
+    byId.set(event.id, event);
+  }
+
+  return Array.from(byId.values()).slice(0, 4);
+}
+
+function getSupersedingBriefing(db: DatabaseSync, briefingId: string): BriefingRecord | null {
+  const row = db.prepare(`
+    SELECT * FROM briefings
+    WHERE id <> ? AND publish_state = 'published' AND review_state = 'approved'
+    ORDER BY briefing_date DESC, created_at DESC
+    LIMIT 1
+  `).get(briefingId) as Record<string, any> | undefined;
+
+  return row ? rowToBriefing(row) : null;
+}
+
+function reviewRecommendation(detail: {
+  itemType: string;
+  claim: ClaimRecord | null;
+  briefing: BriefingRecord | null;
+  supersedingBriefing: BriefingRecord | null;
+}): string {
+  if (detail.itemType === "event") {
+    return "Review the auto-ingested event, confirm conflict relevance and factual accuracy, then approve for public promotion or reject it.";
+  }
+
+  if (detail.itemType === "claim") {
+    if (detail.claim?.reviewState === "pending") {
+      return "Compare this seeded critical claim against current reviewed events and publish a refreshed operator-backed posture before approving it.";
+    }
+
+    return "Revalidate the claim against current reviewed evidence before changing its public posture.";
+  }
+
+  if (detail.itemType === "briefing") {
+    if (detail.supersedingBriefing) {
+      return "A newer approved SITREP now exists. Decide whether this seeded launch briefing should stay public, be demoted, or be rejected as superseded.";
+    }
+
+    return "Replace this seeded briefing with a current-source SITREP before keeping it in the public archive.";
+  }
+
+  return "Review the canonical object and resolve whether it should be promoted, revised, or rejected.";
 }
 
 function rowToIngestionRun(row: Record<string, any>): IngestionRun {
@@ -427,6 +589,46 @@ export function getReviewQueueSummary(db: DatabaseSync): ReviewQueueSummary {
     olderThan24h: Number(row.older_than_24h ?? 0),
     olderThan72h: Number(row.older_than_72h ?? 0),
     oldestPendingHours: row.oldest_pending_hours === null ? null : Number(row.oldest_pending_hours)
+  };
+}
+
+export function getReviewQueueDetail(db: DatabaseSync, queueId: string): ReviewQueueDetail | null {
+  const row = db.prepare(`SELECT * FROM review_queue WHERE id = ?`).get(queueId) as Record<string, any> | undefined;
+  if (!row) {
+    return null;
+  }
+
+  const item = rowToQueue(row);
+  const metadata = parseJson<Record<string, string | boolean>>(row.metadata_json);
+  const event = item.itemType === "event" ? getEventById(db, item.itemId) : null;
+  const claim = item.itemType === "claim" ? getClaimById(db, item.itemId) : null;
+  const briefing = item.itemType === "briefing" ? getBriefingById(db, item.itemId) : null;
+  const supersedingBriefing = briefing ? getSupersedingBriefing(db, briefing.id) : null;
+
+  const supportingEvents =
+    event
+      ? [event]
+      : claim
+        ? rankMatchingEvents(db, claim.evidenceRefs, [claim.title, claim.status, claim.statement])
+        : briefing
+          ? rankMatchingEvents(db, briefing.sourceRefs, [briefing.title, briefing.body], [])
+          : [];
+
+  return {
+    item,
+    event,
+    claim,
+    briefing,
+    supportingEvents,
+    supersedingBriefing,
+    feedName: typeof metadata.feed === "string" ? metadata.feed : null,
+    externalLink: typeof metadata.link === "string" ? metadata.link : null,
+    recommendedAction: reviewRecommendation({
+      itemType: item.itemType,
+      claim,
+      briefing,
+      supersedingBriefing
+    })
   };
 }
 

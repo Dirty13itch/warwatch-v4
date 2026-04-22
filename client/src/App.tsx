@@ -18,6 +18,7 @@ import type {
   OperatorTopLineSuggestion,
   OperatorTopLineMetric,
   OverviewResponse,
+  ReviewQueueDetail,
   ReviewQueueItem,
   ReviewQueueSummary,
   SourceRecord,
@@ -94,7 +95,10 @@ export default function App() {
   const [topLineSuggestions, setTopLineSuggestions] = useState<OperatorTopLineSuggestion[]>([]);
   const [search, setSearch] = useState("");
   const [focusedEventId, setFocusedEventId] = useState<string | null>(null);
+  const [focusedEvent, setFocusedEvent] = useState<EventRecord | null>(null);
   const [focusedSourceSlug, setFocusedSourceSlug] = useState<string | null>(null);
+  const [selectedQueueId, setSelectedQueueId] = useState<string | null>(null);
+  const [reviewQueueDetail, setReviewQueueDetail] = useState<ReviewQueueDetail | null>(null);
   const [operatorError, setOperatorError] = useState<string | null>(null);
   const [publishingMetricKey, setPublishingMetricKey] = useState<string | null>(null);
   const [loaded, setLoaded] = useState<LoadedState>(initialLoadedState);
@@ -245,6 +249,9 @@ export default function App() {
       setIngestionRuns(runs);
       setTopLineMetrics(metrics);
       setTopLineSuggestions(suggestions);
+      if (queue.length && !queue.some((item) => item.id === selectedQueueId)) {
+        setSelectedQueueId(queue[0].id);
+      }
       setOperatorError(null);
       markLoaded({ operator: true });
     } catch (error) {
@@ -299,14 +306,42 @@ export default function App() {
     void ensureSurfaceData(surface);
   }, [surface]);
 
+  useEffect(() => {
+    if (surface !== "operator" || !loaded.operator || !reviewQueue.length) {
+      return;
+    }
+
+    const targetQueueId =
+      selectedQueueId && reviewQueue.some((item) => item.id === selectedQueueId)
+        ? selectedQueueId
+        : reviewQueue[0].id;
+
+    if (targetQueueId !== selectedQueueId) {
+      setSelectedQueueId(targetQueueId);
+      return;
+    }
+
+    if (reviewQueueDetail?.item.id !== targetQueueId) {
+      void fetchReviewQueueDetail(targetQueueId);
+    }
+  }, [surface, loaded.operator, reviewQueue, selectedQueueId, reviewQueueDetail?.item.id]);
+
+  async function fetchReviewQueueDetail(id: string) {
+    setReviewQueueDetail(await api.reviewQueueDetail(id));
+  }
+
   async function refreshAfterMutation() {
     await Promise.all([
       fetchOverview(true),
-              loaded.events ? fetchEvents(true) : Promise.resolve(),
-              loaded.briefings ? fetchBriefings(true) : Promise.resolve(),
-              loaded.marketSignals ? fetchMarketSignals(true) : Promise.resolve(),
-              loaded.operator ? fetchOperator(true) : Promise.resolve()
+      loaded.events ? fetchEvents(true) : Promise.resolve(),
+      loaded.briefings ? fetchBriefings(true) : Promise.resolve(),
+      loaded.marketSignals ? fetchMarketSignals(true) : Promise.resolve(),
+      loaded.operator ? fetchOperator(true) : Promise.resolve()
     ]);
+
+    if (selectedQueueId) {
+      await fetchReviewQueueDetail(selectedQueueId);
+    }
   }
 
   async function handleApprove(id: string) {
@@ -351,6 +386,15 @@ export default function App() {
     startTransition(() => setSurface("signals"));
   }
 
+  async function handleOpenEventById(eventId: string) {
+    const matchedEvent = events.find((event) => event.id === eventId) ?? (focusedEvent?.id === eventId ? focusedEvent : null) ?? await api.event(eventId);
+    setSearch("");
+    setFocusedEventId(matchedEvent.id);
+    setFocusedEvent(matchedEvent);
+    void ensureSurfaceData("timeline");
+    startTransition(() => setSurface("timeline"));
+  }
+
   async function handleOpenEventReference(reference: string) {
     const nextEvents = loaded.events ? events : await api.events();
     if (!loaded.events) {
@@ -361,6 +405,7 @@ export default function App() {
     const matchedEvent = findEventByReference(nextEvents, reference);
     setSearch("");
     setFocusedEventId(matchedEvent?.id ?? null);
+    setFocusedEvent(matchedEvent ?? null);
     void ensureSurfaceData("timeline");
     startTransition(() => setSurface("timeline"));
   }
@@ -492,6 +537,7 @@ export default function App() {
               search={search}
               onSearch={setSearch}
               focusedEventId={focusedEventId}
+              focusedEvent={focusedEvent}
               onOpenSource={handleOpenSourceFocus}
             />
           )}
@@ -529,14 +575,18 @@ export default function App() {
                 queue={reviewQueue}
                 queueSummary={reviewQueueSummary}
                 runs={ingestionRuns}
-                topLineMetrics={topLineMetrics}
-                topLineSuggestions={topLineSuggestions}
-                onApprove={handleApprove}
-                onReject={handleReject}
-                onIngest={handleRunIngest}
-                onPublishMetric={handlePublishTopLineMetric}
-                publishingMetricKey={publishingMetricKey}
-                operatorError={operatorError}
+              topLineMetrics={topLineMetrics}
+              topLineSuggestions={topLineSuggestions}
+              selectedQueueId={selectedQueueId}
+              reviewQueueDetail={reviewQueueDetail}
+              onApprove={handleApprove}
+              onReject={handleReject}
+              onIngest={handleRunIngest}
+              onSelectQueueItem={setSelectedQueueId}
+              onOpenEvent={handleOpenEventById}
+              onPublishMetric={handlePublishTopLineMetric}
+              publishingMetricKey={publishingMetricKey}
+              operatorError={operatorError}
               />
             </Suspense>
           )}

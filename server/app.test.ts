@@ -43,6 +43,12 @@ describe("WarWatch API", () => {
     expect(summary.status).toBe(200);
     expect(summary.body.pending).toBeGreaterThan(0);
 
+    const detail = await request(app).get(`/api/operator/review-queue/${queue.body[0].id}`);
+    expect(detail.status).toBe(200);
+    expect(detail.body.item.id).toBe(queue.body[0].id);
+    expect(Array.isArray(detail.body.supportingEvents)).toBe(true);
+    expect(typeof detail.body.recommendedAction).toBe("string");
+
     const approve = await request(app).post(`/api/operator/review-queue/${queue.body[0].id}/approve`);
     expect(approve.status).toBe(200);
     expect(approve.body.status).toBe("approved");

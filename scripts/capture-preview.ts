@@ -405,6 +405,13 @@ async function main() {
       surface: "operator"
     },
     {
+      title: "Review Dossier",
+      fileName: "operator-review-detail.png",
+      notes: "Focused review packet for a selected queue item with canonical object detail and related evidence",
+      surface: "operator",
+      selector: '[data-preview="operator-review-detail"]'
+    },
+    {
       title: "Queue SLA Summary",
       fileName: "operator-queue-summary.png",
       notes: "Focused queue-SLA summary cards for the review backlog",

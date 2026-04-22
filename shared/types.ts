@@ -204,6 +204,18 @@ export interface ReviewQueueSummary {
   oldestPendingHours: number | null;
 }
 
+export interface ReviewQueueDetail {
+  item: ReviewQueueItem;
+  event: EventRecord | null;
+  claim: ClaimRecord | null;
+  briefing: BriefingRecord | null;
+  supportingEvents: EventRecord[];
+  supersedingBriefing: BriefingRecord | null;
+  feedName: string | null;
+  externalLink: string | null;
+  recommendedAction: string;
+}
+
 export interface IngestionRun {
   id: string;
   feedName: string;

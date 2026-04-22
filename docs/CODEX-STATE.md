@@ -40,6 +40,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Operator API exposes reviewed top-line metric publishing for the public KPI lane
 - Operator API also exposes evidence-backed top-line suggestions derived from recent event context
 - Operator API now exposes aggregate review-queue SLA summary data for backlog pressure and aging
+- Operator API now also exposes a selection-aware review dossier for each queue item, including canonical object detail, feed/link metadata, related evidence events, and superseding briefing context
 - Aggregate stale-state logic can now clear through a mix of live/ingested and `operator_reviewed` top-line metrics
 - Heartbeat artifact includes explicit top-line metric rows plus queue-aging summary in addition to aggregate freshness state
 - Build output now isolates React, chart, and MapLibre vendor lanes, with MapLibre kept off the initial shell through dynamic import
@@ -66,6 +67,7 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - Public stale state remains expected because only the market lane is live; strike, Hormuz, and casualty top-line metrics are still bootstrap-era values labeled `stale_seed`
 - The operator console can now surface current evidence for stale KPIs, but it will not invent values where extraction is not defensible
 - The operator console can now see queue pressure directly through age buckets and SLA summary cards, which gives the COO lane a concrete review-backlog surface
+- The operator console can now turn a queue row into a real review packet and jump straight into timeline evidence from the operator lane
 - The COO lane can now attach actual UI evidence to updates through local preview screenshots instead of relying only on text artifacts
 - Public reader surfaces no longer dead-end as quickly: briefing refs can jump into timeline detail, and timeline detail can jump into source posture when a canonical source match exists
 - Critical claims continue to require operator approval before promotion to primary public surfaces

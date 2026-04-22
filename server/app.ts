@@ -14,6 +14,7 @@ import {
   getStories,
   getSources,
   getReviewQueue,
+  getReviewQueueDetail,
   getReviewQueueSummary,
   getIngestionRuns,
   getTopLineMetrics,
@@ -98,6 +99,15 @@ export function createApp(db: DatabaseSync, config: AppConfig) {
 
   app.get("/api/operator/review-queue/summary", (_req, res) => {
     res.json(getReviewQueueSummary(db));
+  });
+
+  app.get("/api/operator/review-queue/:id", (req, res) => {
+    const detail = getReviewQueueDetail(db, req.params.id);
+    if (!detail) {
+      return res.status(404).json({ error: "Queue item not found" });
+    }
+
+    return res.json(detail);
   });
 
   app.post("/api/operator/review-queue/:id/approve", (req, res) => {

@@ -19,6 +19,8 @@
 - Operator-reviewed top-line metric publishing is live for `total_strikes`, `oil_brent`, `hormuz_daily_cap`, and `iran_casualties_estimate`
 - Operator KPI lane now includes evidence-backed suggestion cards with extracted candidates when current event evidence supports them
 - Operator queue aging is now explicit: queue items carry age buckets, the operator console shows backlog pressure cards, and the heartbeat reports pending, critical, >24h, >72h, and oldest-item age
+- Operator review is now selection-aware: queue items open into a dossier with canonical object detail, feed/source metadata, recommended next action, superseding briefing context, and related evidence events
+- The operator lane can now hand directly into timeline evidence from both KPI suggestion cards and queue dossiers, which makes tranche-1 review work faster and less abstract
 - Heartbeat now renders explicit top-line metric values, freshness, source text, and timestamps instead of only aggregate stale-state summaries
 - Heartbeat output is sanitized to an ASCII-safe operator artifact so Windows console review does not corrupt high-signal lines
 - Visual proof is now first-class: `npm run preview:shots` builds the app, captures desktop/mobile screenshots for the command, signals, and operator lanes, and writes a local artifact to `reports/previews/LATEST.md`
