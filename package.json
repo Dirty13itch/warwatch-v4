@@ -8,7 +8,7 @@
     "dev": "concurrently -k -n api,web -c cyan,yellow \"npm:dev:api\" \"npm:dev:web\"",
     "dev:api": "tsx server/index.ts",
     "dev:web": "vite",
-    "build": "npm run build:web && npm run build:api",
+    "build": "npm run build:web && npm run build:api && tsx scripts/generate-build-report.ts",
     "build:web": "vite build",
     "build:api": "node -e \"require('fs').rmSync('dist/server',{recursive:true,force:true})\" && tsc -p tsconfig.server.json",
     "start": "node dist/server/server/index.js",

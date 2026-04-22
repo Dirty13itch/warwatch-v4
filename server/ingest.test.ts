@@ -101,6 +101,114 @@ describe("ingestion merge behavior", () => {
     db.close();
   });
 
+  it("merges semantically equivalent feed items even when the titles are rewritten", () => {
+    const db = makeDb();
+    db.exec("DELETE FROM events;");
+    const entities = db.prepare(`SELECT * FROM entities ORDER BY name ASC`).all() as unknown as EntityRecord[];
+
+    const firstTitle = "Israel strikes IRGC command node near Bandar Abbas";
+    const firstDetail = "Israeli aircraft struck an IRGC command node near Bandar Abbas overnight.";
+    const firstInsert = upsertPreparedFeedEvent(db, {
+      eventDate: "2026-04-22",
+      title: firstTitle,
+      detail: firstDetail,
+      category: "air_strike",
+      significance: "critical",
+      feedName: "Feed Alpha",
+      link: "https://example.com/alpha",
+      entityTags: entityTagsForText(entities, firstTitle, firstDetail, "Feed Alpha"),
+      createdAt: "2026-04-22T18:00:00.000Z"
+    });
+
+    expect(firstInsert.action).toBe("inserted");
+
+    const secondTitle = "IRGC command node near Bandar Abbas hit in Israeli strike";
+    const secondDetail = "Fresh wire copy says the same IRGC command node near Bandar Abbas was hit in an Israeli strike.";
+    const secondInsert = upsertPreparedFeedEvent(db, {
+      eventDate: "2026-04-22",
+      title: secondTitle,
+      detail: secondDetail,
+      category: "air_strike",
+      significance: "critical",
+      feedName: "Feed Beta",
+      link: "https://example.com/beta",
+      entityTags: entityTagsForText(entities, secondTitle, secondDetail, "Feed Beta"),
+      createdAt: "2026-04-22T18:30:00.000Z"
+    });
+
+    expect(secondInsert.action).toBe("merged");
+
+    const row = db.prepare(`
+      SELECT COUNT(*) AS event_count, corroboration, detail, source_text, source_refs_json
+      FROM events
+      WHERE category = 'air_strike'
+    `).get() as {
+      event_count: number;
+      corroboration: number;
+      detail: string;
+      source_text: string;
+      source_refs_json: string;
+    };
+
+    expect(row.event_count).toBe(1);
+    expect(row.corroboration).toBeGreaterThan(1);
+    expect(row.detail).toContain("IRGC command node near Bandar Abbas");
+    expect(row.detail).toContain("Fresh wire copy");
+    expect(row.source_text).toContain("Feed Alpha");
+    expect(row.source_text).toContain("Feed Beta");
+    expect(JSON.parse(row.source_refs_json)).toEqual(expect.arrayContaining(["Feed Alpha", "Feed Beta"]));
+    db.close();
+  });
+
+  it("does not merge distinct same-day strikes that only share broad theater language", () => {
+    const db = makeDb();
+    db.exec("DELETE FROM events;");
+    const entities = db.prepare(`SELECT * FROM entities ORDER BY name ASC`).all() as unknown as EntityRecord[];
+
+    const firstTitle = "Israel strikes IRGC radar site near Bandar Abbas";
+    const firstDetail = "Israeli aircraft struck an IRGC radar site near Bandar Abbas overnight.";
+    const firstInsert = upsertPreparedFeedEvent(db, {
+      eventDate: "2026-04-22",
+      title: firstTitle,
+      detail: firstDetail,
+      category: "air_strike",
+      significance: "critical",
+      feedName: "Feed Alpha",
+      link: "https://example.com/radar",
+      entityTags: entityTagsForText(entities, firstTitle, firstDetail, "Feed Alpha"),
+      createdAt: "2026-04-22T18:00:00.000Z"
+    });
+
+    expect(firstInsert.action).toBe("inserted");
+
+    const secondTitle = "Israel strikes missile convoy near Bandar Abbas";
+    const secondDetail = "Israeli aircraft later hit a separate missile convoy near Bandar Abbas in a follow-on wave.";
+    const secondInsert = upsertPreparedFeedEvent(db, {
+      eventDate: "2026-04-22",
+      title: secondTitle,
+      detail: secondDetail,
+      category: "air_strike",
+      significance: "critical",
+      feedName: "Feed Beta",
+      link: "https://example.com/convoy",
+      entityTags: entityTagsForText(entities, secondTitle, secondDetail, "Feed Beta"),
+      createdAt: "2026-04-22T18:45:00.000Z"
+    });
+
+    expect(secondInsert.action).toBe("inserted");
+
+    const row = db.prepare(`
+      SELECT COUNT(*) AS event_count
+      FROM events
+      WHERE category = 'air_strike'
+    `).get() as {
+      event_count: number;
+    };
+
+    expect(row.event_count).toBe(2);
+    db.close();
+  });
+
   it("extracts Yahoo chart payloads into ingested market snapshots", () => {
     const snapshots = extractYahooMetricSnapshots(
       {

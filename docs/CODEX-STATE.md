@@ -40,6 +40,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - client and server graph features now share one entity-matching substrate instead of carrying separate matching heuristics
 - Overview freshness is derived from top-line KPI freshness, not just latest event activity
 - RSS/event ingestion now dedupes by normalized title/category/date window and upgrades corroboration/source refs on merge
+- RSS/event ingestion now also resolves near-duplicate rewritten feed titles through keyword/entity compatibility and appends distinct corroborating detail when the event row is upgraded
 - RSS/event ingestion now also applies a mission-scope firewall so obviously off-scope general-feed items are skipped or quarantined instead of leaking into public surfaces
 - Market ingestion now writes canonical metric snapshots for Brent, WTI, and gold from Yahoo Finance
 - Signals surface renders live market history directly from the canonical metric store
@@ -65,6 +66,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Preview proof now also includes the dossiers surface and focused dossier detail so graph progress is visible in each artifact pass
 - Preview proof now also includes focused snapshot-dossier and source-reader captures so graph-entry improvements are visible in each artifact pass
 - Preview proof now also includes the operator synthesis lane so graph-promotion work stays visible in each artifact pass
+- Build proof now also exists as a repo artifact: every build writes `reports/build/LATEST.md` and `LATEST.json`, and the heartbeat surfaces bundle totals plus the largest client assets
 - Event ingestion now writes canonical `entity:*` tags on insert/merge, and `npm run backfill:entity-tags` can normalize the historical event store onto the same tagging scheme
 - Operator KPI suggestions now use entity-aware relevance instead of pure regex scanning, which reduces false positives in stale-metric review
 
@@ -95,5 +97,6 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - Shared entity matching now reduces drift between what the client thinks is related and what the server uses for dossier context
 - Canonical entity tagging is now persisted into the event store instead of remaining only an on-the-fly graph helper
 - The operator suggestion lane is now safer against off-target shipping/casualty evidence because entity-aware ranking gates the top-line extraction path
+- The ingestion lane is now less duplicate-prone on rewritten wire copy and less merge-prone on broad same-theater language, which makes the canonical event spine safer before further feed expansion
 - Scope gating is still heuristic and rules-based, so borderline regional-spillover judgments remain a tuning lane rather than a solved problem
 - Critical claims continue to require operator approval before promotion to primary public surfaces

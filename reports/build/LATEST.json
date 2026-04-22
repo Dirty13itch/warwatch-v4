@@ -1,0 +1,55 @@
+{
+  "generatedAt": "2026-04-22T22:41:03.873Z",
+  "clientDir": "C:\\Codex Projects\\Iran War\\dist\\client",
+  "totals": {
+    "jsBytes": 1517273,
+    "cssBytes": 86321,
+    "htmlBytes": 954
+  },
+  "oversizedAssets": [
+    {
+      "file": "assets/maplibre-vendor-AmtWkS3e.js",
+      "type": "js",
+      "bytes": 1050976,
+      "gzipBytes": 283757
+    }
+  ],
+  "topAssets": [
+    {
+      "file": "assets/maplibre-vendor-AmtWkS3e.js",
+      "type": "js",
+      "bytes": 1050976,
+      "gzipBytes": 283757
+    },
+    {
+      "file": "assets/react-vendor-QByBFp_A.js",
+      "type": "js",
+      "bytes": 192500,
+      "gzipBytes": 60350
+    },
+    {
+      "file": "assets/chart-vendor-BwloSeDG.js",
+      "type": "js",
+      "bytes": 153758,
+      "gzipBytes": 54045
+    },
+    {
+      "file": "assets/maplibre-vendor-DNVN2dqC.css",
+      "type": "css",
+      "bytes": 69918,
+      "gzipBytes": 10054
+    },
+    {
+      "file": "assets/index-B39mnieN.js",
+      "type": "js",
+      "bytes": 62816,
+      "gzipBytes": 14126
+    },
+    {
+      "file": "assets/OperatorSurface-DlZ2Scvc.js",
+      "type": "js",
+      "bytes": 35156,
+      "gzipBytes": 5477
+    }
+  ]
+}

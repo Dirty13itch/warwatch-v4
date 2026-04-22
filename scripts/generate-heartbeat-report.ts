@@ -12,6 +12,25 @@ import {
   getReviewQueueSummary
 } from "../server/store.js";
 
+type BuildReport = {
+  generatedAt: string;
+  totals: {
+    jsBytes: number;
+    cssBytes: number;
+    htmlBytes: number;
+  };
+  oversizedAssets: Array<{
+    file: string;
+    bytes: number;
+    gzipBytes: number;
+  }>;
+  topAssets: Array<{
+    file: string;
+    bytes: number;
+    gzipBytes: number;
+  }>;
+};
+
 const config = loadConfig();
 const db = openDatabase({
   dbPath: config.dbPath,
@@ -32,12 +51,32 @@ function toAsciiArtifact(value: string | null | undefined): string {
     .replace(/[^\x20-\x7e]/g, "");
 }
 
+function humanBytes(bytes: number): string {
+  if (bytes < 1024) {
+    return `${bytes} B`;
+  }
+
+  const units = ["kB", "MB", "GB"];
+  let value = bytes / 1024;
+  let unitIndex = 0;
+  while (value >= 1024 && unitIndex < units.length - 1) {
+    value /= 1024;
+    unitIndex += 1;
+  }
+
+  return `${value.toFixed(2)} ${units[unitIndex]}`;
+}
+
 const overview = getOverview(db);
 const queue = getReviewQueue(db);
 const queueSummary = getReviewQueueSummary(db);
 const runs = getIngestionRuns(db).slice(0, 10);
 const briefings = getBriefings(db).slice(0, 1);
 const topLineMetrics = getTopLineMetrics(db);
+const buildReportPath = path.resolve(config.rootDir, "reports/build/LATEST.json");
+const buildReport = fs.existsSync(buildReportPath)
+  ? (JSON.parse(fs.readFileSync(buildReportPath, "utf8")) as BuildReport)
+  : null;
 const marketMetrics = [
   ["Brent", "oil_brent"],
   ["WTI", "oil_wti"],
@@ -79,6 +118,16 @@ const lines = [
   "",
   "## Markets",
   ...(marketLines.length ? marketLines : ["- No live market metrics ingested yet"]),
+  "",
+  "## Build",
+  ...(buildReport
+    ? [
+        `- JS ${humanBytes(buildReport.totals.jsBytes)} | CSS ${humanBytes(buildReport.totals.cssBytes)} | Oversized ${buildReport.oversizedAssets.length}`,
+        ...buildReport.topAssets
+          .slice(0, 3)
+          .map((item) => `- ${item.file}: ${humanBytes(item.bytes)} :: gzip ${humanBytes(item.gzipBytes)}`)
+      ]
+    : ["- No build artifact generated yet"]),
   "",
   "## Ingestion",
   ...runs.map(

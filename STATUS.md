@@ -17,6 +17,7 @@
 - Source posture now defaults toward more explanatory sources when possible and can hand readers directly into matched actor dossiers from the signals lane
 - Entity resolution is now driven by a shared matching substrate used by both client and server graph features, reducing heuristic drift before tranche-3 ingestion hardening
 - Event ingestion now persists canonical `entity:*` tags on new and merged events, and `npm run backfill:entity-tags` can repair the historical event corpus onto the same graph-aware tagging scheme
+- Event ingestion merge quality is now stronger than raw title/date matching: rewritten feed titles can merge into the right canonical event through keyword/entity compatibility, while same-day same-theater events with only broad overlap stay split
 - Operator KPI suggestions now rank evidence with entity-aware relevance, which stops generic shipping noise from surfacing as a fake Hormuz candidate and makes stale-metric review safer
 - Live ingestion is active against `BBC Middle East`, `Al Jazeera`, `NPR World`, `Defense News`, `USNI News`, and `USGS Iran Earthquakes`
 - Live market ingestion is active against Yahoo Finance for `oil_brent`, `oil_wti`, and `gold_price`
@@ -46,6 +47,7 @@
 - Visual proof now also includes the dossiers lane, so actor/claim graph progress is visible alongside the public shell and operator workflow
 - Visual proof now also includes focused Snapshot dossier-entry and source-reader captures so graph-entry improvements are visible even when they sit below the default viewport
 - Visual proof now also includes the operator synthesis panel so backend graph-promotion work remains visible in human-facing artifacts
+- Build proof is now first-class too: every build writes `reports/build/LATEST.md` and `LATEST.json`, and the heartbeat surfaces bundle totals plus the largest client assets so performance pressure stays reviewable
 - Verification contract is green locally via `npm run verify`
 
 ## Current Goal
@@ -67,5 +69,6 @@ Hold and extend the first milestone:
 - The operator refresh lane now surfaces current evidence, but the remaining stale top-line metrics still need actual reviewed publications to clear the public stale flag
 - Several critical review queue items still block promotion of fresher top-line public claims
 - The synthesis write path is now real, but it still needs better merge/extraction quality before broader feed expansion is safe
+- Build pressure is now explicit in repo artifacts, but the MapLibre vendor lane is still the dominant client-weight problem and remains an active tranche-5 follow-up
 - Clustered synthesis now has real time/topic guardrails, but broader structured extraction and canonical merge quality still need hardening before wider feed expansion is safe
 - Scope filtering is heuristic rather than model-based, so borderline regional spillover items still need tuning over time even though the obvious sports/tourism/general-feed noise is now suppressed

@@ -32,6 +32,79 @@ function normalizeForMatch(value: string): string {
     .trim();
 }
 
+function keywordSetForMerge(...values: Array<string | null | undefined>): string[] {
+  const stopWords = new Set([
+    "about",
+    "after",
+    "against",
+    "amid",
+    "analysis",
+    "attack",
+    "attacks",
+    "breaking",
+    "conflict",
+    "crisis",
+    "fresh",
+    "from",
+    "hours",
+    "iran",
+    "iranian",
+    "israel",
+    "israeli",
+    "latest",
+    "launch",
+    "launches",
+    "live",
+    "middle",
+    "near",
+    "operation",
+    "operations",
+    "overnight",
+    "reports",
+    "reported",
+    "said",
+    "says",
+    "strike",
+    "strikes",
+    "theater",
+    "wave",
+    "update",
+    "updates",
+    "watch",
+    "with"
+  ]);
+
+  return Array.from(
+    new Set(
+      values
+        .flatMap((value) => normalizeForMatch(String(value ?? "")).split(" "))
+        .map((value) => value.trim())
+        .filter((value) => value.length >= 4 && !stopWords.has(value))
+    )
+  );
+}
+
+function keywordOverlapScore(left: string[], right: string[]): number {
+  const rightSet = new Set(right);
+  return left.reduce((score, keyword) => score + (rightSet.has(keyword) ? 1 : 0), 0);
+}
+
+function appendDistinctText(existing: string, next: string, limit = 900): string {
+  const left = existing.trim();
+  const right = next.trim();
+  if (!left) {
+    return right.slice(0, limit);
+  }
+  if (!right || left.includes(right)) {
+    return left.slice(0, limit);
+  }
+  if (right.includes(left)) {
+    return right.slice(0, limit);
+  }
+
+  return `${left} ${right}`.slice(0, limit);
+}
+
 function deriveConfidenceFromCorroboration(count: number) {
   if (count >= 3) {
     return "confirmed" as const;
@@ -265,6 +338,7 @@ function findMatchingEvent(
   candidate: PreparedFeedEvent
 ): {
   id: string;
+  detail: string;
   sourceRefs: string[];
   tags: string[];
   corroboration: number;
@@ -273,7 +347,7 @@ function findMatchingEvent(
   visibility: string;
 } | null {
   const rows = db.prepare(`
-    SELECT id, title, source_refs_json, tags_json, corroboration, source_text, review_state, visibility
+    SELECT id, title, detail, source_refs_json, tags_json, corroboration, source_text, review_state, visibility
     FROM events
     WHERE date BETWEEN date($date, '-1 day') AND date($date, '+1 day')
       AND category = $category
@@ -284,6 +358,7 @@ function findMatchingEvent(
   }) as Array<{
     id: string;
     title: string;
+    detail: string;
     source_refs_json: string;
     tags_json: string;
     corroboration: number;
@@ -293,30 +368,82 @@ function findMatchingEvent(
   }>;
 
   const normalizedCandidate = normalizeForMatch(candidate.title);
+  const candidateTitleKeywords = keywordSetForMerge(candidate.title);
+  const candidateBodyKeywords = keywordSetForMerge(candidate.title, candidate.detail);
+  let bestMatch: ({
+    id: string;
+    detail: string;
+    sourceRefs: string[];
+    tags: string[];
+    corroboration: number;
+    sourceText: string;
+    reviewState: string;
+    visibility: string;
+  } & { score: number }) | null = null;
+
   for (const row of rows) {
     const normalizedExisting = normalizeForMatch(row.title);
     if (!normalizedExisting || !normalizedCandidate) {
       continue;
     }
 
-    if (
+    const exactOrContainedTitle =
       normalizedExisting === normalizedCandidate ||
       normalizedExisting.includes(normalizedCandidate) ||
-      normalizedCandidate.includes(normalizedExisting)
-    ) {
-      return {
+      normalizedCandidate.includes(normalizedExisting);
+
+    const existingTags = JSON.parse(row.tags_json ?? "[]") as string[];
+    const existingEntityTags = existingTags.filter((tag) => tag.startsWith("entity:"));
+    const entityOverlap = keywordOverlapScore(candidate.entityTags, existingEntityTags);
+    const titleOverlap = keywordOverlapScore(candidateTitleKeywords, keywordSetForMerge(row.title));
+    const bodyOverlap = keywordOverlapScore(candidateBodyKeywords, keywordSetForMerge(row.title, row.detail));
+
+    if (!exactOrContainedTitle) {
+      const semanticallyCompatible =
+        (titleOverlap >= 4 && (entityOverlap >= 1 || bodyOverlap >= 4)) ||
+        (bodyOverlap >= 5 && entityOverlap >= 1);
+
+      if (!semanticallyCompatible) {
+        continue;
+      }
+    }
+
+    const score =
+      (exactOrContainedTitle ? 100 : 0) +
+      titleOverlap * 6 +
+      bodyOverlap * 3 +
+      entityOverlap * 8 +
+      Math.min(Number(row.corroboration), 4);
+
+    if (!bestMatch || score > bestMatch.score) {
+      bestMatch = {
         id: row.id,
+        detail: row.detail,
         sourceRefs: JSON.parse(row.source_refs_json ?? "[]") as string[],
-        tags: JSON.parse(row.tags_json ?? "[]") as string[],
+        tags: existingTags,
         corroboration: Number(row.corroboration),
         sourceText: row.source_text,
         reviewState: row.review_state,
-        visibility: row.visibility
+        visibility: row.visibility,
+        score
       };
     }
   }
 
-  return null;
+  if (!bestMatch) {
+    return null;
+  }
+
+  return {
+    id: bestMatch.id,
+    detail: bestMatch.detail,
+    sourceRefs: bestMatch.sourceRefs,
+    tags: bestMatch.tags,
+    corroboration: bestMatch.corroboration,
+    sourceText: bestMatch.sourceText,
+    reviewState: bestMatch.reviewState,
+    visibility: bestMatch.visibility
+  };
 }
 
 export function upsertPreparedFeedEvent(
@@ -329,6 +456,7 @@ export function upsertPreparedFeedEvent(
     const nextTags = uniqueStrings([...matched.tags, "auto_ingest", candidate.feedName, ...candidate.entityTags]);
     const nextCorroboration = nextSourceRefs.filter((value) => value && !String(value).startsWith("http")).length;
     const nextConfidence = deriveConfidenceFromCorroboration(Math.max(nextCorroboration, matched.corroboration));
+    const nextDetail = appendDistinctText(matched.detail, candidate.detail, 980);
     const nextSourceText = uniqueStrings(
       matched.sourceText
         .split("/")
@@ -338,9 +466,10 @@ export function upsertPreparedFeedEvent(
 
     db.prepare(`
       UPDATE events
-      SET source_refs_json = ?, tags_json = ?, corroboration = ?, confidence = ?, source_text = ?
+      SET detail = ?, source_refs_json = ?, tags_json = ?, corroboration = ?, confidence = ?, source_text = ?
       WHERE id = ?
     `).run(
+      nextDetail,
       JSON.stringify(nextSourceRefs),
       JSON.stringify(nextTags),
       Math.max(nextCorroboration, matched.corroboration),

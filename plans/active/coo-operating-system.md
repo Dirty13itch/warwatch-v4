@@ -103,6 +103,7 @@ Supporting lanes:
 
 Tasks:
 1. Improve event merge quality beyond title/date heuristics.
+   Current state: ingestion now merges rewritten wire titles through keyword/entity compatibility, appends distinct corroborating detail on merge, and keeps broad same-theater language from collapsing separate events.
 2. Strengthen source normalization, mission-scope scoring, and source-to-ledger matching.
    Current state: entity matching is now shared between client and server, event ingestion now persists canonical `entity:*` tags, and a repo script can backfill historical rows onto that same tagging scheme.
 3. Add safer synthesis rules for:
@@ -159,6 +160,7 @@ Supporting lanes:
 
 Tasks:
 1. Reduce the MapLibre vendor burden with deeper isolation or a lighter strategy.
+   Current state: build pressure is now explicit through `reports/build/LATEST.md` and heartbeat bundle summaries, so the MapLibre lane has a durable proof surface instead of a transient warning.
 2. Improve mobile layout where dense public surfaces still compress poorly.
 3. Add preview diffs and higher-signal visual proof for before/after slices.
 4. Tighten accessibility, readability, and interaction clarity.
