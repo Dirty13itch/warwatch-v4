@@ -31,6 +31,9 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Market ingestion now writes canonical metric snapshots for Brent, WTI, and gold from Yahoo Finance
 - Signals surface renders live market history directly from the canonical metric store
 - Daily SITREP generation refreshes the same-day briefing and includes market movement when live snapshots exist
+- Operator API exposes reviewed top-line metric publishing for the public KPI lane
+- Aggregate stale-state logic can now clear through a mix of live/ingested and `operator_reviewed` top-line metrics
+- Heartbeat artifact includes explicit top-line metric rows in addition to aggregate freshness state
 
 ## Operating Assumption
 Twice-daily COO heartbeat remains the default cadence unless the repo contract changes.

@@ -2,7 +2,7 @@
 
 ## Highest Leverage
 1. Add a real deployment target and set `PUBLIC_BASE_URL` so public verification stops skipping
-2. Replace the remaining seeded top-line metrics with live or operator-reviewed refresh paths for strikes, Hormuz throughput, and casualty indicators
+2. Use the new operator-reviewed KPI lane to publish defensible current values for strikes, Hormuz throughput, and casualty indicators
 3. Tighten ingestion quality further with better matching rules, source scoring, and operator-safe story/claim synthesis from merged feed evidence
 4. Reduce the remaining map-heavy client cost with deeper geospatial chunk isolation and render-budget cleanup
 

@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { DatabaseSync } from "node:sqlite";
 import type { AppConfig } from "./config.js";
+import { upsertPreparedMetricSnapshot, runIngestionCycle } from "./ingest.js";
 import {
   getOverview,
   getEvents,
@@ -14,10 +15,12 @@ import {
   getSources,
   getReviewQueue,
   getIngestionRuns,
+  getTopLineMetrics,
   setQueueStatus
 } from "./store.js";
-import { runIngestionCycle } from "./ingest.js";
 import { generateDailyBriefing } from "./briefings.js";
+import { getTopLineMetricDefinition, isTopLineMetricKey } from "../shared/topline.js";
+import { confidenceLevels, type OperatorMetricPublishInput } from "../shared/types.js";
 
 function operatorAllowed(config: AppConfig, req: express.Request): boolean {
   if (!config.operatorApiKey) {
@@ -111,6 +114,56 @@ export function createApp(db: DatabaseSync, config: AppConfig) {
 
   app.get("/api/operator/ingestion-runs", (_req, res) => {
     res.json(getIngestionRuns(db));
+  });
+
+  app.get("/api/operator/topline-metrics", (_req, res) => {
+    res.json(getTopLineMetrics(db));
+  });
+
+  app.post("/api/operator/topline-metrics/:key", (req, res) => {
+    if (!isTopLineMetricKey(req.params.key)) {
+      return res.status(404).json({ error: "Top-line metric not found" });
+    }
+
+    const body = req.body as Partial<OperatorMetricPublishInput>;
+    if (typeof body.valueText !== "string" || !body.valueText.trim()) {
+      return res.status(400).json({ error: "valueText is required" });
+    }
+    if (typeof body.sourceText !== "string" || !body.sourceText.trim()) {
+      return res.status(400).json({ error: "sourceText is required" });
+    }
+    if (typeof body.confidence !== "string" || !confidenceLevels.includes(body.confidence)) {
+      return res.status(400).json({ error: "confidence is invalid" });
+    }
+    if (
+      body.value !== null &&
+      body.value !== undefined &&
+      (typeof body.value !== "number" || !Number.isFinite(body.value))
+    ) {
+      return res.status(400).json({ error: "value must be numeric or null" });
+    }
+
+    const now = new Date().toISOString();
+    const definition = getTopLineMetricDefinition(req.params.key);
+    upsertPreparedMetricSnapshot(db, {
+      metricKey: req.params.key,
+      value: body.value ?? null,
+      valueText: body.valueText.trim(),
+      unit: definition.unit,
+      timestamp: now,
+      sourceText: body.sourceText.trim(),
+      confidence: body.confidence,
+      reviewState: "approved",
+      freshness: "operator_reviewed",
+      meta: {
+        note: typeof body.note === "string" ? body.note.trim() : "",
+        operatorUpdatedAt: now
+      }
+    });
+    generateDailyBriefing(db);
+
+    const updated = getTopLineMetrics(db).find((metric) => metric.key === req.params.key);
+    return res.json(updated);
   });
 
   app.post("/api/operator/ingest", async (_req, res) => {

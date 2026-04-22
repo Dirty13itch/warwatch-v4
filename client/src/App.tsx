@@ -14,6 +14,8 @@ import type {
   IngestionRun,
   MapFeature,
   MetricSnapshot,
+  OperatorMetricPublishInput,
+  OperatorTopLineMetric,
   OverviewResponse,
   ReviewQueueItem,
   SourceRecord,
@@ -82,8 +84,10 @@ export default function App() {
   const [marketSignals, setMarketSignals] = useState<Record<string, MetricSnapshot[]>>({});
   const [reviewQueue, setReviewQueue] = useState<ReviewQueueItem[]>([]);
   const [ingestionRuns, setIngestionRuns] = useState<IngestionRun[]>([]);
+  const [topLineMetrics, setTopLineMetrics] = useState<OperatorTopLineMetric[]>([]);
   const [search, setSearch] = useState("");
   const [operatorError, setOperatorError] = useState<string | null>(null);
+  const [publishingMetricKey, setPublishingMetricKey] = useState<string | null>(null);
   const [loaded, setLoaded] = useState<LoadedState>(initialLoadedState);
   const loadingRef = useRef(new Set<string>());
   const deferredSearch = useDeferredValue(search);
@@ -220,9 +224,14 @@ export default function App() {
 
     loadingRef.current.add("operator");
     try {
-      const [queue, runs] = await Promise.all([api.reviewQueue(), api.ingestionRuns()]);
+      const [queue, runs, metrics] = await Promise.all([
+        api.reviewQueue(),
+        api.ingestionRuns(),
+        api.topLineMetrics()
+      ]);
       setReviewQueue(queue);
       setIngestionRuns(runs);
+      setTopLineMetrics(metrics);
       setOperatorError(null);
       markLoaded({ operator: true });
     } catch (error) {
@@ -293,8 +302,24 @@ export default function App() {
       fetchOverview(true),
       fetchEvents(true),
       fetchBriefings(true),
+      fetchMarketSignals(true),
       fetchOperator(true)
     ]);
+  }
+
+  async function handlePublishTopLineMetric(key: string, payload: OperatorMetricPublishInput) {
+    setPublishingMetricKey(key);
+    try {
+      await api.publishTopLineMetric(key, payload);
+      await Promise.all([
+        fetchOverview(true),
+        fetchBriefings(true),
+        fetchMarketSignals(true),
+        fetchOperator(true)
+      ]);
+    } finally {
+      setPublishingMetricKey(null);
+    }
   }
 
   const filteredEvents = useMemo(
@@ -438,9 +463,12 @@ export default function App() {
               <OperatorSurface
                 queue={reviewQueue}
                 runs={ingestionRuns}
+                topLineMetrics={topLineMetrics}
                 onApprove={handleApprove}
                 onReject={handleReject}
                 onIngest={handleRunIngest}
+                onPublishMetric={handlePublishTopLineMetric}
+                publishingMetricKey={publishingMetricKey}
                 operatorError={operatorError}
               />
             </Suspense>

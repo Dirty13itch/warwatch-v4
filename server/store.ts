@@ -1,12 +1,14 @@
 import type { DatabaseSync } from "node:sqlite";
 import { CONFLICT_START_ISO } from "./config.js";
 import { canPublish } from "../shared/review.js";
+import { topLineMetricDefinitions } from "../shared/topline.js";
 import type {
   BriefingRecord,
   EventRecord,
   IngestionRun,
   MapFeature,
   MetricSnapshot,
+  OperatorTopLineMetric,
   OverviewResponse,
   ReviewQueueItem,
   SourceRecord,
@@ -52,6 +54,18 @@ function rowToMetric(row: Record<string, any>): MetricSnapshot {
     freshness: row.freshness,
     meta: parseJson<Record<string, unknown>>(row.meta_json)
   };
+}
+
+function getLatestMetricSnapshot(db: DatabaseSync, key: string): MetricSnapshot | null {
+  const row = db.prepare(`
+    SELECT *
+    FROM metrics
+    WHERE metric_key = ?
+    ORDER BY timestamp DESC
+    LIMIT 1
+  `).get(key) as Record<string, any> | undefined;
+
+  return row ? rowToMetric(row) : null;
 }
 
 function rowToStory(row: Record<string, any>): StoryRecord {
@@ -208,47 +222,33 @@ export function getOverview(db: DatabaseSync): OverviewResponse {
   ];
   const topLineFreshness = topLineFreshnesses.includes("missing")
     ? "missing"
-    : topLineFreshnesses.every((value) => value === "live" || value === "ingested")
-      ? "live"
+    : topLineFreshnesses.every((value) => value === "live" || value === "ingested" || value === "operator_reviewed")
+      ? topLineFreshnesses.some((value) => value === "operator_reviewed")
+        ? "operator_reviewed"
+        : "live"
       : topLineFreshnesses.every((value) => value === "historical_seed")
         ? "historical_seed"
         : topLineFreshnesses.includes("stale_seed")
           ? "stale_seed"
           : "mixed";
   const hasLiveIngestion = Boolean(lastSuccessfulIngestion.latest);
-  const stale = topLineFreshness !== "live";
+  const stale = !["live", "operator_reviewed"].includes(topLineFreshness);
 
-  const kpis = [
-    {
-      key: "total_strikes",
-      label: "Total strikes",
-      supportingText: "Seeded from legacy verified top-line data"
-    },
-    {
-      key: "oil_brent",
-      label: "Brent marker",
-      supportingText:
-        (metricMap.get("oil_brent")?.freshness === "live" || metricMap.get("oil_brent")?.freshness === "ingested")
-          ? "Live market signal from the Yahoo Finance futures feed."
-          : "Public top-line is freshness-labeled until live economic ingest is active"
-    },
-    {
-      key: "hormuz_daily_cap",
-      label: "Hormuz throughput cap",
-      supportingText: "Current public shell exposes the operating assumption and freshness state"
-    },
-    {
-      key: "iran_casualties_estimate",
-      label: "Iran casualty estimate",
-      supportingText: "Carries forward the legacy estimate until revalidated"
-    }
-  ].map((item) => {
+  const kpis = topLineMetricDefinitions.map((item) => {
     const metric = metricMap.get(item.key);
+    let supportingText = item.supportingText;
+    if (item.key === "oil_brent" && (metric?.freshness === "live" || metric?.freshness === "ingested")) {
+      supportingText = "Live market signal from the Yahoo Finance futures feed.";
+    }
+    if (metric?.freshness === "operator_reviewed") {
+      supportingText = `Operator-reviewed refresh from ${metric.sourceText}.`;
+    }
+
     return {
       key: item.key,
       label: item.label,
       value: metric?.valueText ?? String(metric?.value ?? "n/a"),
-      supportingText: item.supportingText,
+      supportingText,
       freshness: metric?.freshness ?? "missing"
     };
   });
@@ -321,6 +321,16 @@ export function getMetricHistory(db: DatabaseSync, key: string): MetricSnapshot[
     ORDER BY timestamp ASC
   `).all(key) as Record<string, any>[];
   return rows.map(rowToMetric);
+}
+
+export function getTopLineMetrics(db: DatabaseSync): OperatorTopLineMetric[] {
+  return topLineMetricDefinitions.map((definition) => ({
+    key: definition.key,
+    label: definition.label,
+    supportingText: definition.supportingText,
+    unit: definition.unit,
+    current: getLatestMetricSnapshot(db, definition.key)
+  }));
 }
 
 export function getBriefings(db: DatabaseSync): BriefingRecord[] {

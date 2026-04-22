@@ -22,11 +22,18 @@ export const reviewStates = [
 ] as const;
 
 export const visibilities = ["primary", "secondary", "review_only"] as const;
+export const topLineMetricKeys = [
+  "total_strikes",
+  "oil_brent",
+  "hormuz_daily_cap",
+  "iran_casualties_estimate"
+] as const;
 
 export type Confidence = (typeof confidenceLevels)[number];
 export type Significance = (typeof significanceLevels)[number];
 export type ReviewState = (typeof reviewStates)[number];
 export type Visibility = (typeof visibilities)[number];
+export type TopLineMetricKey = (typeof topLineMetricKeys)[number];
 
 export type SourceType =
   | "official_us"
@@ -86,6 +93,22 @@ export interface MetricSnapshot {
   reviewState: ReviewState;
   freshness: string;
   meta: Record<string, unknown>;
+}
+
+export interface OperatorTopLineMetric {
+  key: TopLineMetricKey;
+  label: string;
+  supportingText: string;
+  unit: string | null;
+  current: MetricSnapshot | null;
+}
+
+export interface OperatorMetricPublishInput {
+  value: number | null;
+  valueText: string;
+  sourceText: string;
+  confidence: Confidence;
+  note: string;
 }
 
 export interface StoryRecord {

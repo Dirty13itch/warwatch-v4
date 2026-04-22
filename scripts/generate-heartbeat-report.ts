@@ -7,6 +7,7 @@ import {
   getIngestionRuns,
   getMetricHistory,
   getOverview,
+  getTopLineMetrics,
   getReviewQueue
 } from "../server/store.js";
 
@@ -21,6 +22,7 @@ const overview = getOverview(db);
 const queue = getReviewQueue(db);
 const runs = getIngestionRuns(db).slice(0, 10);
 const briefings = getBriefings(db).slice(0, 1);
+const topLineMetrics = getTopLineMetrics(db);
 const marketMetrics = [
   ["Brent", "oil_brent"],
   ["WTI", "oil_wti"],
@@ -34,6 +36,10 @@ const marketLines = marketMetrics.flatMap(([label, key]) => {
 
   return [`- ${label}: ${latest.valueText} :: ${latest.freshness} :: ${latest.timestamp}`];
 });
+const topLineLines = topLineMetrics.map((metric) => {
+  const current = metric.current;
+  return `- ${metric.label}: ${current?.valueText ?? "n/a"} :: ${current?.freshness ?? "missing"} :: ${current?.sourceText ?? "none"} :: ${current?.timestamp ?? "n/a"}`;
+});
 
 const lines = [
   "# WarWatch Heartbeat",
@@ -44,6 +50,9 @@ const lines = [
   `Public stale flag: ${overview.stale ? "YES" : "NO"}`,
   `Top-line freshness: ${overview.freshness.topLine}`,
   `Last successful ingestion: ${overview.freshness.lastSuccessfulIngestionAt ?? "none"}`,
+  "",
+  "## Top Line",
+  ...topLineLines,
   "",
   "## Queue",
   ...queue.slice(0, 6).map((item) => `- [${item.severity}] ${item.title} :: ${item.status}`),

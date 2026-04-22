@@ -10,6 +10,7 @@ import {
   initialVisibility,
   severityFromSignificance
 } from "../shared/review.js";
+import type { Confidence, ReviewState } from "../shared/types.js";
 
 const parser = new Parser();
 
@@ -54,14 +55,14 @@ interface PreparedFeedEvent {
 
 export interface PreparedMetricSnapshot {
   metricKey: string;
-  value: number;
-  valueText: string;
-  unit: string;
+  value: number | null;
+  valueText: string | null;
+  unit: string | null;
   timestamp: string;
   sourceText: string;
-  confidence: "confirmed" | "reported";
-  reviewState: "approved";
-  freshness: "ingested" | "live";
+  confidence: Confidence;
+  reviewState: ReviewState;
+  freshness: string;
   meta: Record<string, unknown>;
 }
 

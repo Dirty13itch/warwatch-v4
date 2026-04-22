@@ -4,6 +4,8 @@ import type {
   IngestionRun,
   MapFeature,
   MetricSnapshot,
+  OperatorMetricPublishInput,
+  OperatorTopLineMetric,
   OverviewResponse,
   ReviewQueueItem,
   SourceRecord,
@@ -37,6 +39,7 @@ export const api = {
     requestJson<MetricSnapshot[]>(`/api/metrics/${encodeURIComponent(key)}/history`),
   reviewQueue: () => requestJson<ReviewQueueItem[]>("/api/operator/review-queue"),
   ingestionRuns: () => requestJson<IngestionRun[]>("/api/operator/ingestion-runs"),
+  topLineMetrics: () => requestJson<OperatorTopLineMetric[]>("/api/operator/topline-metrics"),
   approveQueueItem: (id: string) =>
     requestJson<ReviewQueueItem>(`/api/operator/review-queue/${id}/approve`, {
       method: "POST"
@@ -48,6 +51,10 @@ export const api = {
   runIngest: () =>
     requestJson<{ ok: boolean }>("/api/operator/ingest", {
       method: "POST"
+    }),
+  publishTopLineMetric: (key: string, payload: OperatorMetricPublishInput) =>
+    requestJson<OperatorTopLineMetric>(`/api/operator/topline-metrics/${encodeURIComponent(key)}`, {
+      method: "POST",
+      body: JSON.stringify(payload)
     })
 };
-

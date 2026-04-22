@@ -41,5 +41,48 @@ describe("WarWatch API", () => {
     expect(approve.status).toBe(200);
     expect(approve.body.status).toBe("approved");
   });
-});
 
+  it("publishes operator-reviewed top-line metrics", async () => {
+    const response = await request(app)
+      .post("/api/operator/topline-metrics/hormuz_daily_cap")
+      .send({
+        value: 18,
+        valueText: "≤18/day",
+        sourceText: "Kpler / operator review",
+        confidence: "reported",
+        note: "Reviewed after the latest shipping corridor update."
+      });
+
+    expect(response.status).toBe(200);
+    expect(response.body.key).toBe("hormuz_daily_cap");
+    expect(response.body.current.valueText).toBe("≤18/day");
+    expect(response.body.current.freshness).toBe("operator_reviewed");
+
+    await request(app).post("/api/operator/topline-metrics/total_strikes").send({
+      value: 13420,
+      valueText: ">13,400",
+      sourceText: "CENTCOM / operator review",
+      confidence: "reported",
+      note: ""
+    });
+    await request(app).post("/api/operator/topline-metrics/oil_brent").send({
+      value: 102.01,
+      valueText: "$102.01",
+      sourceText: "Yahoo Finance / operator review",
+      confidence: "confirmed",
+      note: ""
+    });
+    await request(app).post("/api/operator/topline-metrics/iran_casualties_estimate").send({
+      value: 21500,
+      valueText: "21,500+ Iran alone",
+      sourceText: "Reuters / operator review",
+      confidence: "reported",
+      note: ""
+    });
+
+    const overview = await request(app).get("/api/overview");
+    expect(overview.status).toBe(200);
+    expect(overview.body.stale).toBe(false);
+    expect(overview.body.freshness.topLine).toBe("operator_reviewed");
+  });
+});
