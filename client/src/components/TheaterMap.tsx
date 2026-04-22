@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import maplibregl from "maplibre-gl";
+import type { Map as MapLibreMap, Marker as MapLibreMarker } from "maplibre-gl";
 import type { MapFeature } from "@shared/types";
 import "maplibre-gl/dist/maplibre-gl.css";
 
@@ -17,38 +17,53 @@ const layerColors: Record<string, string> = {
 
 export function TheaterMap({ layers }: TheaterMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<maplibregl.Map | null>(null);
-  const markersRef = useRef<maplibregl.Marker[]>([]);
+  const mapRef = useRef<MapLibreMap | null>(null);
+  const markersRef = useRef<MapLibreMarker[]>([]);
+  const moduleRef = useRef<typeof import("maplibre-gl") | null>(null);
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) {
       return;
     }
 
-    mapRef.current = new maplibregl.Map({
-      container: containerRef.current,
-      style: "https://demotiles.maplibre.org/style.json",
-      center: [50.55, 30.2],
-      zoom: 3.2,
-      attributionControl: false
-    });
+    let cancelled = false;
+    async function bootMap() {
+      const maplibregl = await import("maplibre-gl");
+      if (!containerRef.current || mapRef.current || cancelled) {
+        return;
+      }
 
-    mapRef.current.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+      moduleRef.current = maplibregl;
+      mapRef.current = new maplibregl.Map({
+        container: containerRef.current,
+        style: "https://demotiles.maplibre.org/style.json",
+        center: [50.55, 30.2],
+        zoom: 3.2,
+        attributionControl: false
+      });
+
+      mapRef.current.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+    }
+
+    void bootMap();
 
     return () => {
+      cancelled = true;
       for (const marker of markersRef.current) {
         marker.remove();
       }
       markersRef.current = [];
       mapRef.current?.remove();
       mapRef.current = null;
+      moduleRef.current = null;
     };
   }, []);
 
   useEffect(() => {
-    if (!mapRef.current) {
+    if (!mapRef.current || !moduleRef.current) {
       return;
     }
+    const maplibregl = moduleRef.current;
 
     for (const marker of markersRef.current) {
       marker.remove();
@@ -99,4 +114,3 @@ export function TheaterMap({ layers }: TheaterMapProps) {
     </div>
   );
 }
-

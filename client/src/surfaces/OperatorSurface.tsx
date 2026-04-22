@@ -4,13 +4,15 @@ import type {
   OperatorMetricPublishInput,
   OperatorTopLineSuggestion,
   OperatorTopLineMetric,
-  ReviewQueueItem
+  ReviewQueueItem,
+  ReviewQueueSummary
 } from "@shared/types";
-import { formatDateTime } from "../lib/format";
+import { formatDateTime, formatRelativeHours } from "../lib/format";
 import { TopLineMetricEditor } from "../components/TopLineMetricEditor";
 
 export default function OperatorSurface({
   queue,
+  queueSummary,
   runs,
   topLineMetrics,
   topLineSuggestions,
@@ -22,6 +24,7 @@ export default function OperatorSurface({
   operatorError
 }: {
   queue: ReviewQueueItem[];
+  queueSummary: ReviewQueueSummary | null;
   runs: IngestionRun[];
   topLineMetrics: OperatorTopLineMetric[];
   topLineSuggestions: OperatorTopLineSuggestion[];
@@ -87,6 +90,22 @@ export default function OperatorSurface({
               Run ingest
             </button>
           </div>
+          <div className="mt-5 grid gap-3 md:grid-cols-4">
+            {[
+              ["Pending", String(queueSummary?.pending ?? 0)],
+              ["Critical", String(queueSummary?.critical ?? 0)],
+              [">24h", String(queueSummary?.olderThan24h ?? 0)],
+              ["Oldest", formatRelativeHours(queueSummary?.oldestPendingHours ?? null)]
+            ].map(([label, value]) => (
+              <div
+                key={label}
+                className="rounded-[18px] border border-white/8 bg-white/[0.03] p-3"
+              >
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-calm/60">{label}</p>
+                <p className="mt-2 font-display text-2xl text-white">{value}</p>
+              </div>
+            ))}
+          </div>
           <div className="mt-5 space-y-4">
             {queue.map((item) => (
               <article
@@ -119,7 +138,7 @@ export default function OperatorSurface({
                   </div>
                 </div>
                 <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.18em] text-calm/58">
-                  {item.itemType} | {formatDateTime(item.updatedAt)}
+                  {item.itemType} | {item.ageBucket} | {formatRelativeHours(item.ageHours)} | {formatDateTime(item.updatedAt)}
                 </p>
               </article>
             ))}

@@ -11,6 +11,7 @@ import type {
   OperatorTopLineMetric,
   OverviewResponse,
   ReviewQueueItem,
+  ReviewQueueSummary,
   SourceRecord,
   StoryRecord
 } from "../shared/types.js";
@@ -110,6 +111,7 @@ function rowToBriefing(row: Record<string, any>): BriefingRecord {
 }
 
 function rowToQueue(row: Record<string, any>): ReviewQueueItem {
+  const ageHours = Math.max(0, (Date.now() - Date.parse(row.created_at)) / 3_600_000);
   return {
     id: row.id,
     itemType: row.item_type,
@@ -120,7 +122,9 @@ function rowToQueue(row: Record<string, any>): ReviewQueueItem {
     status: row.status,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
-    metadata: parseJson<Record<string, unknown>>(row.metadata_json)
+    metadata: parseJson<Record<string, unknown>>(row.metadata_json),
+    ageHours,
+    ageBucket: ageHours >= 72 ? "stale" : ageHours >= 24 ? "aging" : "fresh"
   };
 }
 
@@ -398,6 +402,32 @@ export function getReviewQueue(db: DatabaseSync): ReviewQueueItem[] {
         created_at DESC
     `).all() as Record<string, any>[]
   ).map(rowToQueue);
+}
+
+export function getReviewQueueSummary(db: DatabaseSync): ReviewQueueSummary {
+  const row = db.prepare(`
+    SELECT
+      SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending,
+      SUM(CASE WHEN status = 'pending' AND severity = 'critical' THEN 1 ELSE 0 END) AS critical,
+      SUM(CASE WHEN status = 'pending' AND ((julianday('now') - julianday(created_at)) * 24) >= 24 THEN 1 ELSE 0 END) AS older_than_24h,
+      SUM(CASE WHEN status = 'pending' AND ((julianday('now') - julianday(created_at)) * 24) >= 72 THEN 1 ELSE 0 END) AS older_than_72h,
+      MAX(CASE WHEN status = 'pending' THEN ((julianday('now') - julianday(created_at)) * 24) ELSE NULL END) AS oldest_pending_hours
+    FROM review_queue
+  `).get() as {
+    pending: number | null;
+    critical: number | null;
+    older_than_24h: number | null;
+    older_than_72h: number | null;
+    oldest_pending_hours: number | null;
+  };
+
+  return {
+    pending: Number(row.pending ?? 0),
+    critical: Number(row.critical ?? 0),
+    olderThan24h: Number(row.older_than_24h ?? 0),
+    olderThan72h: Number(row.older_than_72h ?? 0),
+    oldestPendingHours: row.oldest_pending_hours === null ? null : Number(row.oldest_pending_hours)
+  };
 }
 
 export function getIngestionRuns(db: DatabaseSync): IngestionRun[] {

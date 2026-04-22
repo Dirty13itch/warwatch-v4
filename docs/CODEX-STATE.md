@@ -33,8 +33,10 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Daily SITREP generation refreshes the same-day briefing and includes market movement when live snapshots exist
 - Operator API exposes reviewed top-line metric publishing for the public KPI lane
 - Operator API also exposes evidence-backed top-line suggestions derived from recent event context
+- Operator API now exposes aggregate review-queue SLA summary data for backlog pressure and aging
 - Aggregate stale-state logic can now clear through a mix of live/ingested and `operator_reviewed` top-line metrics
-- Heartbeat artifact includes explicit top-line metric rows in addition to aggregate freshness state
+- Heartbeat artifact includes explicit top-line metric rows plus queue-aging summary in addition to aggregate freshness state
+- Build output now isolates React, chart, and MapLibre vendor lanes, with MapLibre kept off the initial shell through dynamic import
 
 ## Operating Assumption
 Twice-daily COO heartbeat remains the default cadence unless the repo contract changes.
@@ -51,4 +53,5 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - Ingestion is healthy on the current default feed set
 - Public stale state remains expected because only the market lane is live; strike, Hormuz, and casualty top-line metrics are still bootstrap-era values labeled `stale_seed`
 - The operator console can now surface current evidence for stale KPIs, but it will not invent values where extraction is not defensible
+- The operator console can now see queue pressure directly through age buckets and SLA summary cards, which gives the COO lane a concrete review-backlog surface
 - Critical claims continue to require operator approval before promotion to primary public surfaces

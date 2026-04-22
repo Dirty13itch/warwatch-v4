@@ -21,7 +21,27 @@ export default defineConfig({
   },
   build: {
     outDir: "dist/client",
-    emptyOutDir: true
+    emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          const normalized = id.replace(/\\/g, "/");
+
+          if (normalized.includes("node_modules/maplibre-gl")) {
+            return "maplibre-vendor";
+          }
+
+          if (normalized.includes("node_modules/chart.js") || normalized.includes("node_modules/react-chartjs-2")) {
+            return "chart-vendor";
+          }
+
+          if (normalized.includes("node_modules/react") || normalized.includes("node_modules/react-dom")) {
+            return "react-vendor";
+          }
+
+          return undefined;
+        }
+      }
+    }
   }
 });
-

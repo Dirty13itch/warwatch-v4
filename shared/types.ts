@@ -192,6 +192,16 @@ export interface ReviewQueueItem {
   createdAt: string;
   updatedAt: string;
   metadata: Record<string, unknown>;
+  ageHours: number;
+  ageBucket: "fresh" | "aging" | "stale";
+}
+
+export interface ReviewQueueSummary {
+  pending: number;
+  critical: number;
+  olderThan24h: number;
+  olderThan72h: number;
+  oldestPendingHours: number | null;
 }
 
 export interface IngestionRun {

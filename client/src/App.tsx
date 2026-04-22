@@ -19,6 +19,7 @@ import type {
   OperatorTopLineMetric,
   OverviewResponse,
   ReviewQueueItem,
+  ReviewQueueSummary,
   SourceRecord,
   StoryRecord
 } from "@shared/types";
@@ -84,6 +85,7 @@ export default function App() {
   const [history, setHistory] = useState<MetricSnapshot[]>([]);
   const [marketSignals, setMarketSignals] = useState<Record<string, MetricSnapshot[]>>({});
   const [reviewQueue, setReviewQueue] = useState<ReviewQueueItem[]>([]);
+  const [reviewQueueSummary, setReviewQueueSummary] = useState<ReviewQueueSummary | null>(null);
   const [ingestionRuns, setIngestionRuns] = useState<IngestionRun[]>([]);
   const [topLineMetrics, setTopLineMetrics] = useState<OperatorTopLineMetric[]>([]);
   const [topLineSuggestions, setTopLineSuggestions] = useState<OperatorTopLineSuggestion[]>([]);
@@ -226,13 +228,15 @@ export default function App() {
 
     loadingRef.current.add("operator");
     try {
-      const [queue, runs, metrics, suggestions] = await Promise.all([
+      const [queue, summary, runs, metrics, suggestions] = await Promise.all([
         api.reviewQueue(),
+        api.reviewQueueSummary(),
         api.ingestionRuns(),
         api.topLineMetrics(),
         api.topLineSuggestions()
       ]);
       setReviewQueue(queue);
+      setReviewQueueSummary(summary);
       setIngestionRuns(runs);
       setTopLineMetrics(metrics);
       setTopLineSuggestions(suggestions);
@@ -466,6 +470,7 @@ export default function App() {
             >
               <OperatorSurface
                 queue={reviewQueue}
+                queueSummary={reviewQueueSummary}
                 runs={ingestionRuns}
                 topLineMetrics={topLineMetrics}
                 topLineSuggestions={topLineSuggestions}

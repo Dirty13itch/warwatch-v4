@@ -14,6 +14,7 @@ import {
   getStories,
   getSources,
   getReviewQueue,
+  getReviewQueueSummary,
   getIngestionRuns,
   getTopLineMetrics,
   setQueueStatus
@@ -93,6 +94,10 @@ export function createApp(db: DatabaseSync, config: AppConfig) {
 
   app.get("/api/operator/review-queue", (_req, res) => {
     res.json(getReviewQueue(db));
+  });
+
+  app.get("/api/operator/review-queue/summary", (_req, res) => {
+    res.json(getReviewQueueSummary(db));
   });
 
   app.post("/api/operator/review-queue/:id/approve", (req, res) => {

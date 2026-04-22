@@ -14,7 +14,9 @@
 - Daily SITREP refresh now folds in live market movement when current market snapshots exist
 - Operator-reviewed top-line metric publishing is live for `total_strikes`, `oil_brent`, `hormuz_daily_cap`, and `iran_casualties_estimate`
 - Operator KPI lane now includes evidence-backed suggestion cards with extracted candidates when current event evidence supports them
+- Operator queue aging is now explicit: queue items carry age buckets, the operator console shows backlog pressure cards, and the heartbeat reports pending, critical, >24h, >72h, and oldest-item age
 - Heartbeat now renders explicit top-line metric values, freshness, source text, and timestamps instead of only aggregate stale-state summaries
+- Heartbeat output is sanitized to an ASCII-safe operator artifact so Windows console review does not corrupt high-signal lines
 - Verification contract is green locally via `npm run verify`
 
 ## Current Goal
@@ -31,6 +33,6 @@ Hold and extend the first milestone:
 - The workspace started without a repo or runtime; everything is being built from scratch
 - `node:sqlite` is viable locally but still emits experimental warnings in Node 22
 - Public deployment verification requires `PUBLIC_BASE_URL` to be set
-- The initial bundle issue is reduced, but the map chunk is still the largest client asset and remains a performance follow-up
+- Client bundle shaping is improved through vendor/manual chunking and lazy map boot, but the MapLibre vendor chunk still breaches the warning threshold and remains a performance follow-up
 - The operator refresh lane now surfaces current evidence, but the remaining stale top-line metrics still need actual reviewed publications to clear the public stale flag
 - Several critical review queue items still block promotion of fresher top-line public claims

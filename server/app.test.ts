@@ -36,6 +36,12 @@ describe("WarWatch API", () => {
     const queue = await request(app).get("/api/operator/review-queue");
     expect(queue.status).toBe(200);
     expect(queue.body.length).toBeGreaterThan(0);
+    expect(typeof queue.body[0].ageHours).toBe("number");
+    expect(["fresh", "aging", "stale"]).toContain(queue.body[0].ageBucket);
+
+    const summary = await request(app).get("/api/operator/review-queue/summary");
+    expect(summary.status).toBe(200);
+    expect(summary.body.pending).toBeGreaterThan(0);
 
     const approve = await request(app).post(`/api/operator/review-queue/${queue.body[0].id}/approve`);
     expect(approve.status).toBe(200);

@@ -9,6 +9,7 @@ import type {
   OperatorTopLineMetric,
   OverviewResponse,
   ReviewQueueItem,
+  ReviewQueueSummary,
   SourceRecord,
   StoryRecord
 } from "@shared/types";
@@ -39,6 +40,7 @@ export const api = {
   metricHistory: (key: string) =>
     requestJson<MetricSnapshot[]>(`/api/metrics/${encodeURIComponent(key)}/history`),
   reviewQueue: () => requestJson<ReviewQueueItem[]>("/api/operator/review-queue"),
+  reviewQueueSummary: () => requestJson<ReviewQueueSummary>("/api/operator/review-queue/summary"),
   ingestionRuns: () => requestJson<IngestionRun[]>("/api/operator/ingestion-runs"),
   topLineMetrics: () => requestJson<OperatorTopLineMetric[]>("/api/operator/topline-metrics"),
   topLineSuggestions: () => requestJson<OperatorTopLineSuggestion[]>("/api/operator/topline-suggestions"),

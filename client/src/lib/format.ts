@@ -28,3 +28,15 @@ export function formatSignedPercent(value: number): string {
   const sign = value >= 0 ? "+" : "";
   return `${sign}${value.toFixed(1)}%`;
 }
+
+export function formatRelativeHours(value: number | null): string {
+  if (value === null) {
+    return "n/a";
+  }
+
+  if (value >= 24) {
+    return `${(value / 24).toFixed(1)}d`;
+  }
+
+  return `${value.toFixed(0)}h`;
+}

@@ -8,7 +8,8 @@ import {
   getMetricHistory,
   getOverview,
   getTopLineMetrics,
-  getReviewQueue
+  getReviewQueue,
+  getReviewQueueSummary
 } from "../server/store.js";
 
 const config = loadConfig();
@@ -18,8 +19,22 @@ const db = openDatabase({
   blueprintPath: config.blueprintPath
 });
 
+function toAsciiArtifact(value: string | null | undefined): string {
+  return (value ?? "n/a")
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/[\u2013\u2014]/g, "-")
+    .replace(/\u2026/g, "...")
+    .replace(/\u2264/g, "<=")
+    .replace(/\u2265/g, ">=")
+    .replace(/\u00a0/g, " ")
+    .normalize("NFKD")
+    .replace(/[^\x20-\x7e]/g, "");
+}
+
 const overview = getOverview(db);
 const queue = getReviewQueue(db);
+const queueSummary = getReviewQueueSummary(db);
 const runs = getIngestionRuns(db).slice(0, 10);
 const briefings = getBriefings(db).slice(0, 1);
 const topLineMetrics = getTopLineMetrics(db);
@@ -34,11 +49,13 @@ const marketLines = marketMetrics.flatMap(([label, key]) => {
     return [];
   }
 
-  return [`- ${label}: ${latest.valueText} :: ${latest.freshness} :: ${latest.timestamp}`];
+  return [
+    `- ${label}: ${toAsciiArtifact(latest.valueText)} :: ${latest.freshness} :: ${latest.timestamp}`
+  ];
 });
 const topLineLines = topLineMetrics.map((metric) => {
   const current = metric.current;
-  return `- ${metric.label}: ${current?.valueText ?? "n/a"} :: ${current?.freshness ?? "missing"} :: ${current?.sourceText ?? "none"} :: ${current?.timestamp ?? "n/a"}`;
+  return `- ${metric.label}: ${toAsciiArtifact(current?.valueText ?? "n/a")} :: ${current?.freshness ?? "missing"} :: ${toAsciiArtifact(current?.sourceText ?? "none")} :: ${current?.timestamp ?? "n/a"}`;
 });
 
 const lines = [
@@ -55,7 +72,10 @@ const lines = [
   ...topLineLines,
   "",
   "## Queue",
-  ...queue.slice(0, 6).map((item) => `- [${item.severity}] ${item.title} :: ${item.status}`),
+  `- Pending ${queueSummary.pending} | Critical ${queueSummary.critical} | >24h ${queueSummary.olderThan24h} | >72h ${queueSummary.olderThan72h} | Oldest ${queueSummary.oldestPendingHours === null ? "n/a" : `${(queueSummary.oldestPendingHours / 24).toFixed(1)}d`}`,
+  ...queue
+    .slice(0, 6)
+    .map((item) => `- [${item.severity}] ${toAsciiArtifact(item.title)} :: ${item.status}`),
   "",
   "## Markets",
   ...(marketLines.length ? marketLines : ["- No live market metrics ingested yet"]),
@@ -63,11 +83,14 @@ const lines = [
   "## Ingestion",
   ...runs.map(
     (run) =>
-      `- ${run.feedName}: ${run.status} | inserted=${run.insertedCount} queued=${run.queuedCount} | ${run.summary}`
+      `- ${toAsciiArtifact(run.feedName)}: ${run.status} | inserted=${run.insertedCount} queued=${run.queuedCount} | ${toAsciiArtifact(run.summary)}`
   ),
   "",
   "## Briefings",
-  ...briefings.map((briefing) => `- ${briefing.title} (${briefing.briefingDate}) :: ${briefing.reviewState}`),
+  ...briefings.map(
+    (briefing) =>
+      `- ${toAsciiArtifact(briefing.title)} (${briefing.briefingDate}) :: ${briefing.reviewState}`
+  ),
   "",
   "## Next Actions",
   "- Reduce pending critical queue items before promoting fresh top-line claims",
