@@ -15,6 +15,7 @@ import type {
   MapFeature,
   MetricSnapshot,
   OperatorMetricPublishInput,
+  OperatorTopLineSuggestion,
   OperatorTopLineMetric,
   OverviewResponse,
   ReviewQueueItem,
@@ -85,6 +86,7 @@ export default function App() {
   const [reviewQueue, setReviewQueue] = useState<ReviewQueueItem[]>([]);
   const [ingestionRuns, setIngestionRuns] = useState<IngestionRun[]>([]);
   const [topLineMetrics, setTopLineMetrics] = useState<OperatorTopLineMetric[]>([]);
+  const [topLineSuggestions, setTopLineSuggestions] = useState<OperatorTopLineSuggestion[]>([]);
   const [search, setSearch] = useState("");
   const [operatorError, setOperatorError] = useState<string | null>(null);
   const [publishingMetricKey, setPublishingMetricKey] = useState<string | null>(null);
@@ -224,14 +226,16 @@ export default function App() {
 
     loadingRef.current.add("operator");
     try {
-      const [queue, runs, metrics] = await Promise.all([
+      const [queue, runs, metrics, suggestions] = await Promise.all([
         api.reviewQueue(),
         api.ingestionRuns(),
-        api.topLineMetrics()
+        api.topLineMetrics(),
+        api.topLineSuggestions()
       ]);
       setReviewQueue(queue);
       setIngestionRuns(runs);
       setTopLineMetrics(metrics);
+      setTopLineSuggestions(suggestions);
       setOperatorError(null);
       markLoaded({ operator: true });
     } catch (error) {
@@ -464,6 +468,7 @@ export default function App() {
                 queue={reviewQueue}
                 runs={ingestionRuns}
                 topLineMetrics={topLineMetrics}
+                topLineSuggestions={topLineSuggestions}
                 onApprove={handleApprove}
                 onReject={handleReject}
                 onIngest={handleRunIngest}

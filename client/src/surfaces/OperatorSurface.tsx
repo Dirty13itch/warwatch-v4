@@ -2,6 +2,7 @@ import clsx from "clsx";
 import type {
   IngestionRun,
   OperatorMetricPublishInput,
+  OperatorTopLineSuggestion,
   OperatorTopLineMetric,
   ReviewQueueItem
 } from "@shared/types";
@@ -12,6 +13,7 @@ export default function OperatorSurface({
   queue,
   runs,
   topLineMetrics,
+  topLineSuggestions,
   onApprove,
   onReject,
   onIngest,
@@ -22,6 +24,7 @@ export default function OperatorSurface({
   queue: ReviewQueueItem[];
   runs: IngestionRun[];
   topLineMetrics: OperatorTopLineMetric[];
+  topLineSuggestions: OperatorTopLineSuggestion[];
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
   onIngest: () => void;
@@ -59,6 +62,7 @@ export default function OperatorSurface({
             <TopLineMetricEditor
               key={metric.key}
               metric={metric}
+              suggestion={topLineSuggestions.find((item) => item.key === metric.key)}
               onPublish={onPublishMetric}
               isPublishing={publishingMetricKey === metric.key}
             />

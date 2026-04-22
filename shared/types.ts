@@ -111,6 +111,23 @@ export interface OperatorMetricPublishInput {
   note: string;
 }
 
+export interface OperatorSuggestionEvidence {
+  eventId: string;
+  title: string;
+  date: string;
+  sourceText: string;
+  significance: Significance;
+  excerpt: string;
+}
+
+export interface OperatorTopLineSuggestion {
+  key: TopLineMetricKey;
+  status: "current" | "candidate" | "context_only" | "no_signal";
+  summary: string;
+  candidate: OperatorMetricPublishInput | null;
+  evidence: OperatorSuggestionEvidence[];
+}
+
 export interface StoryRecord {
   id: string;
   slug: string;

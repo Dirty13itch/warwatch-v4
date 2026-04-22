@@ -1,14 +1,20 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { getTopLineMetricDefinition } from "@shared/topline";
-import type { OperatorMetricPublishInput, OperatorTopLineMetric } from "@shared/types";
+import type {
+  OperatorMetricPublishInput,
+  OperatorTopLineMetric,
+  OperatorTopLineSuggestion
+} from "@shared/types";
 import { formatDateTime } from "../lib/format";
 
 export function TopLineMetricEditor({
   metric,
+  suggestion,
   onPublish,
   isPublishing
 }: {
   metric: OperatorTopLineMetric;
+  suggestion: OperatorTopLineSuggestion | undefined;
   onPublish: (key: string, payload: OperatorMetricPublishInput) => Promise<void>;
   isPublishing: boolean;
 }) {
@@ -26,6 +32,18 @@ export function TopLineMetricEditor({
     setConfidence(metric.current?.confidence ?? "reported");
     setNote(String(metric.current?.meta.note ?? ""));
   }, [metric.key, metric.current?.id]);
+
+  function applySuggestion() {
+    if (!suggestion?.candidate) {
+      return;
+    }
+
+    setNumericValue(suggestion.candidate.value === null ? "" : String(suggestion.candidate.value));
+    setValueText(suggestion.candidate.valueText);
+    setSourceText(suggestion.candidate.sourceText);
+    setConfidence(suggestion.candidate.confidence);
+    setNote(suggestion.candidate.note);
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -68,6 +86,51 @@ export function TopLineMetricEditor({
       </div>
 
       <form className="mt-5 grid gap-3" onSubmit={handleSubmit}>
+        <div className="rounded-[18px] border border-white/8 bg-[#08111b]/80 p-3">
+          <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-signal/72">
+                Suggestion status
+              </p>
+              <p className="mt-2 text-sm leading-6 text-calm/82">
+                {suggestion?.summary ?? "No operator suggestion available for this metric yet."}
+              </p>
+            </div>
+            {suggestion?.candidate ? (
+              <button
+                type="button"
+                onClick={applySuggestion}
+                className="rounded-full border border-signal/25 bg-signal/12 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.22em] text-signal"
+              >
+                Use suggestion
+              </button>
+            ) : null}
+          </div>
+          {suggestion?.evidence.length ? (
+            <div className="mt-3 space-y-2">
+              {suggestion.evidence.map((evidence) => (
+                <div
+                  key={evidence.eventId}
+                  className="rounded-[14px] border border-white/6 bg-white/[0.03] p-3"
+                >
+                  <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+                    <div>
+                      <p className="text-sm font-semibold text-white">{evidence.title}</p>
+                      <p className="mt-1 text-xs leading-5 text-calm/72">{evidence.excerpt}</p>
+                    </div>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">
+                      {evidence.significance}
+                    </span>
+                  </div>
+                  <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/58">
+                    {evidence.date} | {evidence.sourceText}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </div>
+
         <div className="grid gap-3 md:grid-cols-2">
           <label className="grid gap-2 text-sm text-calm/80">
             <span>Display value</span>

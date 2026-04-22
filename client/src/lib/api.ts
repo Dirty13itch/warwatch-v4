@@ -5,6 +5,7 @@ import type {
   MapFeature,
   MetricSnapshot,
   OperatorMetricPublishInput,
+  OperatorTopLineSuggestion,
   OperatorTopLineMetric,
   OverviewResponse,
   ReviewQueueItem,
@@ -40,6 +41,7 @@ export const api = {
   reviewQueue: () => requestJson<ReviewQueueItem[]>("/api/operator/review-queue"),
   ingestionRuns: () => requestJson<IngestionRun[]>("/api/operator/ingestion-runs"),
   topLineMetrics: () => requestJson<OperatorTopLineMetric[]>("/api/operator/topline-metrics"),
+  topLineSuggestions: () => requestJson<OperatorTopLineSuggestion[]>("/api/operator/topline-suggestions"),
   approveQueueItem: (id: string) =>
     requestJson<ReviewQueueItem>(`/api/operator/review-queue/${id}/approve`, {
       method: "POST"

@@ -32,6 +32,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Signals surface renders live market history directly from the canonical metric store
 - Daily SITREP generation refreshes the same-day briefing and includes market movement when live snapshots exist
 - Operator API exposes reviewed top-line metric publishing for the public KPI lane
+- Operator API also exposes evidence-backed top-line suggestions derived from recent event context
 - Aggregate stale-state logic can now clear through a mix of live/ingested and `operator_reviewed` top-line metrics
 - Heartbeat artifact includes explicit top-line metric rows in addition to aggregate freshness state
 
@@ -49,4 +50,5 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 ## Current Truth
 - Ingestion is healthy on the current default feed set
 - Public stale state remains expected because only the market lane is live; strike, Hormuz, and casualty top-line metrics are still bootstrap-era values labeled `stale_seed`
+- The operator console can now surface current evidence for stale KPIs, but it will not invent values where extraction is not defensible
 - Critical claims continue to require operator approval before promotion to primary public surfaces

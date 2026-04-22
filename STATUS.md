@@ -13,6 +13,7 @@
 - Signals surface now renders live market cards and sparklines from canonical metric history instead of only seeded indicator stories
 - Daily SITREP refresh now folds in live market movement when current market snapshots exist
 - Operator-reviewed top-line metric publishing is live for `total_strikes`, `oil_brent`, `hormuz_daily_cap`, and `iran_casualties_estimate`
+- Operator KPI lane now includes evidence-backed suggestion cards with extracted candidates when current event evidence supports them
 - Heartbeat now renders explicit top-line metric values, freshness, source text, and timestamps instead of only aggregate stale-state summaries
 - Verification contract is green locally via `npm run verify`
 
@@ -31,5 +32,5 @@ Hold and extend the first milestone:
 - `node:sqlite` is viable locally but still emits experimental warnings in Node 22
 - Public deployment verification requires `PUBLIC_BASE_URL` to be set
 - The initial bundle issue is reduced, but the map chunk is still the largest client asset and remains a performance follow-up
-- The operator refresh lane exists, but the remaining stale top-line metrics still need real reviewed updates backed by current evidence
+- The operator refresh lane now surfaces current evidence, but the remaining stale top-line metrics still need actual reviewed publications to clear the public stale flag
 - Several critical review queue items still block promotion of fresher top-line public claims

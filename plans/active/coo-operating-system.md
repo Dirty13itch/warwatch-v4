@@ -21,7 +21,7 @@ Phase zero plus first release foundation:
 - docs reflect current truth
 
 ## Immediate Queue
-1. Use the reviewed KPI control lane to replace the remaining seeded strike/Hormuz/casualty top-line values with current evidence-backed snapshots
+1. Use the reviewed KPI control lane and evidence-backed suggestions to replace the remaining seeded strike/Hormuz/casualty top-line values with current snapshots
 2. Harden ingestion synthesis: improve merge quality, track corroboration explicitly, and prepare operator-facing claim/story promotion rules
 3. Reduce the remaining command-surface performance cost, especially the map lane
 4. Set a real deployment target and enable live public verification through `PUBLIC_BASE_URL`

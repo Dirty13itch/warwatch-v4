@@ -85,4 +85,11 @@ describe("WarWatch API", () => {
     expect(overview.body.stale).toBe(false);
     expect(overview.body.freshness.topLine).toBe("operator_reviewed");
   });
+
+  it("exposes operator top-line suggestions", async () => {
+    const response = await request(app).get("/api/operator/topline-suggestions");
+    expect(response.status).toBe(200);
+    expect(Array.isArray(response.body)).toBe(true);
+    expect(response.body.length).toBeGreaterThan(0);
+  });
 });
