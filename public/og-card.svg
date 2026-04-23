@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#07111b"/>
+  <circle cx="190" cy="120" r="190" fill="#59D3FF" fill-opacity="0.12"/>
+  <circle cx="1040" cy="130" r="180" fill="#FF7A59" fill-opacity="0.1"/>
+  <g opacity="0.25" stroke="#59D3FF" stroke-width="1">
+    <path d="M0 168H1200"/>
+    <path d="M0 252H1200"/>
+    <path d="M0 336H1200"/>
+    <path d="M0 420H1200"/>
+    <path d="M0 504H1200"/>
+    <path d="M168 0V630"/>
+    <path d="M336 0V630"/>
+    <path d="M504 0V630"/>
+    <path d="M672 0V630"/>
+    <path d="M840 0V630"/>
+    <path d="M1008 0V630"/>
+  </g>
+  <text x="88" y="126" fill="#59D3FF" font-family="IBM Plex Mono, monospace" font-size="28" letter-spacing="11">WARWATCH</text>
+  <text x="88" y="248" fill="#F4F7FB" font-family="Rajdhani, Arial, sans-serif" font-size="96" font-weight="700">Public briefing website</text>
+  <text x="88" y="344" fill="#F4F7FB" font-family="Rajdhani, Arial, sans-serif" font-size="96" font-weight="700">for the Iran conflict.</text>
+  <text x="88" y="432" fill="#B7C7D6" font-family="IBM Plex Sans, Arial, sans-serif" font-size="32">Review-gated public truth, daily SITREPs, dossiers, timeline context, and signals.</text>
+  <rect x="88" y="486" width="250" height="56" rx="28" fill="#59D3FF" fill-opacity="0.12" stroke="#59D3FF" stroke-opacity="0.4"/>
+  <text x="122" y="522" fill="#59D3FF" font-family="IBM Plex Mono, monospace" font-size="20" letter-spacing="6">WARWATCH V4</text>
+</svg>

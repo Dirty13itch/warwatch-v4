@@ -24,6 +24,8 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Reporting path: heartbeat script writes a reviewable markdown artifact
 - Client runtime is surface-aware and split by lane:
   - the home surface now acts as the public/demo-first website lane instead of a product-shell snapshot
+  - the public shell now has shareable route URLs across its website surfaces, so home, timeline, signals, briefings, dossiers, and command can all be opened directly instead of only through in-app state
+  - route-aware document metadata now updates with public surface changes, which gives the website lane real page titles/descriptions instead of one static shell title
   - snapshot and operator/public reader lanes now use differentiated panel roles, stronger severity hierarchy, and explicit focus-visible treatment instead of one repeated shell-card pattern
   - the app chrome is now a compact masthead rather than a second hero, so the homepage can carry the actual first-view composition like a real site
   - the mobile shell header is now compressed enough to surface navigation and status earlier, so homepage content starts sooner on phones
@@ -60,6 +62,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Operator API now also exposes a selection-aware review dossier for each queue item, including canonical object detail, feed/link metadata, related evidence events, and superseding briefing context
 - Review dossiers now also unpack story/claim suggestion payloads and canonical matches, so the operator lane can review promotion candidates as first-class objects instead of opaque metadata
 - Operator auth now hardens automatically once the app is public-facing: if `PUBLIC_BASE_URL` is set, production mode is on, or `WARWATCH_REQUIRE_OPERATOR_KEY=true`, operator routes require `OPERATOR_API_KEY`
+- The runtime now exposes `/sitemap.xml` for the public website lane, and local/public verification now expects website routes plus manifest and robots surfaces instead of only API health
 - Aggregate stale-state logic can now clear through a mix of live/ingested and `operator_reviewed` top-line metrics
 - Heartbeat artifact includes explicit top-line metric rows plus queue-aging summary in addition to aggregate freshness state
 - Build output now isolates React, chart, and MapLibre vendor lanes, with MapLibre kept off the initial shell through dynamic import
@@ -75,6 +78,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Preview proof now also includes focused snapshot-dossier and source-reader captures so graph-entry improvements are visible in each artifact pass
 - Preview proof now also includes the operator synthesis lane so graph-promotion work stays visible in each artifact pass
 - Build proof now also exists as a repo artifact: every build writes `reports/build/LATEST.md` and `LATEST.json`, and the heartbeat surfaces bundle totals plus the largest client assets
+- A multi-stage Dockerfile now packages the built website/server plus seed sources for fresh runtime bootstrap instead of treating deployment as a future-only docs task
 - Event ingestion now writes canonical `entity:*` tags on insert/merge, and `npm run backfill:entity-tags` can normalize the historical event store onto the same tagging scheme
 - Operator KPI suggestions now use entity-aware relevance instead of pure regex scanning, which reduces false positives in stale-metric review
 - `npm run review:publish-holds` can now replace the remaining seed-era strike, Hormuz, and casualty KPIs with explicit reviewed holds in the local runtime
@@ -105,6 +109,7 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - The repo now has a deterministic queue-reconciliation script (`npm run review:reconcile`) that reclassifies bad auto-ingest criticals, promotes matched claim suggestions, and rejects superseded launch briefings instead of leaving backlog cleanup as a manual chat loop
 - The COO lane can now attach actual UI evidence to updates through local preview screenshots instead of relying only on text artifacts
 - The COO lane can now point to one local full-preview atlas instead of forcing review through individual PNG links or a stitched board alone
+- The website lane now has real static public assets (`favicon.svg`, `og-card.svg`, `site.webmanifest`, `robots.txt`) and route-aware head metadata instead of a generic Vite shell title
 - The preview lane now reflects the stronger hierarchy pass instead of the older flatter card system, and the mobile artifact shows the tighter hero/nav/status shell rather than the earlier oversized first screen
 - Public reader surfaces no longer dead-end as quickly: snapshot, source posture, briefing refs, events, stories, and briefings can all jump into dossier graph detail
 - Shared entity matching now reduces drift between what the client thinks is related and what the server uses for dossier context
@@ -113,3 +118,4 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - The ingestion lane is now less duplicate-prone on rewritten wire copy and less merge-prone on broad same-theater language, which makes the canonical event spine safer before further feed expansion
 - Scope gating is still heuristic and rules-based, so borderline regional-spillover judgments remain a tuning lane rather than a solved problem
 - Critical claims continue to require operator approval before promotion to primary public surfaces
+- Container build proof is currently machine-blocked on this workstation because `docker` is not installed or not on PATH, even though the repo-level packaging recipe now exists

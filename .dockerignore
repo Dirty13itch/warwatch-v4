@@ -1,0 +1,10 @@
+node_modules
+dist
+.git
+.github
+reports
+data/*.sqlite
+data/*.sqlite-shm
+data/*.sqlite-wal
+npm-debug.log*
+.codex

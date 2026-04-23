@@ -49,6 +49,18 @@ function operatorAllowed(config: AppConfig, req: express.Request): boolean {
   return req.header("x-warwatch-operator-key") === config.operatorApiKey;
 }
 
+function resolvePublicSiteBaseUrl(config: AppConfig, req: express.Request): string {
+  if (config.publicBaseUrl) {
+    return config.publicBaseUrl.replace(/\/+$/, "");
+  }
+
+  const forwardedProto = req.header("x-forwarded-proto")?.split(",")[0]?.trim();
+  const forwardedHost = req.header("x-forwarded-host")?.split(",")[0]?.trim();
+  const protocol = forwardedProto || req.protocol;
+  const host = forwardedHost || req.get("host") || "localhost";
+  return `${protocol}://${host}`;
+}
+
 export function createApp(db: DatabaseSync, config: AppConfig) {
   const app = express();
   app.use(express.json());
@@ -262,6 +274,15 @@ export function createApp(db: DatabaseSync, config: AppConfig) {
     await runIngestionCycle(db);
     generateDailyBriefing(db);
     res.json({ ok: true });
+  });
+
+  app.get("/sitemap.xml", (req, res) => {
+    const baseUrl = resolvePublicSiteBaseUrl(config, req);
+    const urls = ["/", "/command", "/timeline", "/dossiers", "/signals", "/briefings"];
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls
+      .map((route) => `  <url><loc>${baseUrl}${route}</loc></url>`)
+      .join("\n")}\n</urlset>`;
+    res.type("application/xml").send(xml);
   });
 
   const clientDist = path.resolve(config.rootDir, "dist/client");

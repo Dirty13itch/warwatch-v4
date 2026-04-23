@@ -6,6 +6,8 @@
 - V4 blueprint copied into `docs/reference/`
 - Fullstack V4 runtime is implemented: React/Vite public shell, Express API, SQLite seed/bootstrap, operator review queue, ingestion runner, heartbeat report script
 - The public shell now opens on a real website-grade home surface that packages posture, SITREP context, public navigation paths, live market signals, and trust framing before the deeper command/operator lanes
+- The public shell now has shareable route state and deep links across the main public surfaces (`/`, `/timeline`, `/signals`, `/briefings`, `/dossiers`, `/command`) instead of treating navigation as an in-memory-only app shell
+- The website head layer is now real: route-aware document titles/descriptions update in-app, the built shell ships OG/Twitter/meta/manifest/favicon tags, and the public site exposes `/sitemap.xml` plus `robots.txt` with a sitemap directive
 - The public shell now has a stronger visual system: panel roles are differentiated, severity states hit harder, focus-visible treatment is explicit, and repeated dark-card sameness is reduced across public and operator lanes
 - The app chrome is now a compact masthead instead of a second hero, which lets the public home surface carry the real first-view composition like a website instead of stacking dashboard hero on top of homepage hero
 - The mobile shell now reaches product payload sooner: the masthead is denser, surface navigation appears earlier, and the public homepage starts paying off above the fold instead of spending the whole first screen on chrome
@@ -59,6 +61,7 @@
 - Visual proof now also includes focused Snapshot dossier-entry and source-reader captures so graph-entry improvements are visible even when they sit below the default viewport
 - Visual proof now also includes the operator synthesis panel so backend graph-promotion work remains visible in human-facing artifacts
 - Build proof is now first-class too: every build writes `reports/build/LATEST.md` and `LATEST.json`, and the heartbeat surfaces bundle totals plus the largest client assets so performance pressure stays reviewable
+- A deploy-ready container recipe now exists as a multi-stage Docker build that produces the built app plus runtime seed sources instead of relying on a local dev checkout shape
 - Preview and build proof have both been refreshed after the UI hierarchy pass, so the current artifact lane reflects the stronger shell and tighter mobile header instead of the older flatter card treatment
 - Verification contract is green locally via `npm run verify`
 - Release/auth expectations are tighter: once a public URL exists or production mode is on, operator routes require `OPERATOR_API_KEY` instead of falling open by default
@@ -77,6 +80,7 @@ Hold and extend the first milestone:
 - The workspace started without a repo or runtime; everything is being built from scratch
 - `node:sqlite` is viable locally but still emits experimental warnings in Node 22
 - Public deployment verification requires `PUBLIC_BASE_URL` to be set
+- The repo now has real container packaging, but image-build proof on this workstation is blocked by the absence of a local `docker` executable rather than by the repo contract
 - Client bundle shaping is improved through vendor/manual chunking and lazy map boot, but the MapLibre vendor chunk still breaches the warning threshold and remains a performance follow-up
 - Preview screenshots are local workspace artifacts today; once a public deployment exists, the same visual-proof lane should validate the deployed surface as well
 - The local preview lane now has a proper atlas entrypoint, but deploy-aware and diff-aware preview proof are still next rather than solved

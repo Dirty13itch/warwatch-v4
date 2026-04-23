@@ -52,6 +52,26 @@ const surfaces = [
 ] as const;
 
 type SurfaceId = (typeof surfaces)[number]["id"];
+type RouteState = {
+  surface: SurfaceId;
+  entityKey: string | null;
+  sourceSlug: string | null;
+  eventId: string | null;
+};
+
+const surfacePathMap: Record<SurfaceId, string> = {
+  preview: "/",
+  command: "/command",
+  timeline: "/timeline",
+  dossiers: "/dossiers",
+  signals: "/signals",
+  briefings: "/briefings",
+  operator: "/operator"
+};
+
+const pathSurfaceMap = new Map<string, SurfaceId>(
+  Object.entries(surfacePathMap).map(([surface, pathname]) => [pathname, surface as SurfaceId])
+);
 
 type LoadedState = {
   overview: boolean;
@@ -79,7 +99,57 @@ const initialLoadedState: LoadedState = {
   operator: false
 };
 
-  function headerValue(value: string | number | null | undefined): string {
+function defaultRouteState(): RouteState {
+  return {
+    surface: "preview",
+    entityKey: null,
+    sourceSlug: null,
+    eventId: null
+  };
+}
+
+function readRouteState(): RouteState {
+  if (typeof window === "undefined") {
+    return defaultRouteState();
+  }
+
+  const url = new URL(window.location.href);
+  const pathname = url.pathname.replace(/\/+$/, "") || "/";
+
+  return {
+    surface: pathSurfaceMap.get(pathname) ?? "preview",
+    entityKey: url.searchParams.get("entity"),
+    sourceSlug: url.searchParams.get("source"),
+    eventId: url.searchParams.get("event")
+  };
+}
+
+function writeRouteState(next: RouteState) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const url = new URL(window.location.href);
+  url.pathname = surfacePathMap[next.surface];
+  url.search = "";
+  if (next.entityKey) {
+    url.searchParams.set("entity", next.entityKey);
+  }
+  if (next.sourceSlug) {
+    url.searchParams.set("source", next.sourceSlug);
+  }
+  if (next.eventId) {
+    url.searchParams.set("event", next.eventId);
+  }
+
+  const current = `${window.location.pathname}${window.location.search}`;
+  const candidate = `${url.pathname}${url.search}`;
+  if (candidate !== current) {
+    window.history.pushState({}, "", candidate);
+  }
+}
+
+function headerValue(value: string | number | null | undefined): string {
   if (value === null || value === undefined || value === "") {
     return "...";
   }
@@ -88,7 +158,8 @@ const initialLoadedState: LoadedState = {
 }
 
 export default function App() {
-  const [surface, setSurface] = useState<SurfaceId>("preview");
+  const initialRoute = readRouteState();
+  const [surface, setSurface] = useState<SurfaceId>(initialRoute.surface);
   const [overview, setOverview] = useState<OverviewResponse | null>(null);
   const [events, setEvents] = useState<EventRecord[]>([]);
   const [stories, setStories] = useState<StoryRecord[]>([]);
@@ -108,10 +179,10 @@ export default function App() {
   const [topLineSuggestions, setTopLineSuggestions] = useState<OperatorTopLineSuggestion[]>([]);
   const [synthesis, setSynthesis] = useState<OperatorSynthesisSnapshot>({ stories: [], claims: [] });
   const [search, setSearch] = useState("");
-  const [focusedEventId, setFocusedEventId] = useState<string | null>(null);
+  const [focusedEventId, setFocusedEventId] = useState<string | null>(initialRoute.eventId);
   const [focusedEvent, setFocusedEvent] = useState<EventRecord | null>(null);
-  const [focusedEntityKey, setFocusedEntityKey] = useState<string | null>(null);
-  const [focusedSourceSlug, setFocusedSourceSlug] = useState<string | null>(null);
+  const [focusedEntityKey, setFocusedEntityKey] = useState<string | null>(initialRoute.entityKey);
+  const [focusedSourceSlug, setFocusedSourceSlug] = useState<string | null>(initialRoute.sourceSlug);
   const [selectedQueueId, setSelectedQueueId] = useState<string | null>(null);
   const [reviewQueueDetail, setReviewQueueDetail] = useState<ReviewQueueDetail | null>(null);
   const [operatorError, setOperatorError] = useState<string | null>(null);
@@ -121,12 +192,76 @@ export default function App() {
   const deferredSearch = useDeferredValue(search);
 
   function handleOpenSurface(target: SurfaceId) {
+    setFocusedEventId(null);
+    setFocusedEvent(null);
+    setFocusedSourceSlug(null);
+    const nextEntityKey = target === "dossiers" ? focusedEntityKey : null;
+    if (target !== "dossiers") {
+      setFocusedEntityKey(null);
+    }
+    writeRouteState({
+      surface: target,
+      entityKey: nextEntityKey,
+      sourceSlug: null,
+      eventId: null
+    });
     void ensureSurfaceData(target);
     startTransition(() => setSurface(target));
   }
 
   function markLoaded(next: Partial<LoadedState>) {
     setLoaded((current) => ({ ...current, ...next }));
+  }
+
+  function syncDocumentMeta() {
+    if (typeof document === "undefined") {
+      return;
+    }
+
+    const titleBase =
+      surface === "preview"
+        ? "WarWatch | Public briefing website for the Iran conflict"
+        : `${surfaces.find((item) => item.id === surface)?.label ?? "WarWatch"} | WarWatch`;
+    const description =
+      surface === "preview"
+        ? overview?.headline.description ??
+          "Public briefing website for the Iran conflict with review-gated claims, daily SITREPs, dossiers, timeline context, and signals."
+        : surface === "briefings"
+          ? "Daily SITREPs and briefing archive with operator-reviewed public context."
+          : surface === "timeline"
+            ? "Filterable public timeline with corroboration, significance, and source-linked context."
+            : surface === "dossiers"
+              ? entityDossier
+                ? `${entityDossier.entity.name} dossier with linked claims, stories, events, and briefings.`
+                : "Canonical actor dossiers and claim graph for the public WarWatch site."
+              : surface === "signals"
+                ? "Live market pressure, source posture, and signals shaping the public conflict picture."
+                : surface === "command"
+                  ? "Operational command surface over the public WarWatch runtime."
+                  : "Operator review controls, synthesis lane, and ingestion oversight.";
+
+    const setMeta = (selector: string, attribute: string, value: string) => {
+      const element = document.head.querySelector(selector);
+      if (element) {
+        element.setAttribute(attribute, value);
+      }
+    };
+
+    const canonicalHref = typeof window !== "undefined" ? window.location.href : "";
+
+    document.title = titleBase;
+    setMeta('meta[name="description"]', "content", description);
+    setMeta('meta[property="og:title"]', "content", titleBase);
+    setMeta('meta[property="og:description"]', "content", description);
+    setMeta('meta[property="og:url"]', "content", canonicalHref);
+    setMeta('meta[name="twitter:title"]', "content", titleBase);
+    setMeta('meta[name="twitter:description"]', "content", description);
+    setMeta('meta[name="twitter:url"]', "content", canonicalHref);
+
+    const canonical = document.head.querySelector('link[rel="canonical"]');
+    if (canonical) {
+      canonical.setAttribute("href", canonicalHref);
+    }
   }
 
   async function fetchOverview(force = false) {
@@ -407,8 +542,53 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const onPopState = () => {
+      const next = readRouteState();
+      setSurface(next.surface);
+      setFocusedEntityKey(next.entityKey);
+      setFocusedSourceSlug(next.sourceSlug);
+      setFocusedEventId(next.eventId);
+      if (!next.eventId) {
+        setFocusedEvent(null);
+      }
+    };
+
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
+  useEffect(() => {
     void ensureSurfaceData(surface);
   }, [surface]);
+
+  useEffect(() => {
+    if (surface !== "timeline" || !focusedEventId) {
+      return;
+    }
+
+    if (focusedEvent?.id === focusedEventId) {
+      return;
+    }
+
+    const existing = events.find((event) => event.id === focusedEventId);
+    if (existing) {
+      setFocusedEvent(existing);
+      return;
+    }
+
+    void api
+      .event(focusedEventId)
+      .then((event) => setFocusedEvent(event))
+      .catch(() => setFocusedEvent(null));
+  }, [surface, focusedEventId, focusedEvent?.id, events]);
+
+  useEffect(() => {
+    syncDocumentMeta();
+  }, [surface, overview, entityDossier, focusedEvent?.id]);
 
   useEffect(() => {
     if (surface !== "operator" || !loaded.operator || !reviewQueue.length) {
@@ -535,6 +715,15 @@ export default function App() {
 
   function handleOpenSourceFocus(slug: string) {
     setFocusedSourceSlug(slug);
+    setFocusedEntityKey(null);
+    setFocusedEventId(null);
+    setFocusedEvent(null);
+    writeRouteState({
+      surface: "signals",
+      entityKey: null,
+      sourceSlug: slug,
+      eventId: null
+    });
     void ensureSurfaceData("signals");
     startTransition(() => setSurface("signals"));
   }
@@ -544,6 +733,14 @@ export default function App() {
     setSearch("");
     setFocusedEventId(matchedEvent.id);
     setFocusedEvent(matchedEvent);
+    setFocusedEntityKey(null);
+    setFocusedSourceSlug(null);
+    writeRouteState({
+      surface: "timeline",
+      entityKey: null,
+      sourceSlug: null,
+      eventId: matchedEvent.id
+    });
     void ensureSurfaceData("timeline");
     startTransition(() => setSurface("timeline"));
   }
@@ -559,14 +756,31 @@ export default function App() {
     setSearch("");
     setFocusedEventId(matchedEvent?.id ?? null);
     setFocusedEvent(matchedEvent ?? null);
+    setFocusedEntityKey(null);
+    setFocusedSourceSlug(null);
+    writeRouteState({
+      surface: "timeline",
+      entityKey: null,
+      sourceSlug: null,
+      eventId: matchedEvent?.id ?? null
+    });
     void ensureSurfaceData("timeline");
     startTransition(() => setSurface("timeline"));
   }
 
   async function handleOpenEntity(key: string) {
     setFocusedEntityKey(key);
+    setFocusedSourceSlug(null);
+    setFocusedEventId(null);
+    setFocusedEvent(null);
     await fetchGraph();
     await fetchEntityDossier(key, true);
+    writeRouteState({
+      surface: "dossiers",
+      entityKey: key,
+      sourceSlug: null,
+      eventId: null
+    });
     startTransition(() => setSurface("dossiers"));
   }
 
@@ -721,6 +935,12 @@ export default function App() {
                 dossier={entityDossier}
                 onSelectEntity={(key) => {
                   setFocusedEntityKey(key);
+                  writeRouteState({
+                    surface: "dossiers",
+                    entityKey: key,
+                    sourceSlug: null,
+                    eventId: null
+                  });
                   void fetchEntityDossier(key, true);
                 }}
                 onOpenEvent={handleOpenEventById}
@@ -736,7 +956,7 @@ export default function App() {
               sources={sources}
               marketSignals={marketSignals}
               focusedSourceSlug={focusedSourceSlug}
-              onFocusSource={setFocusedSourceSlug}
+              onFocusSource={handleOpenSourceFocus}
               onOpenEntity={handleOpenEntity}
             />
           )}
@@ -786,6 +1006,57 @@ export default function App() {
             </Suspense>
           )}
         </main>
+
+        <footer className="border-t border-white/8 pb-8 pt-6">
+          <div className="grid gap-6 lg:grid-cols-[1fr_1fr_0.9fr]">
+            <div className="space-y-3">
+              <p className="eyebrow-label">WarWatch</p>
+              <p className="max-w-[24rem] text-sm leading-6 text-calm/76">
+                Public briefing website over a review-gated intelligence spine. Daily SITREPs, dossiers, timeline context, signals, and operator controls all resolve against the same runtime.
+              </p>
+            </div>
+            <div className="space-y-3">
+              <p className="eyebrow-label">Navigate</p>
+              <div className="flex flex-wrap gap-2">
+                {surfaces
+                  .filter((item) => item.id !== "operator")
+                  .map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => handleOpenSurface(item.id)}
+                      className="interactive-pill interactive-pill--idle"
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+              </div>
+            </div>
+            <div className="space-y-3">
+              <p className="eyebrow-label">Public status</p>
+              <div className="grid gap-2 text-sm text-calm/76">
+                <div className="flex items-center justify-between gap-3">
+                  <span>Top-line freshness</span>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white">
+                    {headerValue(overview?.freshness.topLine)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span>Pending queue</span>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white">
+                    {headerValue(overview?.queue.pending)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span>Last ingest</span>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white">
+                    {headerValue(overview?.queue.lastIngestionStatus)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
   );

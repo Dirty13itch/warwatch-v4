@@ -43,18 +43,55 @@ if (!ready) {
   throw new Error("Smoke server did not become ready");
 }
 
-for (const route of ["/", "/api/overview", "/api/events?limit=5", "/api/map/layers", "/api/briefings"]) {
+for (const route of [
+  "/",
+  "/timeline",
+  "/signals",
+  "/briefings",
+  "/dossiers",
+  "/sitemap.xml",
+  "/site.webmanifest",
+  "/robots.txt",
+  "/api/overview",
+  "/api/events?limit=5",
+  "/api/map/layers",
+  "/api/briefings"
+]) {
   const response = await fetch(`http://127.0.0.1:${port}${route}`);
   if (!response.ok) {
     child.kill("SIGTERM");
     throw new Error(`Smoke route failed: ${route} -> ${response.status}`);
   }
 
-  if (route === "/") {
+  if (["/", "/timeline", "/signals", "/briefings", "/dossiers"].includes(route)) {
     const html = await response.text();
-    if (!html.includes("WarWatch V4")) {
+    if (!html.includes('<div id="root"></div>') || !html.includes("WarWatch")) {
       child.kill("SIGTERM");
       throw new Error("Smoke HTML did not include app shell marker");
+    }
+  }
+
+  if (route === "/site.webmanifest") {
+    const manifest = await response.text();
+    if (!manifest.includes('"name": "WarWatch"')) {
+      child.kill("SIGTERM");
+      throw new Error("Smoke manifest did not include WarWatch app name");
+    }
+  }
+
+  if (route === "/robots.txt") {
+    const robots = await response.text();
+    if (!robots.includes("Sitemap: /sitemap.xml")) {
+      child.kill("SIGTERM");
+      throw new Error("Smoke robots.txt did not include sitemap directive");
+    }
+  }
+
+  if (route === "/sitemap.xml") {
+    const sitemap = await response.text();
+    if (!sitemap.includes("/timeline") || !sitemap.includes("/briefings")) {
+      child.kill("SIGTERM");
+      throw new Error("Smoke sitemap did not include public route entries");
     }
   }
 }

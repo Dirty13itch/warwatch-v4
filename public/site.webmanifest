@@ -1,0 +1,17 @@
+{
+  "name": "WarWatch",
+  "short_name": "WarWatch",
+  "description": "Public briefing website for the Iran conflict with review-gated claims, daily SITREPs, signals, timeline context, and dossiers.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07111b",
+  "theme_color": "#07111b",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
