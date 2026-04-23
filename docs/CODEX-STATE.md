@@ -23,10 +23,11 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Seed path: legacy V3 bundle plus blueprint-derived launch briefing and review backlog
 - Reporting path: heartbeat script writes a reviewable markdown artifact
 - Client runtime is surface-aware and split by lane:
-  - snapshot surface now acts as the public/demo-first entry lane
+  - the home surface now acts as the public/demo-first website lane instead of a product-shell snapshot
   - snapshot and operator/public reader lanes now use differentiated panel roles, stronger severity hierarchy, and explicit focus-visible treatment instead of one repeated shell-card pattern
-  - the mobile shell header is now compressed enough to surface navigation and status earlier, so Snapshot content starts sooner on phones
-  - snapshot surface now also exposes graph-backed dossier entry cards and claim posture so the landing lane can open directly into actor context
+  - the app chrome is now a compact masthead rather than a second hero, so the homepage can carry the actual first-view composition like a real site
+  - the mobile shell header is now compressed enough to surface navigation and status earlier, so homepage content starts sooner on phones
+  - the home surface now also exposes graph-backed dossier entry cards and claim posture so the landing lane can open directly into actor context
   - command shell lazy-loads heavy map/chart code
   - timeline surface now exposes filters, event inspection, corroboration, and public posture directly in the UI
   - timeline events can now hand readers into matched source posture when the source ledger has a canonical match
@@ -49,6 +50,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Signals surface renders live market history directly from the canonical metric store
 - Daily SITREP generation refreshes the same-day briefing and includes market movement when live snapshots exist
 - Operator API exposes reviewed top-line metric publishing for the public KPI lane
+- Operator API now also supports explicit reviewed holds for top-line metrics when current evidence is not yet defensible for public publication
 - Operator API also exposes evidence-backed top-line suggestions derived from recent event context
 - Operator API now also exposes graph-aware synthesis candidates for story and claim promotion based on recent event evidence
 - Operator API now also exposes queue actions for synthesis candidates, and review approval can persist approved story/claim suggestions into canonical records
@@ -75,6 +77,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Build proof now also exists as a repo artifact: every build writes `reports/build/LATEST.md` and `LATEST.json`, and the heartbeat surfaces bundle totals plus the largest client assets
 - Event ingestion now writes canonical `entity:*` tags on insert/merge, and `npm run backfill:entity-tags` can normalize the historical event store onto the same tagging scheme
 - Operator KPI suggestions now use entity-aware relevance instead of pure regex scanning, which reduces false positives in stale-metric review
+- `npm run review:publish-holds` can now replace the remaining seed-era strike, Hormuz, and casualty KPIs with explicit reviewed holds in the local runtime
 
 ## Operating Assumption
 Twice-daily COO heartbeat remains the default cadence unless the repo contract changes.
@@ -90,8 +93,9 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 ## Current Truth
 - Ingestion is healthy on the current default feed set
 - The live feed lane is now materially cleaner: obvious sports, tourism, and unrelated global stories from broad RSS feeds are quarantined away from public surfaces
-- Public stale state remains expected because only the market lane is live; strike, Hormuz, and casualty top-line metrics are still bootstrap-era values labeled `stale_seed`
+- Public stale state remains expected, but it is now narrowed to `review_hold` instead of `stale_seed`: strike, Hormuz, and casualty top-line metrics are explicitly on reviewed hold rather than silently carrying bootstrap-era values
 - The operator console can now surface current evidence for stale KPIs, but it will not invent values where extraction is not defensible
+- The operator console can now publish either reviewed values or reviewed holds, which makes the public stale-state semantics honest even when live evidence is insufficient for a current number
 - The operator console can now also surface graph-aware story and claim candidates, which gives ingestion a canonical promotion path before any write-side automation exists
 - The operator console can now also queue those graph-aware promotion candidates and approve them into canonical stories/claims through the normal review gate
 - The operator console now also sees clustered event/source counts on synthesis candidates and review dossiers, which makes the strength of each promotion lane more legible

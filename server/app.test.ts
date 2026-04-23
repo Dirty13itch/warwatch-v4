@@ -113,6 +113,46 @@ describe("WarWatch API", () => {
     expect(overview.body.freshness.topLine).toBe("operator_reviewed");
   });
 
+  it("publishes reviewed holds when current public numbers are not yet defensible", async () => {
+    const strikeHold = await request(app)
+      .post("/api/operator/topline-metrics/total_strikes")
+      .send({
+        mode: "hold"
+      });
+
+    expect(strikeHold.status).toBe(200);
+    expect(strikeHold.body.current.valueText).toBe("Awaiting reviewed cumulative strike total");
+    expect(strikeHold.body.current.freshness).toBe("operator_hold");
+
+    await request(app)
+      .post("/api/operator/topline-metrics/hormuz_daily_cap")
+      .send({
+        mode: "hold"
+      });
+
+    await request(app)
+      .post("/api/operator/topline-metrics/iran_casualties_estimate")
+      .send({
+        mode: "hold"
+      });
+
+    await request(app)
+      .post("/api/operator/topline-metrics/oil_brent")
+      .send({
+        value: 102.01,
+        valueText: "$102.01",
+        sourceText: "Yahoo Finance / operator review",
+        confidence: "confirmed",
+        note: ""
+      });
+
+    const overview = await request(app).get("/api/overview");
+    expect(overview.status).toBe(200);
+    expect(overview.body.stale).toBe(true);
+    expect(overview.body.freshness.topLine).toBe("review_hold");
+    expect(overview.body.kpis.find((item: { key: string }) => item.key === "total_strikes").freshness).toBe("operator_hold");
+  });
+
   it("exposes operator top-line suggestions", async () => {
     const response = await request(app).get("/api/operator/topline-suggestions");
     expect(response.status).toBe(200);

@@ -123,6 +123,40 @@ select:focus-visible {
     linear-gradient(150deg, rgba(20, 22, 31, 0.94), rgba(12, 18, 29, 0.94));
 }
 
+.site-hero {
+  border-top: 1px solid rgba(89, 211, 255, 0.16);
+  border-bottom: 1px solid rgba(89, 211, 255, 0.14);
+  background:
+    radial-gradient(circle at top left, rgba(89, 211, 255, 0.16), transparent 30%),
+    radial-gradient(circle at 80% 12%, rgba(255, 200, 87, 0.12), transparent 22%),
+    linear-gradient(140deg, rgba(7, 17, 27, 0.98), rgba(9, 18, 29, 0.92) 45%, rgba(18, 21, 31, 0.94));
+}
+
+.site-hero-stat {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1rem;
+}
+
+.site-briefing-panel {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 30px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  padding: 1.5rem;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 24px 64px rgba(4, 11, 18, 0.22);
+  backdrop-filter: blur(16px);
+}
+
+.site-method-panel {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  background:
+    linear-gradient(160deg, rgba(10, 20, 31, 0.92), rgba(18, 21, 31, 0.94));
+  padding: 1.5rem;
+}
+
 .shell-panel-elevated {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 28px;
@@ -247,6 +281,67 @@ select:focus-visible {
   border-color: rgba(255, 255, 255, 0.2);
   background: rgba(255, 255, 255, 0.05);
   color: #ffffff;
+}
+
+.site-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.75rem 1.1rem;
+  font: 500 0.6875rem/1 "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.site-cta:hover {
+  transform: translateY(-1px);
+}
+
+.site-cta--primary {
+  border-color: rgba(89, 211, 255, 0.34);
+  background: rgba(89, 211, 255, 0.14);
+  color: #59d3ff;
+}
+
+.site-cta--primary:hover {
+  background: rgba(89, 211, 255, 0.2);
+}
+
+.site-cta--secondary {
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(231, 239, 247, 0.92);
+}
+
+.site-cta--secondary:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.pathway-block {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 26px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+  padding: 1.35rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease;
+}
+
+.pathway-block:hover {
+  transform: translateY(-2px);
+  border-color: rgba(89, 211, 255, 0.18);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .grid-radar {

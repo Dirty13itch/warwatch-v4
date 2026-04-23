@@ -23,7 +23,7 @@ import {
   setQueueStatus
 } from "./store.js";
 import { generateDailyBriefing } from "./briefings.js";
-import { getTopLineMetricDefinition, isTopLineMetricKey } from "../shared/topline.js";
+import { buildTopLineHoldInput, getTopLineMetricDefinition, isTopLineMetricKey } from "../shared/topline.js";
 import { confidenceLevels, type OperatorMetricPublishInput } from "../shared/types.js";
 import { getTopLineSuggestions } from "./topline.js";
 import { getSynthesisSuggestions, queueClaimSuggestion, queueStorySuggestion } from "./synthesis.js";
@@ -207,19 +207,29 @@ export function createApp(db: DatabaseSync, config: AppConfig) {
     }
 
     const body = req.body as Partial<OperatorMetricPublishInput>;
-    if (typeof body.valueText !== "string" || !body.valueText.trim()) {
+    const mode = body.mode === "hold" ? "hold" : "publish";
+    const normalizedBody =
+      mode === "hold"
+        ? {
+            ...buildTopLineHoldInput(req.params.key),
+            ...body,
+            mode
+          }
+        : body;
+
+    if (typeof normalizedBody.valueText !== "string" || !normalizedBody.valueText.trim()) {
       return res.status(400).json({ error: "valueText is required" });
     }
-    if (typeof body.sourceText !== "string" || !body.sourceText.trim()) {
+    if (typeof normalizedBody.sourceText !== "string" || !normalizedBody.sourceText.trim()) {
       return res.status(400).json({ error: "sourceText is required" });
     }
-    if (typeof body.confidence !== "string" || !confidenceLevels.includes(body.confidence)) {
+    if (typeof normalizedBody.confidence !== "string" || !confidenceLevels.includes(normalizedBody.confidence)) {
       return res.status(400).json({ error: "confidence is invalid" });
     }
     if (
-      body.value !== null &&
-      body.value !== undefined &&
-      (typeof body.value !== "number" || !Number.isFinite(body.value))
+      normalizedBody.value !== null &&
+      normalizedBody.value !== undefined &&
+      (typeof normalizedBody.value !== "number" || !Number.isFinite(normalizedBody.value))
     ) {
       return res.status(400).json({ error: "value must be numeric or null" });
     }
@@ -228,17 +238,18 @@ export function createApp(db: DatabaseSync, config: AppConfig) {
     const definition = getTopLineMetricDefinition(req.params.key);
     upsertPreparedMetricSnapshot(db, {
       metricKey: req.params.key,
-      value: body.value ?? null,
-      valueText: body.valueText.trim(),
+      value: normalizedBody.value ?? null,
+      valueText: normalizedBody.valueText.trim(),
       unit: definition.unit,
       timestamp: now,
-      sourceText: body.sourceText.trim(),
-      confidence: body.confidence,
+      sourceText: normalizedBody.sourceText.trim(),
+      confidence: normalizedBody.confidence,
       reviewState: "approved",
-      freshness: "operator_reviewed",
+      freshness: mode === "hold" ? "operator_hold" : "operator_reviewed",
       meta: {
-        note: typeof body.note === "string" ? body.note.trim() : "",
-        operatorUpdatedAt: now
+        note: typeof normalizedBody.note === "string" ? normalizedBody.note.trim() : "",
+        operatorUpdatedAt: now,
+        mode
       }
     });
     generateDailyBriefing(db);

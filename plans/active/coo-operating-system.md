@@ -52,6 +52,7 @@ Tasks:
    Current state: the seeded critical queue is now reconciled to zero pending through classifier hardening plus scripted claim/briefing/event resolution, so the tranche-1 blocker has narrowed to evidence-backed KPI publication rather than backlog pressure.
 3. Tighten operator suggestion quality where evidence is noisy or missing.
 4. Publish defensible reviewed snapshots through the operator lane rather than leaving the public shell in `stale_seed`.
+   Current state: the seeded KPI lane is now narrowed to explicit `operator_hold` / `review_hold` posture for strikes, Hormuz, and casualties; the next unlock is real current publication where evidence becomes defensible, not silent seed carry-forward.
 5. Refresh heartbeat and briefing outputs once reviewed truth materially changes.
 
 Exit criteria:
@@ -163,7 +164,7 @@ Tasks:
 1. Reduce the MapLibre vendor burden with deeper isolation or a lighter strategy.
    Current state: build pressure is now explicit through `reports/build/LATEST.md` and heartbeat bundle summaries, so the MapLibre lane has a durable proof surface instead of a transient warning.
 2. Improve mobile layout where dense public surfaces still compress poorly.
-   Current state: the shell hierarchy pass has landed differentiated panel roles, explicit focus-visible treatment, and a tighter mobile hero/nav/status header; the next follow-through is deeper above-the-fold payload efficiency after the oversized-first-screen issue.
+   Current state: the shell hierarchy pass has landed differentiated panel roles, explicit focus-visible treatment, a compact masthead, and a website-grade homepage hero; the next follow-through is deeper above-the-fold payload efficiency after the oversized-first-screen issue.
 3. Add preview diffs and higher-signal visual proof for before/after slices.
    Current state: preview proof now has a real local atlas entrypoint (`reports/previews/latest/index.html`, PDF, and board artifact) instead of only loose screenshots, so the next step is diff-aware and deploy-aware proof rather than basic preview assembly.
 4. Tighten accessibility, readability, and interaction clarity.

@@ -716,12 +716,17 @@ export function getOverview(db: DatabaseSync): OverviewResponse {
     metricMap.get("hormuz_daily_cap")?.freshness ?? "missing",
     metricMap.get("iran_casualties_estimate")?.freshness ?? "missing"
   ];
+  const currentFreshnesses = new Set(["live", "ingested", "operator_reviewed"]);
+  const resolvedFreshnesses = new Set(["live", "ingested", "operator_reviewed", "operator_hold"]);
   const topLineFreshness = topLineFreshnesses.includes("missing")
     ? "missing"
-    : topLineFreshnesses.every((value) => value === "live" || value === "ingested" || value === "operator_reviewed")
+    : topLineFreshnesses.every((value) => currentFreshnesses.has(value))
       ? topLineFreshnesses.some((value) => value === "operator_reviewed")
         ? "operator_reviewed"
         : "live"
+      : topLineFreshnesses.every((value) => resolvedFreshnesses.has(value)) &&
+          topLineFreshnesses.some((value) => value === "operator_hold")
+        ? "review_hold"
       : topLineFreshnesses.every((value) => value === "historical_seed")
         ? "historical_seed"
         : topLineFreshnesses.includes("stale_seed")
@@ -738,6 +743,9 @@ export function getOverview(db: DatabaseSync): OverviewResponse {
     }
     if (metric?.freshness === "operator_reviewed") {
       supportingText = `Operator-reviewed refresh from ${metric.sourceText}.`;
+    }
+    if (metric?.freshness === "operator_hold") {
+      supportingText = `${item.holdSupportingText} ${metric.sourceText}.`;
     }
 
     return {
@@ -761,9 +769,18 @@ export function getOverview(db: DatabaseSync): OverviewResponse {
     },
     headline: {
       level: metricMap.get("threat_level")?.valueText ?? "CRITICAL",
-      label: "Public intelligence shell",
+      label:
+        topLineFreshness === "review_hold"
+          ? "Evidence-bound public briefing"
+          : topLineFreshness === "operator_reviewed" || topLineFreshness === "live"
+            ? "Public intelligence briefing"
+            : "Public intelligence shell",
       description:
-        "Critical claims are review-gated. Freshness labels remain explicit while live ingestion and runtime verification ramp."
+        topLineFreshness === "review_hold"
+          ? "Live feeds are active, but cumulative strike, Hormuz, or casualty totals remain on reviewed hold until defensible public evidence lands."
+          : topLineFreshness === "operator_reviewed" || topLineFreshness === "live"
+            ? "Current top-line metrics are live or reviewed, while critical claims remain review-gated."
+            : "Critical claims are review-gated. Freshness labels remain explicit while live ingestion and runtime verification ramp."
     },
     kpis,
     fronts: fronts.map((front) => ({

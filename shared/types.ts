@@ -34,6 +34,7 @@ export type Significance = (typeof significanceLevels)[number];
 export type ReviewState = (typeof reviewStates)[number];
 export type Visibility = (typeof visibilities)[number];
 export type TopLineMetricKey = (typeof topLineMetricKeys)[number];
+export type OperatorMetricMode = "publish" | "hold";
 
 export type SourceType =
   | "official_us"
@@ -104,6 +105,7 @@ export interface OperatorTopLineMetric {
 }
 
 export interface OperatorMetricPublishInput {
+  mode?: OperatorMetricMode;
   value: number | null;
   valueText: string;
   sourceText: string;
@@ -122,7 +124,7 @@ export interface OperatorSuggestionEvidence {
 
 export interface OperatorTopLineSuggestion {
   key: TopLineMetricKey;
-  status: "current" | "candidate" | "context_only" | "no_signal";
+  status: "current" | "reviewed_hold" | "candidate" | "context_only" | "no_signal";
   summary: string;
   candidate: OperatorMetricPublishInput | null;
   evidence: OperatorSuggestionEvidence[];

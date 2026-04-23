@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { getTopLineMetricDefinition } from "@shared/topline";
+import { buildTopLineHoldInput, getTopLineMetricDefinition } from "@shared/topline";
 import type {
   OperatorMetricPublishInput,
   OperatorTopLineMetric,
@@ -47,9 +47,19 @@ export function TopLineMetricEditor({
     setNote(suggestion.candidate.note);
   }
 
+  function applyHoldTemplate() {
+    const hold = buildTopLineHoldInput(metric.key);
+    setNumericValue("");
+    setValueText(hold.valueText);
+    setSourceText(hold.sourceText);
+    setConfidence(hold.confidence);
+    setNote(hold.note);
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     await onPublish(metric.key, {
+      mode: "publish",
       value: numericValue.trim() ? Number(numericValue) : null,
       valueText: valueText.trim(),
       sourceText: sourceText.trim(),
@@ -57,6 +67,26 @@ export function TopLineMetricEditor({
       note: note.trim()
     });
   }
+
+  async function handlePublishHold() {
+    const hold = buildTopLineHoldInput(metric.key);
+    await onPublish(metric.key, {
+      mode: "hold",
+      value: numericValue.trim() ? Number(numericValue) : hold.value,
+      valueText: valueText.trim() || hold.valueText,
+      sourceText: sourceText.trim() || hold.sourceText,
+      confidence,
+      note: note.trim() || hold.note
+    });
+  }
+
+  const suggestionSummary =
+    suggestion?.summary ??
+    "No operator suggestion available for this metric yet.";
+  const currentStateTone =
+    metric.current?.freshness === "operator_hold"
+      ? "border-warning/20 bg-warning/10 text-warning"
+      : "border-white/10 text-calm/70";
 
   return (
     <article className="rounded-[22px] border border-white/8 bg-white/[0.025] p-4">
@@ -82,7 +112,7 @@ export function TopLineMetricEditor({
             </p>
           ) : null}
         </div>
-        <span className="rounded-full border border-white/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.24em] text-calm/70">
+        <span className={`rounded-full border px-2 py-1 font-mono text-[10px] uppercase tracking-[0.24em] ${currentStateTone}`}>
           {metric.current?.confidence ?? "seeded"}
         </span>
       </div>
@@ -95,18 +125,27 @@ export function TopLineMetricEditor({
                 Suggestion status
               </p>
               <p className="mt-2 text-sm leading-6 text-calm/82">
-                {suggestion?.summary ?? "No operator suggestion available for this metric yet."}
+                {suggestionSummary}
               </p>
             </div>
-            {suggestion?.candidate ? (
+            <div className="flex flex-wrap gap-2">
+              {suggestion?.candidate ? (
+                <button
+                  type="button"
+                  onClick={applySuggestion}
+                  className="rounded-full border border-signal/25 bg-signal/12 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.22em] text-signal"
+                >
+                  Use suggestion
+                </button>
+              ) : null}
               <button
                 type="button"
-                onClick={applySuggestion}
-                className="rounded-full border border-signal/25 bg-signal/12 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.22em] text-signal"
+                onClick={applyHoldTemplate}
+                className="rounded-full border border-warning/25 bg-warning/10 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.22em] text-warning"
               >
-                Use suggestion
+                Use hold template
               </button>
-            ) : null}
+            </div>
           </div>
           {suggestion?.evidence.length ? (
             <div className="mt-3 space-y-2">
@@ -204,15 +243,25 @@ export function TopLineMetricEditor({
 
         <div className="flex items-center justify-between gap-3">
           <p className="text-xs leading-5 text-calm/62">
-            Publishing creates an approved canonical snapshot with `operator_reviewed` freshness.
+            Review publishing creates an approved canonical snapshot. Holds create an explicit `operator_hold` state instead of leaving seed-era values in place.
           </p>
-          <button
-            type="submit"
-            disabled={isPublishing || !valueText.trim() || !sourceText.trim()}
-            className="rounded-full border border-signal/25 bg-signal/12 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.24em] text-signal transition hover:bg-signal/18 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {isPublishing ? "Publishing" : "Publish review"}
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              disabled={isPublishing}
+              onClick={handlePublishHold}
+              className="rounded-full border border-warning/25 bg-warning/10 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.24em] text-warning transition hover:bg-warning/16 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isPublishing ? "Publishing" : "Publish hold"}
+            </button>
+            <button
+              type="submit"
+              disabled={isPublishing || !valueText.trim() || !sourceText.trim()}
+              className="rounded-full border border-signal/25 bg-signal/12 px-4 py-2 font-mono text-[11px] uppercase tracking-[0.24em] text-signal transition hover:bg-signal/18 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isPublishing ? "Publishing" : "Publish review"}
+            </button>
+          </div>
         </div>
       </form>
     </article>

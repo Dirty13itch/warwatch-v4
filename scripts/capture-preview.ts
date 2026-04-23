@@ -138,7 +138,10 @@ async function openSurface(page: Page, surface: CaptureTarget["surface"]) {
           : surface === "briefings"
             ? "Briefings"
           : "Operator";
-  await page.getByRole("button", { name: new RegExp(label, "i") }).click();
+  await page
+    .locator('nav[aria-label="Primary surfaces"]')
+    .getByRole("button", { name: new RegExp(`^${label}$`, "i") })
+    .click();
   await page.locator(`[data-preview="${surface}-surface"]`).waitFor();
 }
 
@@ -173,7 +176,7 @@ async function captureSurface(
 
 function groupLabel(group: CaptureTarget["group"]): string {
   if (group === "snapshot") {
-    return "Public Shell";
+    return "Public Site";
   }
   if (group === "reader") {
     return "Reader Lanes";
@@ -366,7 +369,7 @@ function writeAtlasHtml(captures: CaptureTarget[], highlights: PreviewHighlights
         <section class="hero">
           <div class="panel meta">
             <div class="eyebrow">WarWatch V4 Preview Atlas</div>
-            <h1>Full local preview of the public shell, reader lanes, operator lanes, and mobile path.</h1>
+            <h1>Full local preview of the public website, reader lanes, operator lanes, and mobile path.</h1>
             <p class="copy">
               This atlas is generated from the built app so COO updates can show concrete product state, not just commit messages, PNG filenames, or markdown artifacts.
             </p>
@@ -413,7 +416,7 @@ function writeAtlasHtml(captures: CaptureTarget[], highlights: PreviewHighlights
           const groupCaptures = captures.filter((capture) => capture.group === group);
           const description =
             group === "snapshot"
-              ? "Best starting point for the public product: landing shell, command context, and first-view dossier entry."
+              ? "Best starting point for the public product: homepage, command context, and first-view dossier entry."
               : group === "reader"
                 ? "Deep reading lanes for timeline, signals, briefings, dossiers, and source posture."
                 : group === "operator"
@@ -516,16 +519,16 @@ async function main() {
 
   const captures: CaptureTarget[] = [
     {
-      title: "Snapshot Surface",
+      title: "Home Surface",
       fileName: "preview-desktop.png",
-      notes: "Curated public snapshot with posture, SITREP, fronts, live markets, and trust framing",
+      notes: "Website-grade public homepage with posture, SITREP, public paths, live markets, and trust framing",
       group: "snapshot",
       surface: "preview"
     },
     {
-      title: "Snapshot Dossiers",
+      title: "Home Dossiers",
       fileName: "preview-dossiers.png",
-      notes: "Snapshot-level actor and claim posture cards that now open directly into the canonical dossier graph",
+      notes: "Homepage-level actor and claim posture cards that now open directly into the canonical dossier graph",
       group: "snapshot",
       surface: "preview",
       selector: '[data-preview="preview-dossiers"]'
@@ -613,9 +616,9 @@ async function main() {
       selector: '[data-preview="operator-queue-summary"]'
     },
     {
-      title: "Snapshot Surface Mobile",
+      title: "Home Surface Mobile",
       fileName: "preview-mobile.png",
-      notes: "Curated public snapshot on a narrow mobile viewport",
+      notes: "Website-grade public homepage on a narrow mobile viewport",
       group: "mobile",
       surface: "preview",
       mobile: true

@@ -85,7 +85,7 @@ export default function OperatorSurface({
             <h2 className="section-heading text-[2rem]">Reviewed KPI refresh lane</h2>
           </div>
           <p className="section-copy max-w-[28rem]">
-            Use the operator lane to replace seeded strike, Hormuz, casualty, or oil values with reviewed snapshots. The public stale flag only clears when every top-line metric is current.
+            Use the operator lane to replace seeded strike, Hormuz, casualty, or oil values with reviewed snapshots, or publish an explicit reviewed hold when a current number is not yet defensible.
           </p>
         </div>
         <div className="mt-5 grid gap-4 xl:grid-cols-2">

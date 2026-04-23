@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { loadConfig } from "./config";
 import { openDatabase } from "./db";
 import { getTopLineSuggestions } from "./topline";
+import { upsertPreparedMetricSnapshot } from "./ingest";
 
 function makeDb() {
   const config = loadConfig(process.cwd());
@@ -116,6 +117,33 @@ describe("top-line suggestions", () => {
     expect(hormuz?.status).toBe("no_signal");
     expect(hormuz?.candidate).toBeNull();
     expect(hormuz?.evidence).toHaveLength(0);
+
+    db.close();
+  });
+
+  it("surfaces reviewed holds explicitly once a metric is no longer seed-backed", () => {
+    const db = makeDb();
+    upsertPreparedMetricSnapshot(db, {
+      metricKey: "total_strikes",
+      value: null,
+      valueText: "Awaiting reviewed cumulative strike total",
+      unit: "strikes",
+      timestamp: "2026-04-22T18:00:00.000Z",
+      sourceText: "Operator reviewed hold / no defensible cumulative strike total in the live feed lane",
+      confidence: "reported",
+      reviewState: "approved",
+      freshness: "operator_hold",
+      meta: {
+        note: "Current live coverage provides strike context but not a defensible cumulative total for public publication.",
+        mode: "hold"
+      }
+    });
+
+    const suggestions = getTopLineSuggestions(db);
+    const strikes = suggestions.find((item) => item.key === "total_strikes");
+
+    expect(strikes?.status).toBe("reviewed_hold");
+    expect(strikes?.candidate).toBeNull();
 
     db.close();
   });

@@ -243,6 +243,16 @@ function buildSuggestion(
     };
   }
 
+  if (current?.freshness === "operator_hold") {
+    return {
+      key: metric.key,
+      status: "reviewed_hold",
+      summary: `${definition.label} is on an operator-reviewed hold because current evidence is not yet defensible enough for public publication.`,
+      candidate: null,
+      evidence: []
+    };
+  }
+
   const relevantEvents = recentEvents
     .map((event) => ({
       event,

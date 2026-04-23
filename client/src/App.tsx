@@ -42,7 +42,7 @@ const DossiersSurface = lazy(() => import("./surfaces/DossiersSurface"));
 const OperatorSurface = lazy(() => import("./surfaces/OperatorSurface"));
 
 const surfaces = [
-  { id: "preview", label: "Snapshot" },
+  { id: "preview", label: "Home" },
   { id: "command", label: "Command" },
   { id: "timeline", label: "Timeline" },
   { id: "dossiers", label: "Dossiers" },
@@ -79,7 +79,7 @@ const initialLoadedState: LoadedState = {
   operator: false
 };
 
-function headerValue(value: string | number | null | undefined): string {
+  function headerValue(value: string | number | null | undefined): string {
   if (value === null || value === undefined || value === "") {
     return "...";
   }
@@ -119,6 +119,11 @@ export default function App() {
   const [loaded, setLoaded] = useState<LoadedState>(initialLoadedState);
   const loadingRef = useRef(new Set<string>());
   const deferredSearch = useDeferredValue(search);
+
+  function handleOpenSurface(target: SurfaceId) {
+    void ensureSurfaceData(target);
+    startTransition(() => setSurface(target));
+  }
 
   function markLoaded(next: Partial<LoadedState>) {
     setLoaded((current) => ({ ...current, ...next }));
@@ -595,67 +600,59 @@ export default function App() {
     <div className="min-h-screen bg-radar font-body text-calm">
       <a href="#main-content" className="skip-link">Skip To Main Content</a>
       <div className="mx-auto flex min-h-screen max-w-[90rem] flex-col px-3 py-3 sm:px-6 lg:px-8">
-        <header className="shell-panel shell-panel-hero relative overflow-hidden px-4 py-4 sm:px-8 sm:py-7">
-          <div className="absolute inset-0 opacity-60">
-            <div className="absolute -left-10 top-8 h-36 w-36 rounded-full bg-signal/15 blur-3xl" />
-            <div className="absolute right-4 top-6 h-44 w-44 rounded-full bg-ember/15 blur-3xl" />
-            <div className="grid-radar absolute inset-0 animate-pulseGrid bg-[radial-gradient(circle_at_center,rgba(89,211,255,0.1)_1px,transparent_1px)] bg-[size:22px_22px]" />
+        <header className="shell-panel relative overflow-hidden px-4 py-4 sm:px-6 sm:py-5">
+          <div className="absolute inset-0 opacity-55">
+            <div className="absolute -left-12 top-2 h-28 w-28 rounded-full bg-signal/14 blur-3xl" />
+            <div className="absolute right-4 top-4 h-32 w-32 rounded-full bg-ember/10 blur-3xl" />
+            <div className="grid-radar absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(89,211,255,0.08)_1px,transparent_1px)] bg-[size:24px_24px]" />
           </div>
-          <div className="relative flex flex-col gap-4 sm:gap-6">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-              <div className="max-w-3xl">
-                <p className="eyebrow-label">
-                  WarWatch V4
-                </p>
-                <h1 className="mt-2 max-w-4xl font-display text-[clamp(1.7rem,12vw,5rem)] leading-[0.92] text-white sm:mt-3 sm:text-[clamp(2.4rem,13vw,5rem)]">
-                  Public intelligence shell with explicit review control.
+          <div className="relative flex flex-col gap-4">
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+              <div className="max-w-4xl">
+                <p className="eyebrow-label">WarWatch V4</p>
+                <h1 className="mt-2 font-display text-[clamp(1.8rem,5vw,3.4rem)] leading-[0.9] text-white">
+                  Public briefing website over a review-gated intelligence spine.
                 </h1>
-                <p className="mt-3 max-w-[38rem] text-[0.92rem] leading-6 text-calm/82 sm:mt-4 sm:max-w-2xl sm:text-xl sm:leading-8">
-                  Cold-radar command center over a verified data spine.
-                  <span className="hidden sm:inline"> Public surfaces stay useful, but critical claims do not skip the operator lane.</span>
+                <p className="mt-3 max-w-[40rem] text-sm leading-6 text-calm/80 sm:text-[0.95rem] sm:leading-7">
+                  Timeline, dossiers, signals, daily briefings, and operator review all resolve against the same canonical runtime instead of a static dashboard.
                 </p>
-                <nav
-                  aria-label="Primary surfaces"
-                  className="-mx-1 mt-4 flex gap-2 overflow-x-auto px-1 pb-1 sm:mt-5 md:flex-wrap md:overflow-visible"
-                >
-                  {surfaces.map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      aria-pressed={surface === item.id}
-                      onClick={() => {
-                        startTransition(() => setSurface(item.id));
-                      }}
-                      className={`interactive-pill shrink-0 ${
-                        surface === item.id
-                          ? "interactive-pill--active"
-                          : "interactive-pill--idle"
-                      }`}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                </nav>
               </div>
-              <div className="shell-panel-elevated grid grid-cols-2 gap-x-4 gap-y-3 p-3 font-mono text-[10px] uppercase tracking-[0.18em] text-calm/72 sm:min-w-[18rem] sm:p-4 sm:text-[11px] sm:tracking-[0.2em] lg:grid-cols-1">
-                <div className="flex items-center justify-between">
-                  <span>Current day</span>
-                  <span className="text-white">{headerValue(overview?.currentDay)}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Legacy as of</span>
-                  <span className="text-white">{headerValue(overview?.legacyAsOf)}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Pending queue</span>
-                  <span className="text-white">{headerValue(overview?.queue.pending)}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Last ingest</span>
-                  <span className="text-white">{headerValue(overview?.queue.lastIngestionStatus)}</span>
-                </div>
+              <div className="grid gap-3 sm:grid-cols-2 xl:min-w-[34rem] xl:grid-cols-4">
+                {[
+                  ["Current day", headerValue(overview?.currentDay)],
+                  ["Top-line", headerValue(overview?.freshness.topLine)],
+                  ["Pending queue", headerValue(overview?.queue.pending)],
+                  ["Last ingest", headerValue(overview?.queue.lastIngestionStatus)]
+                ].map(([label, value]) => (
+                  <div key={label} className="shell-panel-elevated px-3 py-3">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-calm/60">{label}</p>
+                    <p className="mt-2 font-display text-[1.3rem] leading-none text-white">{value}</p>
+                  </div>
+                ))}
               </div>
             </div>
+            <nav
+              aria-label="Primary surfaces"
+              className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 sm:mt-1 md:flex-wrap md:overflow-visible"
+            >
+              {surfaces.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  aria-pressed={surface === item.id}
+                  onClick={() => {
+                    handleOpenSurface(item.id);
+                  }}
+                  className={`interactive-pill shrink-0 ${
+                    surface === item.id
+                      ? "interactive-pill--active"
+                      : "interactive-pill--idle"
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </nav>
           </div>
         </header>
 
@@ -669,6 +666,7 @@ export default function App() {
               marketSignals={marketSignals}
               graph={{ entities, claims, relationships }}
               onOpenEntity={handleOpenEntity}
+              onOpenSurface={handleOpenSurface}
             />
           )}
 

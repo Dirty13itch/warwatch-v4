@@ -5,9 +5,10 @@
 - V3 archive extracted to `legacy/warwatch-v3/`
 - V4 blueprint copied into `docs/reference/`
 - Fullstack V4 runtime is implemented: React/Vite public shell, Express API, SQLite seed/bootstrap, operator review queue, ingestion runner, heartbeat report script
-- The public shell now opens on a curated `Snapshot` surface that packages posture, SITREP context, fronts, live market signals, and trust framing before the deeper command/operator lanes
+- The public shell now opens on a real website-grade home surface that packages posture, SITREP context, public navigation paths, live market signals, and trust framing before the deeper command/operator lanes
 - The public shell now has a stronger visual system: panel roles are differentiated, severity states hit harder, focus-visible treatment is explicit, and repeated dark-card sameness is reduced across public and operator lanes
-- The mobile shell now reaches product payload sooner: the header hero is tighter, surface navigation appears earlier, and the top status strip is denser instead of consuming a full-card stack before Snapshot content
+- The app chrome is now a compact masthead instead of a second hero, which lets the public home surface carry the real first-view composition like a website instead of stacking dashboard hero on top of homepage hero
+- The mobile shell now reaches product payload sooner: the masthead is denser, surface navigation appears earlier, and the public homepage starts paying off above the fold instead of spending the whole first screen on chrome
 - Public shell is now surface-aware: overview loads first, timeline/signals/briefings/operator data load on demand, and heavy map/chart/operator code is split out of the initial bundle
 - The timeline is now a real explorer: filterable chronology, selection-aware event detail, corroboration counts, and public-posture context are all visible without leaving the surface
 - Story and briefing lanes now have real drill-down: shared story strips expose selection-aware readers, and the briefing archive opens into a structured SITREP reader instead of dumping full text inline
@@ -30,7 +31,9 @@
 - Signals surface now renders live market cards and sparklines from canonical metric history instead of only seeded indicator stories
 - Daily SITREP refresh now folds in live market movement when current market snapshots exist
 - Operator-reviewed top-line metric publishing is live for `total_strikes`, `oil_brent`, `hormuz_daily_cap`, and `iran_casualties_estimate`
+- Operator-reviewed hold publishing is now live too: the KPI lane can explicitly publish `operator_hold` when current evidence is not yet defensible, which replaces seed-era posture with a reviewed public hold state instead of forcing fake precision
 - Operator KPI lane now includes evidence-backed suggestion cards with extracted candidates when current event evidence supports them
+- `npm run review:publish-holds` now converts the remaining seeded strike, Hormuz, and casualty KPIs into reviewed holds for the live local DB when evidence is still insufficient for a current number
 - Operator synthesis lane is now live: recent graph-aware evidence can surface story-promotion and claim-promotion candidates before the operator has to reason from raw event rows alone
 - Operator synthesis is now queue-backed end to end: candidates can be queued straight from the synthesis lane, opened as review dossiers, and approved into canonical stories or claims without silent auto-promotion
 - Operator synthesis is now cluster-based instead of single-event based: related recent events aggregate into one suggestion with event/source counts, richer evidence packets, and stronger promotion rationale
@@ -40,6 +43,7 @@
 - Suggestion-backed review dossiers now show proposed story/claim payloads plus canonical matches when they exist, which makes promotion review materially faster than reasoning from metadata blobs
 - The operator lane can now hand directly into timeline evidence from both KPI suggestion cards and queue dossiers, which makes tranche-1 review work faster and less abstract
 - The current critical queue has now been reconciled down to zero pending items through a repo script plus claim-suggestion promotion, so stale public truth is no longer blocked by seed-era queue backlog
+- The public stale lane is now narrowed from `stale_seed` to `review_hold`: the remaining KPI bottleneck is now honest reviewed holds rather than silently carrying seed-era top-line values
 - Heartbeat now renders explicit top-line metric values, freshness, source text, and timestamps instead of only aggregate stale-state summaries
 - Heartbeat output is sanitized to an ASCII-safe operator artifact so Windows console review does not corrupt high-signal lines
 - Heartbeat next actions are now queue-aware, so the operator artifact stops telling the repo to reduce pending critical items once the queue is already clear
@@ -47,7 +51,7 @@
 - Preview output now also includes a single `reports/previews/latest/preview-board.png` board artifact so updates can show one readable visual brief instead of a loose image set
 - Preview output now also emits a full atlas entrypoint at `reports/previews/latest/index.html` plus `preview-atlas.html` and `preview-atlas.pdf`, so the entire product can be reviewed from one local artifact instead of a loose screenshot folder
 - `npm run preview:open` now opens the latest local atlas directly, which makes the preview lane usable as a real demo/review surface instead of a hidden build byproduct
-- The preview lane now centers the new Snapshot surface, which gives the product a better public/demo-first entry point than dropping directly into the raw command shell
+- The preview lane now centers the website-grade home surface, which gives the product a real public/demo entry point instead of dropping directly into the raw command shell
 - Visual proof now includes the upgraded timeline surface so public exploration depth is visible in the preview board, not just the landing shell
 - Visual proof now includes the briefing reader lane so public archive depth is visible in the preview board as well
 - Visual proof now captures the canonical handoff slice, so the timeline, signals, and briefing lanes can be shown as one connected reading flow instead of isolated screens
@@ -77,8 +81,8 @@ Hold and extend the first milestone:
 - Preview screenshots are local workspace artifacts today; once a public deployment exists, the same visual-proof lane should validate the deployed surface as well
 - The local preview lane now has a proper atlas entrypoint, but deploy-aware and diff-aware preview proof are still next rather than solved
 - Mobile shell density is materially better than the earlier oversized hero pass, but above-the-fold efficiency is still a tranche-5 follow-up rather than a solved lane
-- The operator refresh lane now surfaces current evidence, but the remaining stale top-line metrics still need actual reviewed publications to clear the public stale flag
-- The critical review queue is cleared, so the remaining stale-truth blocker is evidence quality for the KPI lane rather than review backlog pressure
+- The operator refresh lane now surfaces current evidence and can publish reviewed holds, but actual current KPI publications are still needed to clear the public stale flag completely
+- The critical review queue is cleared, so the remaining stale-truth blocker is now evidence quality for the KPI lane rather than review backlog pressure
 - The synthesis write path is now real, but it still needs better merge/extraction quality before broader feed expansion is safe
 - Build pressure is now explicit in repo artifacts, but the MapLibre vendor lane is still the dominant client-weight problem and remains an active tranche-5 follow-up
 - Clustered synthesis now has real time/topic guardrails, but broader structured extraction and canonical merge quality still need hardening before wider feed expansion is safe

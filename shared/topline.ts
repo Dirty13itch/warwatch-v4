@@ -1,4 +1,4 @@
-import type { TopLineMetricKey } from "./types.js";
+import type { OperatorMetricPublishInput, TopLineMetricKey } from "./types.js";
 
 export interface TopLineMetricDefinition {
   key: TopLineMetricKey;
@@ -8,6 +8,10 @@ export interface TopLineMetricDefinition {
   operatorPrompt: string;
   valuePlaceholder: string;
   sourcePlaceholder: string;
+  holdValueText: string;
+  holdSourceText: string;
+  holdNote: string;
+  holdSupportingText: string;
 }
 
 export const topLineMetricDefinitions: TopLineMetricDefinition[] = [
@@ -18,7 +22,11 @@ export const topLineMetricDefinitions: TopLineMetricDefinition[] = [
     unit: "strikes",
     operatorPrompt: "Publish a reviewed cumulative strike estimate when the monitored total changes.",
     valuePlaceholder: ">13,400",
-    sourcePlaceholder: "CENTCOM / Reuters / operator review"
+    sourcePlaceholder: "CENTCOM / Reuters / operator review",
+    holdValueText: "Awaiting reviewed cumulative strike total",
+    holdSourceText: "Operator reviewed hold / no defensible cumulative strike total in the live feed lane",
+    holdNote: "Current live coverage provides strike context but not a defensible cumulative total for public publication.",
+    holdSupportingText: "Operator-reviewed hold while cumulative strike evidence remains insufficient for safe publication."
   },
   {
     key: "oil_brent",
@@ -27,7 +35,11 @@ export const topLineMetricDefinitions: TopLineMetricDefinition[] = [
     unit: "usd_per_barrel",
     operatorPrompt: "Use this only if the live market lane needs a reviewed override.",
     valuePlaceholder: "$102.01",
-    sourcePlaceholder: "Yahoo Finance / operator review"
+    sourcePlaceholder: "Yahoo Finance / operator review",
+    holdValueText: "Awaiting reviewed Brent marker",
+    holdSourceText: "Operator reviewed hold / live market marker temporarily unavailable",
+    holdNote: "Use only if the live market lane is unavailable and the public shell needs an explicit reviewed hold state.",
+    holdSupportingText: "Operator-reviewed hold while the live Brent marker is unavailable."
   },
   {
     key: "hormuz_daily_cap",
@@ -36,7 +48,11 @@ export const topLineMetricDefinitions: TopLineMetricDefinition[] = [
     unit: "ships_per_day",
     operatorPrompt: "Publish a reviewed shipping-cap estimate when corridor conditions materially change.",
     valuePlaceholder: "<=15/day",
-    sourcePlaceholder: "Kpler / Lloyd's List / operator review"
+    sourcePlaceholder: "Kpler / Lloyd's List / operator review",
+    holdValueText: "Awaiting reviewed Hormuz throughput cap",
+    holdSourceText: "Operator reviewed hold / no defensible current Hormuz throughput cap in the live feed lane",
+    holdNote: "Current shipping coverage is directionally relevant, but it does not yet support a defensible public throughput cap.",
+    holdSupportingText: "Operator-reviewed hold while current Hormuz throughput evidence remains insufficient for safe publication."
   },
   {
     key: "iran_casualties_estimate",
@@ -45,7 +61,11 @@ export const topLineMetricDefinitions: TopLineMetricDefinition[] = [
     unit: "people",
     operatorPrompt: "Publish a reviewed casualty estimate only when the evidence base is defensible.",
     valuePlaceholder: "21,500+ Iran alone",
-    sourcePlaceholder: "ISW / Reuters / operator review"
+    sourcePlaceholder: "ISW / Reuters / operator review",
+    holdValueText: "Awaiting reviewed Iran casualty estimate",
+    holdSourceText: "Operator reviewed hold / no defensible current Iran casualty estimate in the live feed lane",
+    holdNote: "Current live coverage does not yet support a defensible public casualty estimate for Iran.",
+    holdSupportingText: "Operator-reviewed hold while current casualty evidence remains insufficient for safe publication."
   }
 ];
 
@@ -55,4 +75,16 @@ export function isTopLineMetricKey(value: string): value is TopLineMetricKey {
 
 export function getTopLineMetricDefinition(key: TopLineMetricKey): TopLineMetricDefinition {
   return topLineMetricDefinitions.find((definition) => definition.key === key) ?? topLineMetricDefinitions[0];
+}
+
+export function buildTopLineHoldInput(key: TopLineMetricKey): OperatorMetricPublishInput {
+  const definition = getTopLineMetricDefinition(key);
+  return {
+    mode: "hold",
+    value: null,
+    valueText: definition.holdValueText,
+    sourceText: definition.holdSourceText,
+    confidence: "reported",
+    note: definition.holdNote
+  };
 }
