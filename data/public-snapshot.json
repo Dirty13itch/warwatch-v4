@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-04-23T04:10:50.287Z",
+  "generatedAt": "2026-04-23T16:15:34.559Z",
   "overview": {
-    "generatedAt": "2026-04-23T04:10:50.288Z",
+    "generatedAt": "2026-04-23T16:15:34.561Z",
     "currentDay": 55,
     "stale": true,
     "legacyAsOf": null,
     "freshness": {
       "topLine": "review_hold",
-      "lastSuccessfulIngestionAt": "2026-04-22T20:04:39.110Z",
+      "lastSuccessfulIngestionAt": "2026-04-23T14:11:21.325Z",
       "hasLiveIngestion": true
     },
     "headline": {
@@ -26,7 +26,7 @@
       {
         "key": "oil_brent",
         "label": "Brent marker",
-        "value": "$101.43",
+        "value": "$103.50",
         "supportingText": "Live market signal from the Yahoo Finance futures feed.",
         "freshness": "ingested"
       },
@@ -88,12 +88,192 @@
       }
     ],
     "queue": {
-      "pending": 0,
-      "critical": 0,
+      "pending": 2,
+      "critical": 2,
       "lastIngestionStatus": "success"
     }
   },
   "events": [
+    {
+      "id": "event_7508dd8a23cd",
+      "date": "2026-04-23",
+      "time": null,
+      "title": "Iran says Strait of Hormuz cannot be opened due to ceasefire breaches",
+      "detail": "Iran's chief negotiator says \"violations\" by the US and Israel make it impossible to open the strait.",
+      "category": "diplomatic",
+      "significance": "high",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "BBC Middle East",
+      "sourceRefs": [
+        "BBC Middle East",
+        "https://www.bbc.com/news/articles/c3w3vqv0edpo?at_medium=RSS&at_campaign=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "BBC Middle East",
+        "entity:strait-of-hormuz",
+        "entity:iran",
+        "entity:israel"
+      ],
+      "createdAt": "2026-04-23T14:06:55.622Z"
+    },
+    {
+      "id": "event_f81c567e7930",
+      "date": "2026-04-23",
+      "time": null,
+      "title": "How Lebanese journalist Amal Khalil was pursued and killed by Israel",
+      "detail": "Details of how Lebanese journalist Amal Khalil was “pursued” and killed by Israeli forces have been released.",
+      "category": "intel",
+      "significance": "medium",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "Al Jazeera",
+      "sourceRefs": [
+        "Al Jazeera",
+        "https://www.aljazeera.com/video/newsfeed/2026/4/23/how-lebanese-journalist-amal-khalil-was-pursued-and-killed-by-israel?traffic_source=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "Al Jazeera",
+        "entity:israel"
+      ],
+      "createdAt": "2026-04-23T14:06:55.712Z"
+    },
+    {
+      "id": "event_dc6155611d76",
+      "date": "2026-04-23",
+      "time": null,
+      "title": "Makan Nasiri, the only child still missing from the school bombed in Iran",
+      "detail": "After nearly seven weeks of searching for remains, authorities tell the seven-year-old's parents his case is closed.",
+      "category": "iran_strike",
+      "significance": "high",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "Al Jazeera",
+      "sourceRefs": [
+        "Al Jazeera",
+        "https://www.aljazeera.com/news/2026/4/23/makan-nasiri-the-only-missing-child-from-the-school-bombed-in-irans-minab?traffic_source=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "Al Jazeera",
+        "entity:iran"
+      ],
+      "createdAt": "2026-04-23T14:06:55.717Z"
+    },
+    {
+      "id": "event_0ab8874848e4",
+      "date": "2026-04-23",
+      "time": null,
+      "title": "Infiltration from Within: Israelis recruited to spy for enemy countries",
+      "detail": "Israel’s intelligence exposed - spies, moles and blind spots from early betrayals to October 7 and the war with Iran.",
+      "category": "intel",
+      "significance": "medium",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "Al Jazeera",
+      "sourceRefs": [
+        "Al Jazeera",
+        "https://www.aljazeera.com/video/al-jazeera-world/2026/4/23/infiltration-from-within-israelis-recruited-to-spy-for-enemy-countries?traffic_source=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "Al Jazeera",
+        "entity:iran",
+        "entity:israel"
+      ],
+      "createdAt": "2026-04-23T14:06:55.720Z"
+    },
+    {
+      "id": "event_919b4de34640",
+      "date": "2026-04-23",
+      "time": null,
+      "title": "Protester hurls red fluid at Reza Pahlavi during Germany visit",
+      "detail": "The exiled former crown prince of Iran Reza Pahlavi was splashed with red fluid by an activist during a visit to Berlin.",
+      "category": "intel",
+      "significance": "medium",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "Al Jazeera",
+      "sourceRefs": [
+        "Al Jazeera",
+        "https://www.aljazeera.com/video/newsfeed/2026/4/23/protester-hurls-red-fluid-at-reza-pahlavi-during-germany-visit?traffic_source=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "Al Jazeera",
+        "entity:iran"
+      ],
+      "createdAt": "2026-04-23T14:06:55.724Z"
+    },
+    {
+      "id": "event_50c6e33be4f1",
+      "date": "2026-04-23",
+      "time": null,
+      "title": "How has Hezbollah shifted its battle tactics?",
+      "detail": "Hezbollah’s change of weapons and tactics",
+      "category": "intel",
+      "significance": "medium",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "Al Jazeera",
+      "sourceRefs": [
+        "Al Jazeera",
+        "https://www.aljazeera.com/video/project-force-2/2026/4/23/how-has-hezbollah-shifted-its-battle-tactics?traffic_source=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "Al Jazeera",
+        "entity:hezbollah"
+      ],
+      "createdAt": "2026-04-23T14:06:55.728Z"
+    },
+    {
+      "id": "event_a4a07783a17f",
+      "date": "2026-04-23",
+      "time": null,
+      "title": "Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted",
+      "detail": "Tensions are rising in the Middle East as shaky ceasefire agreements between the U.S., Israel and Iran, and Lebanon and Israel, are tested. And, the Secretary of the Navy is out of the role.",
+      "category": "diplomatic",
+      "significance": "high",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "NPR World",
+      "sourceRefs": [
+        "NPR World",
+        "https://www.npr.org/2026/04/23/g-s1-118440/up-first-newsletter-us-iran-john-phelan-trump-republican-democrat-midterm-fundraising-budget-reconciliation-ice"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "NPR World",
+        "entity:iran",
+        "entity:israel",
+        "entity:lebanon"
+      ],
+      "createdAt": "2026-04-23T14:06:55.782Z"
+    },
     {
       "id": "event_0c5098b84941",
       "date": "2026-04-22",
@@ -354,15 +534,20 @@
       "date": "2026-04-22",
       "time": null,
       "title": "Iran attacks ships in Hormuz Strait as the U.S. continues its blockade amid ceasefire",
-      "detail": "Three vessels came under fire in the Strait of Hormuz, after the U.S. and Iran failed to meet in Pakistan for talks to end the war and as President Trump extended the ceasefire but kept the blockade.",
+      "detail": "Three vessels came under fire in the Strait of Hormuz, after the U.S. and Iran failed to meet in Pakistan for talks to end the war and as President Trump extended the ceasefire but kept the blockade. The mood in the Strait of Hormuz remains combustible despite Trump's ceasefire extension. Iran's top negotiator says it's \"not possible to reopen\" the strait due to \"blatent violations\" of US-Iran ceasefire. President Trump says he ordered the Navy to \"shoot and kill any boat\" putting mines in the Strait of Hormuz as the U.S. ramps up minesweeping there. President Trump has extended the ceasefire, but Iran says it's not enough if the naval blockade is still in place.",
       "category": "diplomatic",
       "significance": "high",
-      "confidence": "unverified",
-      "corroboration": 1,
-      "sourceText": "NPR World",
+      "confidence": "reported",
+      "corroboration": 2,
+      "sourceText": "NPR World / BBC Middle East",
       "sourceRefs": [
         "NPR World",
-        "https://www.npr.org/2026/04/22/nx-s1-5795405/iran-middle-east-updates"
+        "https://www.npr.org/2026/04/22/nx-s1-5795405/iran-middle-east-updates",
+        "BBC Middle East",
+        "https://www.bbc.com/news/articles/c0q9xq7knq2o?at_medium=RSS&at_campaign=rss",
+        "https://www.bbc.com/news/videos/c1l93gg7zmno?at_medium=RSS&at_campaign=rss",
+        "https://www.npr.org/2026/04/23/nx-s1-5796719/iran-middle-east-updates",
+        "https://www.npr.org/2026/04/23/nx-s1-5795829/peace-talks-between-us-and-iran-at-a-standstill-as-trump-extends-ceasefire"
       ],
       "reviewState": "auto_published",
       "visibility": "secondary",
@@ -372,7 +557,8 @@
         "NPR World",
         "entity:strait-of-hormuz",
         "entity:iran",
-        "entity:pakistan"
+        "entity:pakistan",
+        "BBC Middle East"
       ],
       "createdAt": "2026-04-22T16:22:40.073Z"
     },
@@ -533,6 +719,32 @@
         "auto_reclassified"
       ],
       "createdAt": "2026-04-22T20:03:26.004Z"
+    },
+    {
+      "id": "event_881889650deb",
+      "date": "2026-04-22",
+      "time": null,
+      "title": "US and Iran 'locked in war of words' says Lyse Doucet",
+      "detail": "The US confirmed on Tuesday night that the Vice-President's trip to Pakistan for a second round of peace talks has been cancelled.",
+      "category": "diplomatic",
+      "significance": "high",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "BBC Middle East",
+      "sourceRefs": [
+        "BBC Middle East",
+        "https://www.bbc.com/news/videos/cvg3yxkrd0po?at_medium=RSS&at_campaign=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "BBC Middle East",
+        "entity:iran",
+        "entity:pakistan"
+      ],
+      "createdAt": "2026-04-23T14:06:55.634Z"
     },
     {
       "id": "event_c1b681d139d9",
@@ -5674,11 +5886,19 @@
       "id": "brief_acf6b8f13837",
       "briefingDate": "2026-04-23",
       "title": "WarWatch SITREP 2026-04-23",
-      "body": "SITUATION\nNo newly reviewed public events are available for this cycle.\nMarket signals: Brent $101.43 (+3.0% vs prior print); WTI $92.54 (+0.4% vs prior print); Gold $4,759.70 (+1.3% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 0.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
-      "sourceRefs": [],
+      "body": "SITUATION\nRecent reviewed/public events: Iran says Strait of Hormuz cannot be opened due to ceasefire breaches; How Lebanese journalist Amal Khalil was pursued and killed by Israel; Makan Nasiri, the only child still missing from the school bombed in Iran; Infiltration from Within: Israelis recruited to spy for enemy countries; Protester hurls red fluid at Reza Pahlavi during Germany visit; How has Hezbollah shifted its battle tactics?; Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted.\nMarket signals: Brent $103.50 (+1.6% vs prior print); WTI $94.48 (+1.6% vs prior print); Gold $4,736.80 (+0.1% vs prior print).\n\nENEMY\nHigh-risk activity mix: 1 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 2.\n\nASSESSMENT\nPending review backlog stands at 2. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+      "sourceRefs": [
+        "Iran says Strait of Hormuz cannot be opened due to ceasefire breaches",
+        "How Lebanese journalist Amal Khalil was pursued and killed by Israel",
+        "Makan Nasiri, the only child still missing from the school bombed in Iran",
+        "Infiltration from Within: Israelis recruited to spy for enemy countries",
+        "Protester hurls red fluid at Reza Pahlavi during Germany visit",
+        "How has Hezbollah shifted its battle tactics?",
+        "Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted"
+      ],
       "reviewState": "approved",
       "publishState": "published",
-      "createdAt": "2026-04-23T01:47:22.799Z"
+      "createdAt": "2026-04-23T14:11:21.329Z"
     },
     {
       "id": "brief_b07a3cca3356",
@@ -7693,19 +7913,19 @@
       ],
       "events": [
         {
-          "id": "event_0c5098b84941",
-          "date": "2026-04-22",
+          "id": "event_7508dd8a23cd",
+          "date": "2026-04-23",
           "time": null,
-          "title": "Iran says it has seized two ships in Strait of Hormuz after vessels attacked",
-          "detail": "One of the cargo ships was 'heavily damaged' by Iranian forces, a British maritime agency reported on Wednesday.",
-          "category": "economic",
-          "significance": "medium",
+          "title": "Iran says Strait of Hormuz cannot be opened due to ceasefire breaches",
+          "detail": "Iran's chief negotiator says \"violations\" by the US and Israel make it impossible to open the strait.",
+          "category": "diplomatic",
+          "significance": "high",
           "confidence": "unverified",
           "corroboration": 1,
           "sourceText": "BBC Middle East",
           "sourceRefs": [
             "BBC Middle East",
-            "https://www.bbc.com/news/articles/cdxd074kr8go?at_medium=RSS&at_campaign=rss"
+            "https://www.bbc.com/news/articles/c3w3vqv0edpo?at_medium=RSS&at_campaign=rss"
           ],
           "reviewState": "auto_published",
           "visibility": "secondary",
@@ -7714,49 +7934,25 @@
             "auto_ingest",
             "BBC Middle East",
             "entity:strait-of-hormuz",
-            "entity:iran"
+            "entity:iran",
+            "entity:israel"
           ],
-          "createdAt": "2026-04-22T16:21:24.162Z"
+          "createdAt": "2026-04-23T14:06:55.622Z"
         },
         {
-          "id": "event_c2cf8bba5ed2",
-          "date": "2026-04-22",
+          "id": "event_dc6155611d76",
+          "date": "2026-04-23",
           "time": null,
-          "title": "Trump buys time for Iran deal after frantic day of diplomacy",
-          "detail": "The US president's decision marked the second time in as many weeks he has backed off a threat to escalate the war, buying more time.",
-          "category": "intel",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "BBC Middle East",
-          "sourceRefs": [
-            "BBC Middle East",
-            "https://www.bbc.com/news/articles/cvg4yr90jr2o?at_medium=RSS&at_campaign=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "BBC Middle East",
-            "entity:iran"
-          ],
-          "createdAt": "2026-04-22T16:21:24.166Z"
-        },
-        {
-          "id": "event_c97ce1842dbb",
-          "date": "2026-04-22",
-          "time": null,
-          "title": "Iran’s leaders debate war and peace after Trump ceasefire extension",
-          "detail": "State television pushes line that Iranians want more war, but others urge reason and moderation.",
-          "category": "diplomatic",
+          "title": "Makan Nasiri, the only child still missing from the school bombed in Iran",
+          "detail": "After nearly seven weeks of searching for remains, authorities tell the seven-year-old's parents his case is closed.",
+          "category": "iran_strike",
           "significance": "high",
           "confidence": "unverified",
           "corroboration": 1,
           "sourceText": "Al Jazeera",
           "sourceRefs": [
             "Al Jazeera",
-            "https://www.aljazeera.com/news/2026/4/22/irans-leaders-debate-war-and-peace-after-trump-ceasefire-extension?traffic_source=rss"
+            "https://www.aljazeera.com/news/2026/4/23/makan-nasiri-the-only-missing-child-from-the-school-bombed-in-irans-minab?traffic_source=rss"
           ],
           "reviewState": "auto_published",
           "visibility": "secondary",
@@ -7766,14 +7962,14 @@
             "Al Jazeera",
             "entity:iran"
           ],
-          "createdAt": "2026-04-22T16:21:24.338Z"
+          "createdAt": "2026-04-23T14:06:55.717Z"
         },
         {
-          "id": "event_156384608556",
-          "date": "2026-04-22",
+          "id": "event_0ab8874848e4",
+          "date": "2026-04-23",
           "time": null,
-          "title": "Trump calls Iran’s leadership ‘fractured’. Is it, and who’s in charge?",
-          "detail": "Almost 53 days into war, there is little evidence suggesting that Iranian government is fragmented.",
+          "title": "Infiltration from Within: Israelis recruited to spy for enemy countries",
+          "detail": "Israel’s intelligence exposed - spies, moles and blind spots from early betrayals to October 7 and the war with Iran.",
           "category": "intel",
           "significance": "medium",
           "confidence": "unverified",
@@ -7781,32 +7977,7 @@
           "sourceText": "Al Jazeera",
           "sourceRefs": [
             "Al Jazeera",
-            "https://www.aljazeera.com/news/2026/4/22/trump-calls-irans-leadership-fractured-is-it-and-whos-in-charge?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
-            "entity:iran"
-          ],
-          "createdAt": "2026-04-22T16:21:24.341Z"
-        },
-        {
-          "id": "event_80847a46f629",
-          "date": "2026-04-22",
-          "time": null,
-          "title": "The war on Iran: Breaking down the words you’re hearing",
-          "detail": "The terminology of the US-Israel war on Iran is drawn from a range of linguistic origins.",
-          "category": "intel",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/video/newsfeed/2026/4/22/the-war-on-iran-breaking-down-the-words-youre-hearing?traffic_source=rss"
+            "https://www.aljazeera.com/video/al-jazeera-world/2026/4/23/infiltration-from-within-israelis-recruited-to-spy-for-enemy-countries?traffic_source=rss"
           ],
           "reviewState": "auto_published",
           "visibility": "secondary",
@@ -7817,22 +7988,22 @@
             "entity:iran",
             "entity:israel"
           ],
-          "createdAt": "2026-04-22T16:21:24.357Z"
+          "createdAt": "2026-04-23T14:06:55.720Z"
         },
         {
-          "id": "event_fad1e4382651",
-          "date": "2026-04-22",
+          "id": "event_919b4de34640",
+          "date": "2026-04-23",
           "time": null,
-          "title": "What is uranium enrichment and how quickly could Iran build a nuclear bomb?",
-          "detail": "Al Jazeera spoke with MIT professor Ted Postol about what Iran could do with its 440kg of 60 percent enriched uranium.",
+          "title": "Protester hurls red fluid at Reza Pahlavi during Germany visit",
+          "detail": "The exiled former crown prince of Iran Reza Pahlavi was splashed with red fluid by an activist during a visit to Berlin.",
           "category": "intel",
-          "significance": "high",
+          "significance": "medium",
           "confidence": "unverified",
           "corroboration": 1,
           "sourceText": "Al Jazeera",
           "sourceRefs": [
             "Al Jazeera",
-            "https://www.aljazeera.com/news/2026/4/22/what-is-uranium-enrichment-and-how-quickly-could-iran-build-a-nuclear-bomb?traffic_source=rss"
+            "https://www.aljazeera.com/video/newsfeed/2026/4/23/protester-hurls-red-fluid-at-reza-pahlavi-during-germany-visit?traffic_source=rss"
           ],
           "reviewState": "auto_published",
           "visibility": "secondary",
@@ -7840,10 +8011,69 @@
           "tags": [
             "auto_ingest",
             "Al Jazeera",
-            "entity:iran",
-            "auto_reclassified"
+            "entity:iran"
           ],
-          "createdAt": "2026-04-22T16:21:24.363Z"
+          "createdAt": "2026-04-23T14:06:55.724Z"
+        },
+        {
+          "id": "event_a4a07783a17f",
+          "date": "2026-04-23",
+          "time": null,
+          "title": "Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted",
+          "detail": "Tensions are rising in the Middle East as shaky ceasefire agreements between the U.S., Israel and Iran, and Lebanon and Israel, are tested. And, the Secretary of the Navy is out of the role.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "NPR World",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/23/g-s1-118440/up-first-newsletter-us-iran-john-phelan-trump-republican-democrat-midterm-fundraising-budget-reconciliation-ice"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:iran",
+            "entity:israel",
+            "entity:lebanon"
+          ],
+          "createdAt": "2026-04-23T14:06:55.782Z"
+        },
+        {
+          "id": "event_1a1dbdc60ac3",
+          "date": "2026-04-22",
+          "time": null,
+          "title": "Iran attacks ships in Hormuz Strait as the U.S. continues its blockade amid ceasefire",
+          "detail": "Three vessels came under fire in the Strait of Hormuz, after the U.S. and Iran failed to meet in Pakistan for talks to end the war and as President Trump extended the ceasefire but kept the blockade. The mood in the Strait of Hormuz remains combustible despite Trump's ceasefire extension. Iran's top negotiator says it's \"not possible to reopen\" the strait due to \"blatent violations\" of US-Iran ceasefire. President Trump says he ordered the Navy to \"shoot and kill any boat\" putting mines in the Strait of Hormuz as the U.S. ramps up minesweeping there. President Trump has extended the ceasefire, but Iran says it's not enough if the naval blockade is still in place.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "reported",
+          "corroboration": 2,
+          "sourceText": "NPR World / BBC Middle East",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/22/nx-s1-5795405/iran-middle-east-updates",
+            "BBC Middle East",
+            "https://www.bbc.com/news/articles/c0q9xq7knq2o?at_medium=RSS&at_campaign=rss",
+            "https://www.bbc.com/news/videos/c1l93gg7zmno?at_medium=RSS&at_campaign=rss",
+            "https://www.npr.org/2026/04/23/nx-s1-5796719/iran-middle-east-updates",
+            "https://www.npr.org/2026/04/23/nx-s1-5795829/peace-talks-between-us-and-iran-at-a-standstill-as-trump-extends-ceasefire"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:strait-of-hormuz",
+            "entity:iran",
+            "entity:pakistan",
+            "BBC Middle East"
+          ],
+          "createdAt": "2026-04-22T16:22:40.073Z"
         }
       ],
       "briefings": [
@@ -7851,11 +8081,19 @@
           "id": "brief_acf6b8f13837",
           "briefingDate": "2026-04-23",
           "title": "WarWatch SITREP 2026-04-23",
-          "body": "SITUATION\nNo newly reviewed public events are available for this cycle.\nMarket signals: Brent $101.43 (+3.0% vs prior print); WTI $92.54 (+0.4% vs prior print); Gold $4,759.70 (+1.3% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 0.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
-          "sourceRefs": [],
+          "body": "SITUATION\nRecent reviewed/public events: Iran says Strait of Hormuz cannot be opened due to ceasefire breaches; How Lebanese journalist Amal Khalil was pursued and killed by Israel; Makan Nasiri, the only child still missing from the school bombed in Iran; Infiltration from Within: Israelis recruited to spy for enemy countries; Protester hurls red fluid at Reza Pahlavi during Germany visit; How has Hezbollah shifted its battle tactics?; Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted.\nMarket signals: Brent $103.50 (+1.6% vs prior print); WTI $94.48 (+1.6% vs prior print); Gold $4,736.80 (+0.1% vs prior print).\n\nENEMY\nHigh-risk activity mix: 1 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 2.\n\nASSESSMENT\nPending review backlog stands at 2. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+          "sourceRefs": [
+            "Iran says Strait of Hormuz cannot be opened due to ceasefire breaches",
+            "How Lebanese journalist Amal Khalil was pursued and killed by Israel",
+            "Makan Nasiri, the only child still missing from the school bombed in Iran",
+            "Infiltration from Within: Israelis recruited to spy for enemy countries",
+            "Protester hurls red fluid at Reza Pahlavi during Germany visit",
+            "How has Hezbollah shifted its battle tactics?",
+            "Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted"
+          ],
           "reviewState": "approved",
           "publishState": "published",
-          "createdAt": "2026-04-23T01:47:22.799Z"
+          "createdAt": "2026-04-23T14:11:21.329Z"
         },
         {
           "id": "brief_b07a3cca3356",
@@ -7997,11 +8235,89 @@
       ],
       "events": [
         {
-          "id": "event_2ec1f4074b1a",
-          "date": "2026-04-22",
+          "id": "event_29b53c0af4ad",
+          "date": "2026-04-23",
           "time": null,
-          "title": "Israeli settlers block Palestinian children from school in the West Bank",
-          "detail": "Students, teachers and families stage daily peaceful sit-ins at the site of the fence near Umm al-Khair village.",
+          "title": "Israeli strikes kill eight Palestinians in Gaza, first responders say",
+          "detail": "One strike killed three children and two adults near a mosque in the northern town of Beit Lahia on Wednesday evening.",
+          "category": "us_strike",
+          "significance": "critical",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "BBC Middle East",
+          "sourceRefs": [
+            "BBC Middle East",
+            "https://www.bbc.com/news/articles/cly60dwxjd1o?at_medium=RSS&at_campaign=rss"
+          ],
+          "reviewState": "pending",
+          "visibility": "review_only",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "BBC Middle East",
+            "entity:israel"
+          ],
+          "createdAt": "2026-04-23T14:06:55.607Z"
+        },
+        {
+          "id": "event_e371af1a4ffe",
+          "date": "2026-04-23",
+          "time": null,
+          "title": "Lebanon accuses Israel of targeting journalist killed in air strike",
+          "detail": "Lebanon's prime minister accused Israel of war crimes after IDF attacks on Red Cross vehicles also stopped rescuers from reaching the site.",
+          "category": "us_strike",
+          "significance": "critical",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "BBC Middle East",
+          "sourceRefs": [
+            "BBC Middle East",
+            "https://www.bbc.com/news/articles/c5yvn036evlo?at_medium=RSS&at_campaign=rss"
+          ],
+          "reviewState": "pending",
+          "visibility": "review_only",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "BBC Middle East",
+            "entity:israel",
+            "entity:lebanon"
+          ],
+          "createdAt": "2026-04-23T14:06:55.616Z"
+        },
+        {
+          "id": "event_7508dd8a23cd",
+          "date": "2026-04-23",
+          "time": null,
+          "title": "Iran says Strait of Hormuz cannot be opened due to ceasefire breaches",
+          "detail": "Iran's chief negotiator says \"violations\" by the US and Israel make it impossible to open the strait.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "BBC Middle East",
+          "sourceRefs": [
+            "BBC Middle East",
+            "https://www.bbc.com/news/articles/c3w3vqv0edpo?at_medium=RSS&at_campaign=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "BBC Middle East",
+            "entity:strait-of-hormuz",
+            "entity:iran",
+            "entity:israel"
+          ],
+          "createdAt": "2026-04-23T14:06:55.622Z"
+        },
+        {
+          "id": "event_f81c567e7930",
+          "date": "2026-04-23",
+          "time": null,
+          "title": "How Lebanese journalist Amal Khalil was pursued and killed by Israel",
+          "detail": "Details of how Lebanese journalist Amal Khalil was “pursued” and killed by Israeli forces have been released.",
           "category": "intel",
           "significance": "medium",
           "confidence": "unverified",
@@ -8009,8 +8325,7 @@
           "sourceText": "Al Jazeera",
           "sourceRefs": [
             "Al Jazeera",
-            "https://www.aljazeera.com/videos/2026/4/22/israeli-settlers-block-palestinian-children-from-school-in-the-west-bank?traffic_source=rss",
-            "https://www.aljazeera.com/news/2026/4/22/israeli-settlers-block-palestinian-children-from-school-in-the-west-bank?traffic_source=rss"
+            "https://www.aljazeera.com/video/newsfeed/2026/4/23/how-lebanese-journalist-amal-khalil-was-pursued-and-killed-by-israel?traffic_source=rss"
           ],
           "reviewState": "auto_published",
           "visibility": "secondary",
@@ -8020,14 +8335,14 @@
             "Al Jazeera",
             "entity:israel"
           ],
-          "createdAt": "2026-04-22T16:21:24.334Z"
+          "createdAt": "2026-04-23T14:06:55.712Z"
         },
         {
-          "id": "event_80847a46f629",
-          "date": "2026-04-22",
+          "id": "event_0ab8874848e4",
+          "date": "2026-04-23",
           "time": null,
-          "title": "The war on Iran: Breaking down the words you’re hearing",
-          "detail": "The terminology of the US-Israel war on Iran is drawn from a range of linguistic origins.",
+          "title": "Infiltration from Within: Israelis recruited to spy for enemy countries",
+          "detail": "Israel’s intelligence exposed - spies, moles and blind spots from early betrayals to October 7 and the war with Iran.",
           "category": "intel",
           "significance": "medium",
           "confidence": "unverified",
@@ -8035,7 +8350,7 @@
           "sourceText": "Al Jazeera",
           "sourceRefs": [
             "Al Jazeera",
-            "https://www.aljazeera.com/video/newsfeed/2026/4/22/the-war-on-iran-breaking-down-the-words-youre-hearing?traffic_source=rss"
+            "https://www.aljazeera.com/video/al-jazeera-world/2026/4/23/infiltration-from-within-israelis-recruited-to-spy-for-enemy-countries?traffic_source=rss"
           ],
           "reviewState": "auto_published",
           "visibility": "secondary",
@@ -8046,114 +8361,55 @@
             "entity:iran",
             "entity:israel"
           ],
-          "createdAt": "2026-04-22T16:21:24.357Z"
+          "createdAt": "2026-04-23T14:06:55.720Z"
         },
         {
-          "id": "event_96d44b4533fc",
-          "date": "2026-04-22",
+          "id": "event_a4a07783a17f",
+          "date": "2026-04-23",
           "time": null,
-          "title": "How Israel is destroying Lebanon’s water infrastructure",
-          "detail": "Israel is 'deliberately' attacking Lebanon's water, experts say, aiming to displace or kill south Lebanon's population.",
-          "category": "intel",
-          "significance": "medium",
+          "title": "Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted",
+          "detail": "Tensions are rising in the Middle East as shaky ceasefire agreements between the U.S., Israel and Iran, and Lebanon and Israel, are tested. And, the Secretary of the Navy is out of the role.",
+          "category": "diplomatic",
+          "significance": "high",
           "confidence": "unverified",
           "corroboration": 1,
-          "sourceText": "Al Jazeera",
+          "sourceText": "NPR World",
           "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/features/2026/4/22/how-israel-is-destroying-lebanons-water-infrastructure?traffic_source=rss"
+            "NPR World",
+            "https://www.npr.org/2026/04/23/g-s1-118440/up-first-newsletter-us-iran-john-phelan-trump-republican-democrat-midterm-fundraising-budget-reconciliation-ice"
           ],
           "reviewState": "auto_published",
           "visibility": "secondary",
           "geo": null,
           "tags": [
             "auto_ingest",
-            "Al Jazeera",
-            "entity:israel",
-            "entity:lebanon"
-          ],
-          "createdAt": "2026-04-22T16:32:48.806Z"
-        },
-        {
-          "id": "event_193e617b5c44",
-          "date": "2026-04-22",
-          "time": null,
-          "title": "Iran blames Trump’s blockade for diplomatic impasse as fragile truce holds",
-          "detail": "Iranian Parliament Speaker Mohammad Bagher Ghalibaf says US and Israel will not achieve their goals 'through bullying'.",
-          "category": "intel",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/news/2026/4/22/iran-blames-trumps-blockade-for-diplomatic-impasse-as-fragile-truce-holds?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
+            "NPR World",
             "entity:iran",
-            "entity:israel"
-          ],
-          "createdAt": "2026-04-22T20:03:25.578Z"
-        },
-        {
-          "id": "event_e1f85f5779a5",
-          "date": "2026-04-22",
-          "time": null,
-          "title": "Bad optics? Israel jails soldiers who smashed Jesus statue in Lebanon",
-          "detail": "Critics say Israeli attacks on Christian sites challenge claims of a Judeo-Christian shared heritage and mutual respect.",
-          "category": "intel",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/features/2026/4/22/bad-optics-israel-jails-soldiers-who-smashed-jesus-statue-in-lebanon?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
             "entity:israel",
             "entity:lebanon"
           ],
-          "createdAt": "2026-04-22T20:03:25.582Z"
-        },
-        {
-          "id": "event_64b248c71845",
-          "date": "2026-04-22",
-          "time": null,
-          "title": "At least four killed in Israeli attacks on Lebanon, journalists wounded",
-          "detail": "Journalists wounded in Israeli attacks in at-Tiri, Lebanon's National News Agency (NNA) reports.",
-          "category": "intel",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/news/2026/4/22/at-least-four-killed-in-israeli-strikes-on-lebanon-journalists-wounded?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
-            "entity:israel",
-            "entity:lebanon"
-          ],
-          "createdAt": "2026-04-22T20:03:25.585Z"
+          "createdAt": "2026-04-23T14:06:55.782Z"
         }
       ],
       "briefings": [
+        {
+          "id": "brief_acf6b8f13837",
+          "briefingDate": "2026-04-23",
+          "title": "WarWatch SITREP 2026-04-23",
+          "body": "SITUATION\nRecent reviewed/public events: Iran says Strait of Hormuz cannot be opened due to ceasefire breaches; How Lebanese journalist Amal Khalil was pursued and killed by Israel; Makan Nasiri, the only child still missing from the school bombed in Iran; Infiltration from Within: Israelis recruited to spy for enemy countries; Protester hurls red fluid at Reza Pahlavi during Germany visit; How has Hezbollah shifted its battle tactics?; Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted.\nMarket signals: Brent $103.50 (+1.6% vs prior print); WTI $94.48 (+1.6% vs prior print); Gold $4,736.80 (+0.1% vs prior print).\n\nENEMY\nHigh-risk activity mix: 1 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 2.\n\nASSESSMENT\nPending review backlog stands at 2. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+          "sourceRefs": [
+            "Iran says Strait of Hormuz cannot be opened due to ceasefire breaches",
+            "How Lebanese journalist Amal Khalil was pursued and killed by Israel",
+            "Makan Nasiri, the only child still missing from the school bombed in Iran",
+            "Infiltration from Within: Israelis recruited to spy for enemy countries",
+            "Protester hurls red fluid at Reza Pahlavi during Germany visit",
+            "How has Hezbollah shifted its battle tactics?",
+            "Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted"
+          ],
+          "reviewState": "approved",
+          "publishState": "published",
+          "createdAt": "2026-04-23T14:11:21.329Z"
+        },
         {
           "id": "brief_b07a3cca3356",
           "briefingDate": "2026-04-22",
@@ -8285,6 +8541,59 @@
       ],
       "events": [
         {
+          "id": "event_e371af1a4ffe",
+          "date": "2026-04-23",
+          "time": null,
+          "title": "Lebanon accuses Israel of targeting journalist killed in air strike",
+          "detail": "Lebanon's prime minister accused Israel of war crimes after IDF attacks on Red Cross vehicles also stopped rescuers from reaching the site.",
+          "category": "us_strike",
+          "significance": "critical",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "BBC Middle East",
+          "sourceRefs": [
+            "BBC Middle East",
+            "https://www.bbc.com/news/articles/c5yvn036evlo?at_medium=RSS&at_campaign=rss"
+          ],
+          "reviewState": "pending",
+          "visibility": "review_only",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "BBC Middle East",
+            "entity:israel",
+            "entity:lebanon"
+          ],
+          "createdAt": "2026-04-23T14:06:55.616Z"
+        },
+        {
+          "id": "event_a4a07783a17f",
+          "date": "2026-04-23",
+          "time": null,
+          "title": "Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted",
+          "detail": "Tensions are rising in the Middle East as shaky ceasefire agreements between the U.S., Israel and Iran, and Lebanon and Israel, are tested. And, the Secretary of the Navy is out of the role.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "NPR World",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/23/g-s1-118440/up-first-newsletter-us-iran-john-phelan-trump-republican-democrat-midterm-fundraising-budget-reconciliation-ice"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:iran",
+            "entity:israel",
+            "entity:lebanon"
+          ],
+          "createdAt": "2026-04-23T14:06:55.782Z"
+        },
+        {
           "id": "event_96d44b4533fc",
           "date": "2026-04-22",
           "time": null,
@@ -8387,61 +8696,6 @@
             "entity:lebanon"
           ],
           "createdAt": "2026-04-22T16:21:24.184Z"
-        },
-        {
-          "id": "event_1c4b64a9c359",
-          "date": "2026-04-07",
-          "time": null,
-          "title": "10 Senior IRGC Commanders Killed — Days 32-39 Targeted Killing Tally",
-          "detail": "Between March 31 and April 7, US-Israeli targeted killings eliminated at least 10 senior IRGC and Artesh commanders: Eshaghi (AFGS adviser), Mohammad Sadeghi (IRGC missile tunnel engineer), Mehdi Vafaei (Quds Force Lebanon underground chief), Makram Atimi (ballistic missile chief), Gen. Mohammad Ali Fathali Zadeh (Fatehin Battalions), Yusuf Ismail Hashem (Hezbollah Southern Front commander), and multiple battalion-level officers. Adding to the 28 named senior figures eliminated in Days 1-31, Iran had lost approximately 38+ general and senior officers killed in six weeks of war — an unprecedented command attrition rate.",
-          "category": "us_strike",
-          "significance": "critical",
-          "confidence": "reported",
-          "corroboration": 2,
-          "sourceText": "ISW / Critical Threats / Wikipedia (2026 Iran War) (Days 32-39)",
-          "sourceRefs": [
-            "ISW",
-            "Critical Threats",
-            "Wikipedia (2026 Iran War) (Days 32-39)"
-          ],
-          "reviewState": "approved",
-          "visibility": "primary",
-          "geo": null,
-          "tags": [
-            "us_strike",
-            "entity:hezbollah",
-            "entity:iran",
-            "entity:israel",
-            "entity:lebanon"
-          ],
-          "createdAt": "2026-04-07T00:00:00.000Z"
-        },
-        {
-          "id": "event_4f71d4c8fc21",
-          "date": "2026-04-07",
-          "time": null,
-          "title": "Scahill: Iran's Actual Ceasefire Terms Obtained — Includes War Reparations and Hormuz Sovereignty",
-          "detail": "Drop Site News (Scahill) obtained Iran's actual counter-proposal submitted via Pakistan intermediary. Iran's terms: (1) permanent end to war, not temporary ceasefire; (2) ceasefire covering Lebanon, Iraq, and Palestine as well as Iran; (3) war reparations paid to Iran; (4) full sanctions relief; (5) Iran retaining sovereignty over Hormuz; (6) nuclear enrichment terms (details withheld). Iran's position: \"The Americans are not prepared to engage in what can genuinely be called negotiations. Rather, they seek to impose their own terms.\"",
-          "category": "diplomatic",
-          "significance": "critical",
-          "confidence": "reported",
-          "corroboration": 2,
-          "sourceText": "Drop Site News / Jeremy Scahill (March 27, 2026)",
-          "sourceRefs": [
-            "Drop Site News",
-            "Jeremy Scahill (March 27, 2026)"
-          ],
-          "reviewState": "approved",
-          "visibility": "primary",
-          "geo": null,
-          "tags": [
-            "diplomatic",
-            "entity:iran",
-            "entity:lebanon",
-            "entity:pakistan",
-            "entity:strait-of-hormuz"
-          ],
-          "createdAt": "2026-04-07T00:00:00.000Z"
         }
       ],
       "briefings": []
@@ -8515,6 +8769,39 @@
       ],
       "events": [
         {
+          "id": "event_1a1dbdc60ac3",
+          "date": "2026-04-22",
+          "time": null,
+          "title": "Iran attacks ships in Hormuz Strait as the U.S. continues its blockade amid ceasefire",
+          "detail": "Three vessels came under fire in the Strait of Hormuz, after the U.S. and Iran failed to meet in Pakistan for talks to end the war and as President Trump extended the ceasefire but kept the blockade. The mood in the Strait of Hormuz remains combustible despite Trump's ceasefire extension. Iran's top negotiator says it's \"not possible to reopen\" the strait due to \"blatent violations\" of US-Iran ceasefire. President Trump says he ordered the Navy to \"shoot and kill any boat\" putting mines in the Strait of Hormuz as the U.S. ramps up minesweeping there. President Trump has extended the ceasefire, but Iran says it's not enough if the naval blockade is still in place.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "reported",
+          "corroboration": 2,
+          "sourceText": "NPR World / BBC Middle East",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/22/nx-s1-5795405/iran-middle-east-updates",
+            "BBC Middle East",
+            "https://www.bbc.com/news/articles/c0q9xq7knq2o?at_medium=RSS&at_campaign=rss",
+            "https://www.bbc.com/news/videos/c1l93gg7zmno?at_medium=RSS&at_campaign=rss",
+            "https://www.npr.org/2026/04/23/nx-s1-5796719/iran-middle-east-updates",
+            "https://www.npr.org/2026/04/23/nx-s1-5795829/peace-talks-between-us-and-iran-at-a-standstill-as-trump-extends-ceasefire"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:strait-of-hormuz",
+            "entity:iran",
+            "entity:pakistan",
+            "BBC Middle East"
+          ],
+          "createdAt": "2026-04-22T16:22:40.073Z"
+        },
+        {
           "id": "event_ed6db8a03b10",
           "date": "2026-04-22",
           "time": null,
@@ -8539,33 +8826,6 @@
             "entity:pakistan"
           ],
           "createdAt": "2026-04-22T16:21:24.354Z"
-        },
-        {
-          "id": "event_1a1dbdc60ac3",
-          "date": "2026-04-22",
-          "time": null,
-          "title": "Iran attacks ships in Hormuz Strait as the U.S. continues its blockade amid ceasefire",
-          "detail": "Three vessels came under fire in the Strait of Hormuz, after the U.S. and Iran failed to meet in Pakistan for talks to end the war and as President Trump extended the ceasefire but kept the blockade.",
-          "category": "diplomatic",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "NPR World",
-          "sourceRefs": [
-            "NPR World",
-            "https://www.npr.org/2026/04/22/nx-s1-5795405/iran-middle-east-updates"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "NPR World",
-            "entity:strait-of-hormuz",
-            "entity:iran",
-            "entity:pakistan"
-          ],
-          "createdAt": "2026-04-22T16:22:40.073Z"
         },
         {
           "id": "event_01e9a484a31c",
@@ -8593,6 +8853,32 @@
             "entity:pakistan"
           ],
           "createdAt": "2026-04-22T20:03:25.676Z"
+        },
+        {
+          "id": "event_881889650deb",
+          "date": "2026-04-22",
+          "time": null,
+          "title": "US and Iran 'locked in war of words' says Lyse Doucet",
+          "detail": "The US confirmed on Tuesday night that the Vice-President's trip to Pakistan for a second round of peace talks has been cancelled.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "BBC Middle East",
+          "sourceRefs": [
+            "BBC Middle East",
+            "https://www.bbc.com/news/videos/cvg3yxkrd0po?at_medium=RSS&at_campaign=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "BBC Middle East",
+            "entity:iran",
+            "entity:pakistan"
+          ],
+          "createdAt": "2026-04-23T14:06:55.634Z"
         },
         {
           "id": "event_46567d3f3779",
@@ -8645,33 +8931,6 @@
             "entity:pakistan"
           ],
           "createdAt": "2026-04-22T16:22:40.091Z"
-        },
-        {
-          "id": "event_827a79ec3da5",
-          "date": "2026-04-20",
-          "time": null,
-          "title": "Trump says US will not lift Hormuz blockade until deal made with Iran",
-          "detail": "The US president's comments come amid uncertainty over whether Iran will attend peace talks in Pakistan this week.",
-          "category": "diplomatic",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "BBC Middle East",
-          "sourceRefs": [
-            "BBC Middle East",
-            "https://www.bbc.com/news/articles/cdxd88r2wjzo?at_medium=RSS&at_campaign=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "BBC Middle East",
-            "entity:iran",
-            "entity:pakistan",
-            "entity:strait-of-hormuz"
-          ],
-          "createdAt": "2026-04-22T16:21:24.193Z"
         }
       ],
       "briefings": []
@@ -8984,6 +9243,66 @@
       ],
       "events": [
         {
+          "id": "event_7508dd8a23cd",
+          "date": "2026-04-23",
+          "time": null,
+          "title": "Iran says Strait of Hormuz cannot be opened due to ceasefire breaches",
+          "detail": "Iran's chief negotiator says \"violations\" by the US and Israel make it impossible to open the strait.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "BBC Middle East",
+          "sourceRefs": [
+            "BBC Middle East",
+            "https://www.bbc.com/news/articles/c3w3vqv0edpo?at_medium=RSS&at_campaign=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "BBC Middle East",
+            "entity:strait-of-hormuz",
+            "entity:iran",
+            "entity:israel"
+          ],
+          "createdAt": "2026-04-23T14:06:55.622Z"
+        },
+        {
+          "id": "event_1a1dbdc60ac3",
+          "date": "2026-04-22",
+          "time": null,
+          "title": "Iran attacks ships in Hormuz Strait as the U.S. continues its blockade amid ceasefire",
+          "detail": "Three vessels came under fire in the Strait of Hormuz, after the U.S. and Iran failed to meet in Pakistan for talks to end the war and as President Trump extended the ceasefire but kept the blockade. The mood in the Strait of Hormuz remains combustible despite Trump's ceasefire extension. Iran's top negotiator says it's \"not possible to reopen\" the strait due to \"blatent violations\" of US-Iran ceasefire. President Trump says he ordered the Navy to \"shoot and kill any boat\" putting mines in the Strait of Hormuz as the U.S. ramps up minesweeping there. President Trump has extended the ceasefire, but Iran says it's not enough if the naval blockade is still in place.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "reported",
+          "corroboration": 2,
+          "sourceText": "NPR World / BBC Middle East",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/22/nx-s1-5795405/iran-middle-east-updates",
+            "BBC Middle East",
+            "https://www.bbc.com/news/articles/c0q9xq7knq2o?at_medium=RSS&at_campaign=rss",
+            "https://www.bbc.com/news/videos/c1l93gg7zmno?at_medium=RSS&at_campaign=rss",
+            "https://www.npr.org/2026/04/23/nx-s1-5796719/iran-middle-east-updates",
+            "https://www.npr.org/2026/04/23/nx-s1-5795829/peace-talks-between-us-and-iran-at-a-standstill-as-trump-extends-ceasefire"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:strait-of-hormuz",
+            "entity:iran",
+            "entity:pakistan",
+            "BBC Middle East"
+          ],
+          "createdAt": "2026-04-22T16:22:40.073Z"
+        },
+        {
           "id": "event_0c5098b84941",
           "date": "2026-04-22",
           "time": null,
@@ -9034,33 +9353,6 @@
             "entity:iran"
           ],
           "createdAt": "2026-04-22T16:22:40.069Z"
-        },
-        {
-          "id": "event_1a1dbdc60ac3",
-          "date": "2026-04-22",
-          "time": null,
-          "title": "Iran attacks ships in Hormuz Strait as the U.S. continues its blockade amid ceasefire",
-          "detail": "Three vessels came under fire in the Strait of Hormuz, after the U.S. and Iran failed to meet in Pakistan for talks to end the war and as President Trump extended the ceasefire but kept the blockade.",
-          "category": "diplomatic",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "NPR World",
-          "sourceRefs": [
-            "NPR World",
-            "https://www.npr.org/2026/04/22/nx-s1-5795405/iran-middle-east-updates"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "NPR World",
-            "entity:strait-of-hormuz",
-            "entity:iran",
-            "entity:pakistan"
-          ],
-          "createdAt": "2026-04-22T16:22:40.073Z"
         },
         {
           "id": "event_01e9a484a31c",
@@ -9115,35 +9407,27 @@
             "entity:strait-of-hormuz"
           ],
           "createdAt": "2026-04-22T16:21:24.193Z"
-        },
-        {
-          "id": "event_8f971cfc591e",
-          "date": "2026-04-20",
-          "time": null,
-          "title": "U.S. Disables, Seizes Iranian Container Ship Attempting to Run Strait of Hormuz Blockade",
-          "detail": "U.S. Central Command forces boarded and seized an Iranian-flagged cargo vessel, sanctioned by the U.S. Treasury, as it attempted to sail into an Iranian port, CENTCOM announced Sunday. USS Spruance (DDG-111), a destroyer in the Abraham Lincoln Carrier Strike Group, intercepted container ship MV Touska (IMO: 9328900) in the Arabian Sea, according to the CENTCOM release. The ship was allegedly heading to port in Bandar Abbas, Iran. Spruance’s crew called out to the ship multiple times ordering the ship to obey the U.S. blockade of Iranian ports, CENTCOM said. The U.S. said last week that it would seize sanctioned ships.",
-          "category": "diplomatic",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "USNI News",
-          "sourceRefs": [
-            "USNI News",
-            "https://news.usni.org/2026/04/19/u-s-disables-seizes-iranian-container-ship-attempting-to-run-strait-of-hormuz-blockade"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "USNI News",
-            "entity:strait-of-hormuz",
-            "entity:iran"
-          ],
-          "createdAt": "2026-04-22T16:21:24.769Z"
         }
       ],
       "briefings": [
+        {
+          "id": "brief_acf6b8f13837",
+          "briefingDate": "2026-04-23",
+          "title": "WarWatch SITREP 2026-04-23",
+          "body": "SITUATION\nRecent reviewed/public events: Iran says Strait of Hormuz cannot be opened due to ceasefire breaches; How Lebanese journalist Amal Khalil was pursued and killed by Israel; Makan Nasiri, the only child still missing from the school bombed in Iran; Infiltration from Within: Israelis recruited to spy for enemy countries; Protester hurls red fluid at Reza Pahlavi during Germany visit; How has Hezbollah shifted its battle tactics?; Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted.\nMarket signals: Brent $103.50 (+1.6% vs prior print); WTI $94.48 (+1.6% vs prior print); Gold $4,736.80 (+0.1% vs prior print).\n\nENEMY\nHigh-risk activity mix: 1 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 2.\n\nASSESSMENT\nPending review backlog stands at 2. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+          "sourceRefs": [
+            "Iran says Strait of Hormuz cannot be opened due to ceasefire breaches",
+            "How Lebanese journalist Amal Khalil was pursued and killed by Israel",
+            "Makan Nasiri, the only child still missing from the school bombed in Iran",
+            "Infiltration from Within: Israelis recruited to spy for enemy countries",
+            "Protester hurls red fluid at Reza Pahlavi during Germany visit",
+            "How has Hezbollah shifted its battle tactics?",
+            "Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted"
+          ],
+          "reviewState": "approved",
+          "publishState": "published",
+          "createdAt": "2026-04-23T14:11:21.329Z"
+        },
         {
           "id": "brief_b07a3cca3356",
           "briefingDate": "2026-04-22",
@@ -9245,6 +9529,31 @@
         }
       ],
       "events": [
+        {
+          "id": "event_50c6e33be4f1",
+          "date": "2026-04-23",
+          "time": null,
+          "title": "How has Hezbollah shifted its battle tactics?",
+          "detail": "Hezbollah’s change of weapons and tactics",
+          "category": "intel",
+          "significance": "medium",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "Al Jazeera",
+          "sourceRefs": [
+            "Al Jazeera",
+            "https://www.aljazeera.com/video/project-force-2/2026/4/23/how-has-hezbollah-shifted-its-battle-tactics?traffic_source=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "Al Jazeera",
+            "entity:hezbollah"
+          ],
+          "createdAt": "2026-04-23T14:06:55.728Z"
+        },
         {
           "id": "event_1c4b64a9c359",
           "date": "2026-04-07",
@@ -9373,34 +9682,28 @@
             "entity:israel"
           ],
           "createdAt": "2026-04-04T00:00:00.000Z"
-        },
-        {
-          "id": "event_ca8d9dfe8bd8",
-          "date": "2026-04-04",
-          "time": null,
-          "title": "IDF 91st Division: 1,000+ Hezbollah Operatives Killed Since March 2",
-          "detail": "The IDF announced its 91st Division had killed over 1,000 Hezbollah operatives since March 2, including hundreds of Radwan Force members. The 282nd Artillery Brigade fired over 400 shells at Hezbollah targets in a single 24-hour period on April 4. IDF conducted 140 airstrikes on Hezbollah targets over April 3-4. Hezbollah conducted 19 attacks against IDF in southern Lebanon and 23 attacks on northern Israeli communities including rocket barrages at Kiryat Shmona.",
-          "category": "proxy",
-          "significance": "high",
-          "confidence": "reported",
-          "corroboration": 1,
-          "sourceText": "Critical Threats (April 4, 2026)",
-          "sourceRefs": [
-            "Critical Threats (April 4, 2026)"
-          ],
-          "reviewState": "approved",
-          "visibility": "primary",
-          "geo": null,
-          "tags": [
-            "proxy",
-            "entity:hezbollah",
-            "entity:israel",
-            "entity:lebanon"
-          ],
-          "createdAt": "2026-04-04T00:00:00.000Z"
         }
       ],
-      "briefings": []
+      "briefings": [
+        {
+          "id": "brief_acf6b8f13837",
+          "briefingDate": "2026-04-23",
+          "title": "WarWatch SITREP 2026-04-23",
+          "body": "SITUATION\nRecent reviewed/public events: Iran says Strait of Hormuz cannot be opened due to ceasefire breaches; How Lebanese journalist Amal Khalil was pursued and killed by Israel; Makan Nasiri, the only child still missing from the school bombed in Iran; Infiltration from Within: Israelis recruited to spy for enemy countries; Protester hurls red fluid at Reza Pahlavi during Germany visit; How has Hezbollah shifted its battle tactics?; Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted.\nMarket signals: Brent $103.50 (+1.6% vs prior print); WTI $94.48 (+1.6% vs prior print); Gold $4,736.80 (+0.1% vs prior print).\n\nENEMY\nHigh-risk activity mix: 1 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 2.\n\nASSESSMENT\nPending review backlog stands at 2. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+          "sourceRefs": [
+            "Iran says Strait of Hormuz cannot be opened due to ceasefire breaches",
+            "How Lebanese journalist Amal Khalil was pursued and killed by Israel",
+            "Makan Nasiri, the only child still missing from the school bombed in Iran",
+            "Infiltration from Within: Israelis recruited to spy for enemy countries",
+            "Protester hurls red fluid at Reza Pahlavi during Germany visit",
+            "How has Hezbollah shifted its battle tactics?",
+            "Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted"
+          ],
+          "reviewState": "approved",
+          "publishState": "published",
+          "createdAt": "2026-04-23T14:11:21.329Z"
+        }
+      ]
     }
   ],
   "mapLayers": {
@@ -11174,10 +11477,27 @@
       {
         "id": "metric_a803c4aeeb21",
         "metricKey": "oil_brent",
-        "value": 101.43000030517578,
-        "valueText": "$101.43",
+        "value": 101.91000366210938,
+        "valueText": "$101.91",
         "unit": "usd_per_barrel",
         "timestamp": "2026-04-22T04:00:00.000Z",
+        "sourceText": "Yahoo Finance",
+        "confidence": "confirmed",
+        "reviewState": "approved",
+        "freshness": "ingested",
+        "meta": {
+          "symbol": "BZ=F",
+          "currency": "USD",
+          "exchange": "NYM"
+        }
+      },
+      {
+        "id": "metric_f29a0321a2ad",
+        "metricKey": "oil_brent",
+        "value": 103.5,
+        "valueText": "$103.50",
+        "unit": "usd_per_barrel",
+        "timestamp": "2026-04-23T04:00:00.000Z",
         "sourceText": "Yahoo Finance",
         "confidence": "confirmed",
         "reviewState": "approved",
@@ -11550,10 +11870,27 @@
       {
         "id": "metric_6333f47491fd",
         "metricKey": "oil_wti",
-        "value": 92.54000091552734,
-        "valueText": "$92.54",
+        "value": 92.95999908447266,
+        "valueText": "$92.96",
         "unit": "usd_per_barrel",
         "timestamp": "2026-04-22T04:00:00.000Z",
+        "sourceText": "Yahoo Finance",
+        "confidence": "confirmed",
+        "reviewState": "approved",
+        "freshness": "ingested",
+        "meta": {
+          "symbol": "CL=F",
+          "currency": "USD",
+          "exchange": "NYM"
+        }
+      },
+      {
+        "id": "metric_3421589d831b",
+        "metricKey": "oil_wti",
+        "value": 94.4800033569336,
+        "valueText": "$94.48",
+        "unit": "usd_per_barrel",
+        "timestamp": "2026-04-23T04:00:00.000Z",
         "sourceText": "Yahoo Finance",
         "confidence": "confirmed",
         "reviewState": "approved",
@@ -11926,10 +12263,27 @@
       {
         "id": "metric_073fb7cc7282",
         "metricKey": "gold_price",
-        "value": 4759.7001953125,
-        "valueText": "$4,759.70",
+        "value": 4732.5,
+        "valueText": "$4,732.50",
         "unit": "usd_per_ounce",
         "timestamp": "2026-04-22T04:00:00.000Z",
+        "sourceText": "Yahoo Finance",
+        "confidence": "confirmed",
+        "reviewState": "approved",
+        "freshness": "ingested",
+        "meta": {
+          "symbol": "GC=F",
+          "currency": "USD",
+          "exchange": "CMX"
+        }
+      },
+      {
+        "id": "metric_c1e249debf67",
+        "metricKey": "gold_price",
+        "value": 4736.7998046875,
+        "valueText": "$4,736.80",
+        "unit": "usd_per_ounce",
+        "timestamp": "2026-04-23T04:00:00.000Z",
         "sourceText": "Yahoo Finance",
         "confidence": "confirmed",
         "reviewState": "approved",

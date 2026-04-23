@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { loadConfig } from "../server/config.js";
 import { openDatabase } from "../server/db.js";
+import { publicSiteProductionUrl } from "../shared/public-site.js";
 import {
   getBriefings,
   getIngestionRuns,
@@ -77,6 +78,7 @@ const buildReportPath = path.resolve(config.rootDir, "reports/build/LATEST.json"
 const buildReport = fs.existsSync(buildReportPath)
   ? (JSON.parse(fs.readFileSync(buildReportPath, "utf8")) as BuildReport)
   : null;
+const deployedPublicBaseUrl = config.publicBaseUrl || publicSiteProductionUrl;
 const marketMetrics = [
   ["Brent", "oil_brent"],
   ["WTI", "oil_wti"],
@@ -103,8 +105,8 @@ const nextActions = [
   overview.stale
     ? "- Clear the remaining stale public KPI lane only where current evidence is defensible"
     : "- Keep reviewed public top-line metrics fresh as new evidence lands",
-  !config.publicBaseUrl
-    ? "- Create the Render service, then set PUBLIC_BASE_URL so live public verification stops skipping"
+  !deployedPublicBaseUrl
+    ? "- Set a stable PUBLIC_BASE_URL so live public verification stops skipping"
     : "- Keep live public verification green on the deployed surface",
   "- Keep live ingestion healthy and visible in operator surfaces",
   "- Maintain docs and state surfaces when runtime truth changes"

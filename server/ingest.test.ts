@@ -101,6 +101,61 @@ describe("ingestion merge behavior", () => {
     db.close();
   });
 
+  it("does not crash when a feed emits duplicate items with identical title/date", () => {
+    const db = makeDb();
+    db.exec("DELETE FROM events;");
+    const entities = db.prepare(`SELECT * FROM entities ORDER BY name ASC`).all() as unknown as EntityRecord[];
+    const title = "Duplicate RSS item should not crash ingestion";
+    const firstDetail = "First copy of the item payload.";
+    const secondDetail = "Second copy of the same RSS item payload with extra detail.";
+    const feedName = "BBC Middle East";
+
+    const first = upsertPreparedFeedEvent(db, {
+      eventDate: "2026-04-23",
+      title,
+      detail: firstDetail,
+      category: "watch",
+      significance: "high",
+      feedName,
+      link: "https://example.com/dup-1",
+      entityTags: entityTagsForText(entities, title, firstDetail, feedName),
+      createdAt: "2026-04-23T14:00:00.000Z"
+    });
+
+    expect(first.action).toBe("inserted");
+
+    const second = upsertPreparedFeedEvent(db, {
+      eventDate: "2026-04-23",
+      title,
+      detail: secondDetail,
+      category: "watch",
+      significance: "high",
+      feedName,
+      link: "https://example.com/dup-2",
+      entityTags: entityTagsForText(entities, title, secondDetail, feedName),
+      createdAt: "2026-04-23T14:01:00.000Z"
+    });
+
+    expect(second.action).toBe("merged");
+
+    const row = db.prepare(`
+      SELECT detail, source_refs_json
+      FROM events
+      WHERE title = ?
+    `).get(title) as {
+      detail: string;
+      source_refs_json: string;
+    };
+
+    expect(row.detail).toContain(firstDetail);
+    expect(row.detail).toContain(secondDetail);
+    expect(JSON.parse(row.source_refs_json)).toEqual(
+      expect.arrayContaining([feedName, "https://example.com/dup-1", "https://example.com/dup-2"])
+    );
+
+    db.close();
+  });
+
   it("merges semantically equivalent feed items even when the titles are rewritten", () => {
     const db = makeDb();
     db.exec("DELETE FROM events;");

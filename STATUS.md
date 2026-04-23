@@ -32,6 +32,7 @@
 - Live ingestion is active against `BBC Middle East`, `Al Jazeera`, `NPR World`, `Defense News`, `USNI News`, and `USGS Iran Earthquakes`
 - Live market ingestion is active against Yahoo Finance for `oil_brent`, `oil_wti`, and `gold_price`
 - Feed dedupe and corroboration are live: repeated feed hits now merge into existing events instead of inflating duplicates
+- RSS ingestion now tolerates same-feed duplicate items (identical title/date) by merging instead of crashing on `events.id` uniqueness
 - Mission-scope filtering is now live on RSS ingestion: clearly off-scope general-news items are skipped before insertion, older auto-ingested noise is quarantined out of public surfaces, and feed-run summaries now report skipped/quarantined counts
 - Feed classification is now less queue-happy on background/explainer/defense-industry copy: explainers, fleet trackers, and submarine-industrial coverage no longer get misread as critical strike items just because they mention bombs, missiles, or carrier strike groups
 - Freshness truth is corrected: top-line overview state stays stale until the actual KPI metrics are live, even when event ingestion is healthy
@@ -54,6 +55,7 @@
 - Heartbeat now renders explicit top-line metric values, freshness, source text, and timestamps instead of only aggregate stale-state summaries
 - Heartbeat output is sanitized to an ASCII-safe operator artifact so Windows console review does not corrupt high-signal lines
 - Heartbeat next actions are now queue-aware, so the operator artifact stops telling the repo to reduce pending critical items once the queue is already clear
+- Heartbeat deployment guidance is now Vercel-aware, so the operator artifact no longer falls back to stale Render instructions when the live public site already exists
 - Visual proof is now first-class: `npm run preview:shots` builds the app, captures desktop/mobile screenshots for the command, signals, and operator lanes, and writes a local artifact to `reports/previews/LATEST.md`
 - Preview output now also includes a single `reports/previews/latest/preview-board.png` board artifact so updates can show one readable visual brief instead of a loose image set
 - Preview output now also emits a full atlas entrypoint at `reports/previews/latest/index.html` plus `preview-atlas.html` and `preview-atlas.pdf`, so the entire product can be reviewed from one local artifact instead of a loose screenshot folder

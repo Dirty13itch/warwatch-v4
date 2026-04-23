@@ -101,6 +101,8 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 
 ## Current Truth
 - Ingestion is healthy on the current default feed set
+- RSS ingestion now tolerates same-feed duplicate items (identical title/date) by merging instead of crashing
+- Heartbeat next actions now use the live Vercel production URL as project truth instead of falling back to stale Render guidance
 - The live feed lane is now materially cleaner: obvious sports, tourism, and unrelated global stories from broad RSS feeds are quarantined away from public surfaces
 - Public stale state remains expected, but it is now narrowed to `review_hold` instead of `stale_seed`: strike, Hormuz, and casualty top-line metrics are explicitly on reviewed hold rather than silently carrying bootstrap-era values
 - The operator console can now surface current evidence for stale KPIs, but it will not invent values where extraction is not defensible

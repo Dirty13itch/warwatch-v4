@@ -1,3 +1,5 @@
+export const publicSiteProductionUrl = "https://warwatch-v4.vercel.app";
+
 export const publicSiteSurfaces = [
   { id: "preview", label: "Home", path: "/" },
   { id: "command", label: "Command", path: "/command" },

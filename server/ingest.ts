@@ -485,6 +485,66 @@ export function upsertPreparedFeedEvent(
   const visibility = initialVisibility(candidate.significance, "ingest");
   const eventId = toId("event", `${candidate.title}:${candidate.eventDate}:${candidate.feedName}`);
 
+  const existingRow = db.prepare(`SELECT * FROM events WHERE id = ?`).get(eventId) as Record<string, any> | undefined;
+  if (existingRow) {
+    const existingSourceRefs = JSON.parse(existingRow.source_refs_json ?? "[]") as string[];
+    const existingTags = JSON.parse(existingRow.tags_json ?? "[]") as string[];
+    const existingCorroboration = Number(existingRow.corroboration ?? 1);
+    const existingDetail = String(existingRow.detail ?? "");
+    const existingSourceText = String(existingRow.source_text ?? "");
+    const existingReviewState = String(existingRow.review_state ?? "pending");
+
+    const nextSourceRefs = uniqueStrings([...existingSourceRefs, candidate.feedName, candidate.link]);
+    const nextTags = uniqueStrings([...existingTags, "auto_ingest", candidate.feedName, ...candidate.entityTags]);
+    const nextCorroboration = nextSourceRefs.filter((value) => value && !String(value).startsWith("http")).length;
+    const nextConfidence = deriveConfidenceFromCorroboration(Math.max(nextCorroboration, existingCorroboration));
+    const nextDetail = appendDistinctText(existingDetail, candidate.detail, 980);
+    const nextSourceText = uniqueStrings(
+      existingSourceText
+        .split("/")
+        .map((value) => value.trim())
+        .concat(candidate.feedName)
+    ).join(" / ");
+
+    db.prepare(`
+      UPDATE events
+      SET detail = ?, source_refs_json = ?, tags_json = ?, corroboration = ?, confidence = ?, source_text = ?
+      WHERE id = ?
+    `).run(
+      nextDetail,
+      JSON.stringify(nextSourceRefs),
+      JSON.stringify(nextTags),
+      Math.max(nextCorroboration, existingCorroboration),
+      nextConfidence,
+      nextSourceText,
+      eventId
+    );
+
+    let queueCreated = false;
+    if (existingReviewState === "pending") {
+      const queueId = toId("queue", eventId);
+      db.prepare(`
+        INSERT OR IGNORE INTO review_queue (
+          id, item_type, item_id, title, severity, reason, status, created_at, updated_at, metadata_json
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).run(
+        queueId,
+        "event",
+        eventId,
+        candidate.title,
+        severityFromSignificance(candidate.significance),
+        "Critical auto-ingested event requires human review before public promotion.",
+        "pending",
+        candidate.createdAt,
+        candidate.createdAt,
+        JSON.stringify({ feed: candidate.feedName, link: candidate.link })
+      );
+      queueCreated = true;
+    }
+
+    return { action: "merged", queueCreated };
+  }
+
   db.prepare(`
     INSERT INTO events (
       id, date, time, title, detail, category, significance, confidence, corroboration,
