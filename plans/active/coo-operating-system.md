@@ -134,6 +134,7 @@ Supporting lanes:
 Tasks:
 1. Choose and wire a real deployment target.
    Current state: Render is now the chosen target, and the repo already has a blueprint, runbook, route-aware metadata, a sitemap endpoint, public static assets, and a multi-stage Docker recipe; the remaining work is live workspace wiring, first deploy, and post-deploy URL/secrets configuration rather than provider selection.
+   Publication update: the repo is now published at `Dirty13itch/warwatch-v4` on GitHub, so the remaining release blocker is the provider-side Render service creation path rather than repo publication.
 2. Set `PUBLIC_BASE_URL` and make live public verification mandatory instead of skipped.
 3. Add runtime health checks for:
    - stale ingestion

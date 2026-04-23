@@ -1,7 +1,7 @@
 # Next Steps
 
 ## Current Autonomous Order
-1. Create the real Render service from `render.yaml`, attach the persistent disk at `/app/data`, and let the first live deploy establish the real public URL.
+1. Create the real Render service from the published repo `Dirty13itch/warwatch-v4`, attach the persistent disk at `/app/data`, and let the first live deploy establish the real public URL.
 2. Set `PUBLIC_BASE_URL` to the actual live URL and stop skipping live public verification now that the website lane has route-aware HTML metadata, sitemap coverage, and deploy-ready packaging.
 3. Keep operator auth production-safe by treating `OPERATOR_API_KEY` as mandatory once a public URL or production mode exists.
 4. Continue tranche-3 hardening by improving structured extraction and safer canonical update rules so the remaining `review_hold` KPIs can move to real reviewed current publications when evidence supports them.
@@ -13,6 +13,7 @@
 - Render account/tooling work that needs workspace access or provider configuration
 - Live public verification until `PUBLIC_BASE_URL` exists
 - Local container image proof on this workstation until `docker` exists on PATH
+- Local browser automation for the Render dashboard is blocked on this machine by Playwright state-dir permissions under `C:\Windows\System32`
 - Publication decisions that require defensible current evidence or explicit review
 
 ## Explicit Depriorities

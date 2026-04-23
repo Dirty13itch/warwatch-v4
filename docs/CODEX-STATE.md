@@ -2,6 +2,7 @@
 
 ## Repo Lane
 Primary repo: `C:\Codex Projects\Iran War`
+Published remote: `https://github.com/Dirty13itch/warwatch-v4`
 
 ## Source of Truth
 - V3 reference build: `legacy/warwatch-v3/`
@@ -124,3 +125,5 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - Critical claims continue to require operator approval before promotion to primary public surfaces
 - Container build proof is currently machine-blocked on this workstation because `docker` is not installed or not on PATH, even though the repo-level packaging recipe now exists
 - Render blueprint validation and live service creation are likewise blocked by missing local Render tooling/account context, not by missing repo scaffolding
+- The GitHub publication blocker is cleared: `origin` now points at the live `Dirty13itch/warwatch-v4` repo on `main`
+- The remaining browser-automation path into Render is machine-blocked because the Playwright runtime cannot create its state directory under `C:\Windows\System32\.playwright-mcp`

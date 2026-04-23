@@ -11,6 +11,7 @@ Build a living intelligence fusion platform for the Iran conflict that prioritiz
 - Canonical data layer for sources, claims, events, metrics, stories, entities, relationships, briefings, review items, and ingestion runs
 - SQLite-backed backend with server-side ingestion and report generation
 - Render-first deployment target via Docker web service plus persistent disk, because the current runtime contract is honest single-instance Express + SQLite rather than fake stateless hosting
+- Published GitHub repo: `https://github.com/Dirty13itch/warwatch-v4`
 
 ## Non-Negotiables
 - Critical claims require review before public promotion.

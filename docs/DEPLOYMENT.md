@@ -12,9 +12,10 @@ That choice is deliberate:
 - Blueprint: `render.yaml`
 - Container image recipe: `Dockerfile`
 - Runtime env example: `.env.example`
+- Published repo: `https://github.com/Dirty13itch/warwatch-v4`
 
 ## First Deploy
-1. Push the repo state you want to deploy.
+1. Use the published repo at `Dirty13itch/warwatch-v4`.
 2. Create the Render service from `render.yaml` or point Render at this repo and let the Blueprint manage the service.
 3. Let Render generate `OPERATOR_API_KEY`.
 4. After the first deploy, set `PUBLIC_BASE_URL` to the actual service URL:
@@ -40,3 +41,8 @@ That choice is deliberate:
 ## Validation
 - If Render CLI is available: `render blueprints validate render.yaml`
 - If Render CLI is not available locally, Render Dashboard blueprint validation is the remaining validation path.
+
+## Current External Boundary
+- GitHub publication is complete.
+- Local Render CLI is not installed here.
+- Local browser automation cannot currently complete the Render dashboard path from this machine because the Playwright runtime is blocked from creating `C:\Windows\System32\.playwright-mcp`.

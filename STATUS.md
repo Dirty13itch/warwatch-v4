@@ -2,6 +2,7 @@
 
 ## Current State
 - Repo bootstrapped on `main`
+- GitHub remote is now live at `https://github.com/Dirty13itch/warwatch-v4` with `main` as the published default branch
 - V3 archive extracted to `legacy/warwatch-v3/`
 - V4 blueprint copied into `docs/reference/`
 - Fullstack V4 runtime is implemented: React/Vite public shell, Express API, SQLite seed/bootstrap, operator review queue, ingestion runner, heartbeat report script
@@ -84,7 +85,8 @@ Hold and extend the first milestone:
 - `node:sqlite` is viable locally but still emits experimental warnings in Node 22
 - Public deployment verification requires `PUBLIC_BASE_URL` to be set
 - The repo now has real container packaging, but image-build proof on this workstation is blocked by the absence of a local `docker` executable rather than by the repo contract
-- Render deployment is now repo-ready, but live service creation and Blueprint validation are still blocked by missing local Render tooling/account context rather than by missing repo scaffolding
+- Render deployment is now repo-ready and the repo is published, but live service creation and Blueprint validation are still blocked by missing Render tooling/account context rather than by missing repo scaffolding
+- Browser automation cannot currently bridge that gap from this machine because the Playwright tool is trying to write under `C:\Windows\System32\.playwright-mcp` and is denied there
 - Client bundle shaping is improved through vendor/manual chunking and lazy map boot, but the MapLibre vendor chunk still breaches the warning threshold and remains a performance follow-up
 - Preview screenshots are local workspace artifacts today; once a public deployment exists, the same visual-proof lane should validate the deployed surface as well
 - The local preview lane now has a proper atlas entrypoint, but deploy-aware and diff-aware preview proof are still next rather than solved
