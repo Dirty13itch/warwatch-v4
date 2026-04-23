@@ -10,3 +10,5 @@ reports/heartbeat/LATEST.md
 reports/previews/
 coverage/
 *.log
+
+.vercel

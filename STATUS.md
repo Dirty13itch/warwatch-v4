@@ -3,6 +3,9 @@
 ## Current State
 - Repo bootstrapped on `main`
 - GitHub remote is now live at `https://github.com/Dirty13itch/warwatch-v4` with `main` as the published default branch
+- Public website is now live on Vercel at `https://warwatch-v4.vercel.app`
+- Hosted website lane is now explicit `public_readonly`: static site output plus a single function-backed public API over the committed `data/public-snapshot.json`
+- Live public verification now passes against `https://warwatch-v4.vercel.app`
 - V3 archive extracted to `legacy/warwatch-v3/`
 - V4 blueprint copied into `docs/reference/`
 - Fullstack V4 runtime is implemented: React/Vite public shell, Express API, SQLite seed/bootstrap, operator review queue, ingestion runner, heartbeat report script
@@ -65,7 +68,7 @@
 - Visual proof now also includes the operator synthesis panel so backend graph-promotion work remains visible in human-facing artifacts
 - Build proof is now first-class too: every build writes `reports/build/LATEST.md` and `LATEST.json`, and the heartbeat surfaces bundle totals plus the largest client assets so performance pressure stays reviewable
 - A deploy-ready container recipe now exists as a multi-stage Docker build that produces the built app plus runtime seed sources instead of relying on a local dev checkout shape
-- A real deployment target has now been selected: Render web service plus persistent disk, with repo-native blueprint and runbook artifacts in `render.yaml` and `docs/DEPLOYMENT.md`
+- A real deployment target has now been selected for the public website lane: Vercel-hosted `public_readonly` delivery, with repo-native config in `vercel.json` and `docs/DEPLOYMENT.md`
 - Preview and build proof have both been refreshed after the UI hierarchy pass, so the current artifact lane reflects the stronger shell and tighter mobile header instead of the older flatter card treatment
 - Verification contract is green locally via `npm run verify`
 - Release/auth expectations are tighter: once a public URL exists or production mode is on, operator routes require `OPERATOR_API_KEY` instead of falling open by default
@@ -83,10 +86,9 @@ Hold and extend the first milestone:
 ## Known Constraints
 - The workspace started without a repo or runtime; everything is being built from scratch
 - `node:sqlite` is viable locally but still emits experimental warnings in Node 22
-- Public deployment verification requires `PUBLIC_BASE_URL` to be set
+- Hosted public delivery is intentionally read-only; scheduler jobs and write-side operator workflows still belong to the local mutable runtime
 - The repo now has real container packaging, but image-build proof on this workstation is blocked by the absence of a local `docker` executable rather than by the repo contract
-- Render deployment is now repo-ready and the repo is published, but live service creation and Blueprint validation are still blocked by missing Render tooling/account context rather than by missing repo scaffolding
-- Browser automation cannot currently bridge that gap from this machine because the Playwright tool is trying to write under `C:\Windows\System32\.playwright-mcp` and is denied there
+- Full persistent hosted writes still require a different runtime contract than the current free Vercel website lane
 - Client bundle shaping is improved through vendor/manual chunking and lazy map boot, but the MapLibre vendor chunk still breaches the warning threshold and remains a performance follow-up
 - Preview screenshots are local workspace artifacts today; once a public deployment exists, the same visual-proof lane should validate the deployed surface as well
 - The local preview lane now has a proper atlas entrypoint, but deploy-aware and diff-aware preview proof are still next rather than solved

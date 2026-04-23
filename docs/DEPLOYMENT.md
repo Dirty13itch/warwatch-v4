@@ -1,48 +1,39 @@
 # Deployment
 
-## Primary Target
-WarWatch now targets a Docker-backed Render web service with a persistent disk mounted at `/app/data`.
-
-That choice is deliberate:
-- Express plus SQLite needs a single-instance runtime with honest persistent local storage.
-- Render supports Docker web services, a public URL, health checks, and persistent disks on paid web services.
-- The disk mount keeps `WARWATCH_DB_PATH=/app/data/warwatch.sqlite` stable across restarts and redeploys.
-
-## Repo Artifacts
-- Blueprint: `render.yaml`
-- Container image recipe: `Dockerfile`
-- Runtime env example: `.env.example`
+## Live Website
+- Production URL: `https://warwatch-v4.vercel.app`
+- Stable project alias: `https://warwatch-v4.vercel.app`
 - Published repo: `https://github.com/Dirty13itch/warwatch-v4`
 
-## First Deploy
-1. Use the published repo at `Dirty13itch/warwatch-v4`.
-2. Create the Render service from `render.yaml` or point Render at this repo and let the Blueprint manage the service.
-3. Let Render generate `OPERATOR_API_KEY`.
-4. After the first deploy, set `PUBLIC_BASE_URL` to the actual service URL:
-   - initial form: `https://<service>.onrender.com`
-   - later: replace with the real custom domain when one exists
-5. Redeploy after `PUBLIC_BASE_URL` is set so canonical/OG/meta URLs become live-real instead of placeholder-local.
+## Hosted Contract
+WarWatch is live on Vercel as a deliberate `public_readonly` website lane.
 
-## Runtime Contract
-- Disk mount: `/app/data`
-- SQLite path: `/app/data/warwatch.sqlite`
-- Scheduler: enabled in the web process for now
-- Operator writes: key-required in public/production mode
-- Health check: `/api/health`
+That contract is honest:
+- public data is served from the committed `data/public-snapshot.json`
+- Vercel hosts the built Vite site plus a single function-backed public API fan-in route
+- scheduler jobs do not run in hosted mode
+- operator write workflows stay local and are intentionally unavailable in the hosted lane
+- live public verification runs against the deployed site through `PUBLIC_BASE_URL`
 
-## Operational Notes
-- Persistent disks on Render are single-instance. This service should stay at `numInstances: 1`.
-- Disk-backed services do not get zero-downtime deploys. Expect a brief restart window during deploys.
-- The repo-local verification contract is still:
-  - `npm run verify`
-  - `npm run heartbeat`
-  - `npm run preview:shots`
+## Repo Artifacts
+- Vercel config: `vercel.json`
+- Hosted mode env: `.env.hosted`
+- Snapshot generator: `scripts/generate-public-snapshot.ts`
+- Hosted static generator: `scripts/generate-static-site.ts`
+- Hosted verification: `scripts/verify-hosted-static.ts`
+- Runtime env example: `.env.example`
 
-## Validation
-- If Render CLI is available: `render blueprints validate render.yaml`
-- If Render CLI is not available locally, Render Dashboard blueprint validation is the remaining validation path.
+## Deploy / Redeploy
+1. Refresh the committed public snapshot locally with `npm run snapshot:public`.
+2. Verify locally with:
+   - `npm run verify`
+   - `npm run heartbeat`
+   - `npm run preview:shots`
+3. Deploy preview with:
+   - `npx vercel deploy --target preview --scope dirty13itchs-projects`
+4. Promote or deploy production with:
+   - `npx vercel deploy --prod --scope dirty13itchs-projects`
+5. Keep `PUBLIC_BASE_URL=https://warwatch-v4.vercel.app` in the Vercel production environment so canonical and OG metadata stay aligned with the stable alias.
 
-## Current External Boundary
-- GitHub publication is complete.
-- Local Render CLI is not installed here.
-- Local browser automation cannot currently complete the Render dashboard path from this machine because the Playwright runtime is blocked from creating `C:\Windows\System32\.playwright-mcp`.
+## Mutable Runtime Boundary
+The full Express + SQLite + scheduler runtime still exists locally and remains the honest mutable/operator lane. Moving that write-capable lane to hosted infrastructure is a future decision, not something Vercel is pretending to solve for free.

@@ -24,6 +24,7 @@
     }
   },
   "include": [
+    "api",
     "client/src",
     "server",
     "shared",
@@ -32,4 +33,3 @@
     "tailwind.config.ts"
   ]
 }
-

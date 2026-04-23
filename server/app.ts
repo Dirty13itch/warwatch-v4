@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { DatabaseSync } from "node:sqlite";
 import type { AppConfig } from "./config.js";
+import { getBasePublicPageMeta, normalizePublicPath, publicSitemapRoutes } from "../shared/public-site.js";
 import { upsertPreparedMetricSnapshot, runIngestionCycle } from "./ingest.js";
 import {
   getEntityDossier,
@@ -69,10 +70,6 @@ function resolvePublicSiteBaseUrl(config: AppConfig, req: express.Request): stri
   return `${protocol}://${host}`;
 }
 
-function normalizePublicPath(pathname: string): string {
-  return pathname.replace(/\/+$/, "") || "/";
-}
-
 function truncateSummary(value: string, maxLength = 180): string {
   const normalized = value.replace(/\s+/g, " ").trim();
   if (normalized.length <= maxLength) {
@@ -101,18 +98,12 @@ function buildPublicPageMeta(db: DatabaseSync, config: AppConfig, req: express.R
   const pathname = normalizePublicPath(req.path);
   const baseUrl = resolvePublicSiteBaseUrl(config, req);
   const canonicalUrl = new URL(req.originalUrl || pathname, `${baseUrl}/`).toString();
-  let title = "WarWatch | Public briefing website for the Iran conflict";
-  let description =
-    "Public briefing website for the Iran conflict with review-gated claims, daily SITREPs, dossiers, timeline context, and live signals.";
-  let robots = "index,follow";
+  const baseMeta = getBasePublicPageMeta(pathname);
+  let title = baseMeta.title;
+  let description = baseMeta.description;
+  let robots = baseMeta.robots;
 
-  if (pathname === "/command") {
-    title = "Command | WarWatch";
-    description = "Operational command surface over the public WarWatch runtime.";
-  } else if (pathname === "/timeline") {
-    title = "Timeline | WarWatch";
-    description = "Filterable public timeline with corroboration, significance, and source-linked context.";
-
+  if (pathname === "/timeline") {
     if (typeof req.query.event === "string" && req.query.event.trim()) {
       const event = getEventById(db, req.query.event);
       if (event) {
@@ -121,9 +112,6 @@ function buildPublicPageMeta(db: DatabaseSync, config: AppConfig, req: express.R
       }
     }
   } else if (pathname === "/dossiers") {
-    title = "Dossiers | WarWatch";
-    description = "Canonical actor dossiers and claim graph for the public WarWatch site.";
-
     if (typeof req.query.entity === "string" && req.query.entity.trim()) {
       const dossier = getEntityDossier(db, req.query.entity);
       if (dossier) {
@@ -136,9 +124,6 @@ function buildPublicPageMeta(db: DatabaseSync, config: AppConfig, req: express.R
       }
     }
   } else if (pathname === "/signals") {
-    title = "Signals | WarWatch";
-    description = "Live market pressure, source posture, and signals shaping the public conflict picture.";
-
     if (typeof req.query.source === "string" && req.query.source.trim()) {
       const source = getSources(db).find((item) => item.slug === req.query.source);
       if (source) {
@@ -149,13 +134,6 @@ function buildPublicPageMeta(db: DatabaseSync, config: AppConfig, req: express.R
         );
       }
     }
-  } else if (pathname === "/briefings") {
-    title = "Briefings | WarWatch";
-    description = "Daily SITREPs and briefing archive with operator-reviewed public context.";
-  } else if (pathname === "/operator") {
-    title = "Operator | WarWatch";
-    description = "Operator review controls, synthesis lane, and ingestion oversight.";
-    robots = "noindex,nofollow";
   }
 
   return {
@@ -435,8 +413,7 @@ export function createApp(db: DatabaseSync, config: AppConfig) {
 
   app.get("/sitemap.xml", (req, res) => {
     const baseUrl = resolvePublicSiteBaseUrl(config, req);
-    const urls = ["/", "/command", "/timeline", "/dossiers", "/signals", "/briefings"];
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${publicSitemapRoutes
       .map((route) => `  <url><loc>${baseUrl}${route}</loc></url>`)
       .join("\n")}\n</urlset>`;
     res.type("application/xml").send(xml);

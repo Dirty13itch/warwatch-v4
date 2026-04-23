@@ -21,6 +21,11 @@ const pageChecks: PageCheck[] = [
     robots: "index,follow"
   },
   {
+    route: "/command",
+    title: "Command | WarWatch",
+    robots: "index,follow"
+  },
+  {
     route: "/timeline",
     title: "Timeline | WarWatch",
     robots: "index,follow"
@@ -52,6 +57,13 @@ for (const route of ["/api/health", "/api/overview"]) {
   const response = await fetch(`${baseUrl}${route}`);
   if (!response.ok) {
     throw new Error(`Public verification failed for ${route}: ${response.status}`);
+  }
+}
+
+{
+  const response = await fetch(`${baseUrl}/api/operator/review-queue`);
+  if (![401, 403].includes(response.status)) {
+    throw new Error(`Public verification failed for /api/operator/review-queue: expected 401/403, got ${response.status}`);
   }
 }
 

@@ -36,22 +36,14 @@ import TimelineSurface from "./surfaces/TimelineSurface";
 import SignalsSurface from "./surfaces/SignalsSurface";
 import BriefingsSurface from "./surfaces/BriefingsSurface";
 import { LoadPanel } from "./components/LoadPanel";
+import { publicSiteSurfaces, type PublicSiteSurface } from "@shared/public-site";
 
 const CommandSurface = lazy(() => import("./surfaces/CommandSurface"));
 const DossiersSurface = lazy(() => import("./surfaces/DossiersSurface"));
 const OperatorSurface = lazy(() => import("./surfaces/OperatorSurface"));
+const PUBLIC_ONLY = import.meta.env.VITE_WARWATCH_PUBLIC_ONLY === "true";
 
-const surfaces = [
-  { id: "preview", label: "Home" },
-  { id: "command", label: "Command" },
-  { id: "timeline", label: "Timeline" },
-  { id: "dossiers", label: "Dossiers" },
-  { id: "signals", label: "Signals" },
-  { id: "briefings", label: "Briefings" },
-  { id: "operator", label: "Operator" }
-] as const;
-
-type SurfaceId = (typeof surfaces)[number]["id"];
+type SurfaceId = PublicSiteSurface;
 type RouteState = {
   surface: SurfaceId;
   entityKey: string | null;
@@ -190,23 +182,33 @@ export default function App() {
   const [loaded, setLoaded] = useState<LoadedState>(initialLoadedState);
   const loadingRef = useRef(new Set<string>());
   const deferredSearch = useDeferredValue(search);
+  const visibleSurfaces = PUBLIC_ONLY
+    ? publicSiteSurfaces.filter((item) => item.id !== "operator")
+    : publicSiteSurfaces;
+  const siteSummary = PUBLIC_ONLY
+    ? "Timeline, dossiers, signals, and daily briefings resolve against a canonical public snapshot instead of a static dashboard."
+    : "Timeline, dossiers, signals, daily briefings, and operator review all resolve against the same canonical runtime instead of a static dashboard.";
+  const footerSummary = PUBLIC_ONLY
+    ? "Public briefing website over a review-gated intelligence spine. Daily SITREPs, dossiers, timeline context, and signals resolve against the hosted public snapshot."
+    : "Public briefing website over a review-gated intelligence spine. Daily SITREPs, dossiers, timeline context, signals, and operator controls all resolve against the same runtime.";
 
   function handleOpenSurface(target: SurfaceId) {
+    const resolvedTarget = PUBLIC_ONLY && target === "operator" ? "preview" : target;
     setFocusedEventId(null);
     setFocusedEvent(null);
     setFocusedSourceSlug(null);
-    const nextEntityKey = target === "dossiers" ? focusedEntityKey : null;
-    if (target !== "dossiers") {
+    const nextEntityKey = resolvedTarget === "dossiers" ? focusedEntityKey : null;
+    if (resolvedTarget !== "dossiers") {
       setFocusedEntityKey(null);
     }
     writeRouteState({
-      surface: target,
+      surface: resolvedTarget,
       entityKey: nextEntityKey,
       sourceSlug: null,
       eventId: null
     });
-    void ensureSurfaceData(target);
-    startTransition(() => setSurface(target));
+    void ensureSurfaceData(resolvedTarget);
+    startTransition(() => setSurface(resolvedTarget));
   }
 
   function markLoaded(next: Partial<LoadedState>) {
@@ -221,7 +223,7 @@ export default function App() {
     const titleBase =
       surface === "preview"
         ? "WarWatch | Public briefing website for the Iran conflict"
-        : `${surfaces.find((item) => item.id === surface)?.label ?? "WarWatch"} | WarWatch`;
+        : `${publicSiteSurfaces.find((item) => item.id === surface)?.label ?? "WarWatch"} | WarWatch`;
     const description =
       surface === "preview"
         ? overview?.headline.description ??
@@ -238,7 +240,9 @@ export default function App() {
                 ? "Live market pressure, source posture, and signals shaping the public conflict picture."
                 : surface === "command"
                   ? "Operational command surface over the public WarWatch runtime."
-                  : "Operator review controls, synthesis lane, and ingestion oversight.";
+                  : PUBLIC_ONLY
+                    ? "Hosted public mode keeps operator workflows local."
+                    : "Operator review controls, synthesis lane, and ingestion oversight.";
 
     const setMeta = (selector: string, attribute: string, value: string) => {
       const element = document.head.querySelector(selector);
@@ -828,7 +832,7 @@ export default function App() {
                   Public briefing website over a review-gated intelligence spine.
                 </h1>
                 <p className="mt-3 max-w-[40rem] text-sm leading-6 text-calm/80 sm:text-[0.95rem] sm:leading-7">
-                  Timeline, dossiers, signals, daily briefings, and operator review all resolve against the same canonical runtime instead of a static dashboard.
+                  {siteSummary}
                 </p>
               </div>
               <div className="grid gap-3 sm:grid-cols-2 xl:min-w-[34rem] xl:grid-cols-4">
@@ -849,7 +853,7 @@ export default function App() {
               aria-label="Primary surfaces"
               className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 sm:mt-1 md:flex-wrap md:overflow-visible"
             >
-              {surfaces.map((item) => (
+              {visibleSurfaces.map((item) => (
                 <button
                   key={item.id}
                   type="button"
@@ -1012,13 +1016,13 @@ export default function App() {
             <div className="space-y-3">
               <p className="eyebrow-label">WarWatch</p>
               <p className="max-w-[24rem] text-sm leading-6 text-calm/76">
-                Public briefing website over a review-gated intelligence spine. Daily SITREPs, dossiers, timeline context, signals, and operator controls all resolve against the same runtime.
+                {footerSummary}
               </p>
             </div>
             <div className="space-y-3">
               <p className="eyebrow-label">Navigate</p>
               <div className="flex flex-wrap gap-2">
-                {surfaces
+                {visibleSurfaces
                   .filter((item) => item.id !== "operator")
                   .map((item) => (
                     <button

@@ -43,6 +43,11 @@ const pageChecks: PageCheck[] = [
     robots: "index,follow"
   },
   {
+    route: "/command",
+    title: "Command | WarWatch",
+    robots: "index,follow"
+  },
+  {
     route: "/timeline",
     title: "Timeline | WarWatch",
     robots: "index,follow"

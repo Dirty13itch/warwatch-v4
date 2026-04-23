@@ -351,3 +351,16 @@ export interface OverviewResponse {
     lastIngestionStatus: string;
   };
 }
+
+export interface PublicDataSnapshot {
+  generatedAt: string;
+  overview: OverviewResponse;
+  events: EventRecord[];
+  stories: StoryRecord[];
+  briefings: BriefingRecord[];
+  sources: SourceRecord[];
+  graph: GraphSnapshot;
+  dossiers: EntityDossier[];
+  mapLayers: Record<string, MapFeature[]>;
+  metrics: Record<string, MetricSnapshot[]>;
+}

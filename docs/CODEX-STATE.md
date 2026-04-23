@@ -16,7 +16,8 @@ Published remote: `https://github.com/Dirty13itch/warwatch-v4`
 - Test: review gating and API smoke-level behavior
 - Build: Vite client + bundled server
 - Smoke: built server plus core routes
-- Public verify: optional live URL check via `PUBLIC_BASE_URL`
+- Hosted build: Vercel public-readonly artifact build plus static-route verification
+- Public verify: live URL check via `PUBLIC_BASE_URL`
 
 ## Implemented Runtime
 - Public API routes: overview, events, event detail, metric history, briefings, map layers, stories, sources, graph snapshot, entity dossier
@@ -126,4 +127,5 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - Container build proof is currently machine-blocked on this workstation because `docker` is not installed or not on PATH, even though the repo-level packaging recipe now exists
 - Render blueprint validation and live service creation are likewise blocked by missing local Render tooling/account context, not by missing repo scaffolding
 - The GitHub publication blocker is cleared: `origin` now points at the live `Dirty13itch/warwatch-v4` repo on `main`
-- The remaining browser-automation path into Render is machine-blocked because the Playwright runtime cannot create its state directory under `C:\Windows\System32\.playwright-mcp`
+- The public website is now live on Vercel at `https://warwatch-v4.vercel.app`
+- The hosted lane is intentionally read-only and verified against the live site, while the mutable/operator runtime stays local by contract

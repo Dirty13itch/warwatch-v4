@@ -10,7 +10,9 @@ Build a living intelligence fusion platform for the Iran conflict that prioritiz
 - Operator console for review queue, ingestion runs, and source governance
 - Canonical data layer for sources, claims, events, metrics, stories, entities, relationships, briefings, review items, and ingestion runs
 - SQLite-backed backend with server-side ingestion and report generation
-- Render-first deployment target via Docker web service plus persistent disk, because the current runtime contract is honest single-instance Express + SQLite rather than fake stateless hosting
+- Live public website on Vercel at `https://warwatch-v4.vercel.app`
+- Hosted Vercel lane is intentionally `public_readonly`: one function-backed public API plus a committed `data/public-snapshot.json` artifact, with no hosted scheduler or write-side operator actions
+- Full mutable runtime remains the local Express + SQLite + scheduler lane until persistence moves off local disk or a paid single-instance host is warranted
 - Published GitHub repo: `https://github.com/Dirty13itch/warwatch-v4`
 
 ## Non-Negotiables

@@ -133,9 +133,12 @@ Supporting lanes:
 
 Tasks:
 1. Choose and wire a real deployment target.
-   Current state: Render is now the chosen target, and the repo already has a blueprint, runbook, route-aware metadata, a sitemap endpoint, public static assets, and a multi-stage Docker recipe; the remaining work is live workspace wiring, first deploy, and post-deploy URL/secrets configuration rather than provider selection.
-   Publication update: the repo is now published at `Dirty13itch/warwatch-v4` on GitHub, so the remaining release blocker is the provider-side Render service creation path rather than repo publication.
-2. Set `PUBLIC_BASE_URL` and make live public verification mandatory instead of skipped.
+   Current state: the public website lane is now live on Vercel at `https://warwatch-v4.vercel.app` with a committed public snapshot, route-aware metadata, static sitemap generation, and verified live public routes.
+2. Keep the hosted contract honest:
+   - public-readonly only
+   - no hosted scheduler
+   - no hosted operator writes
+   - stable `PUBLIC_BASE_URL` pinned to the production alias
 3. Add runtime health checks for:
    - stale ingestion
    - failing jobs
@@ -145,11 +148,11 @@ Tasks:
    - CI stays authoritative
    - live smoke is easy to rerun
    - deployment verification is visible in heartbeat/release artifacts
-5. Add production-safe operator auth and gated write paths once the deployment lane exists.
+5. Keep production-safe operator auth and gated write paths explicit when the mutable lane eventually moves off local disk.
 
 Exit criteria:
 - the app is deployed somewhere real
-- `verify:public` stops skipping
+- `verify:public` stops skipping and passes against the stable public URL
 - runtime health and stale-data failures are visible without manual inspection
 
 ### Tranche 5: Performance and Demo Polish

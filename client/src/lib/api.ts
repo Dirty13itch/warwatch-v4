@@ -28,7 +28,30 @@ async function requestJson<T>(input: string, init?: RequestInit): Promise<T> {
   });
 
   if (!response.ok) {
-    throw new Error(`${response.status} ${response.statusText}`);
+    const contentType = response.headers.get("content-type") ?? "";
+    let message = `${response.status} ${response.statusText}`;
+
+    if (contentType.includes("application/json")) {
+      try {
+        const body = (await response.json()) as { error?: string };
+        if (typeof body.error === "string" && body.error.trim()) {
+          message = body.error.trim();
+        }
+      } catch {
+        // Ignore JSON parse failures and keep the fallback status text.
+      }
+    } else {
+      try {
+        const text = (await response.text()).trim();
+        if (text) {
+          message = text;
+        }
+      } catch {
+        // Ignore text read failures and keep the fallback status text.
+      }
+    }
+
+    throw new Error(message);
   }
 
   return (await response.json()) as T;
