@@ -14,6 +14,15 @@ const port = Number(process.env.WARWATCH_PREVIEW_PORT ?? 4327);
 const baseUrl = `http://127.0.0.1:${port}`;
 const serverEntry = path.resolve(rootDir, "dist/server/server/index.js");
 const clientEntry = path.resolve(rootDir, "dist/client/index.html");
+const surfacePathMap = {
+  preview: "/",
+  command: "/command",
+  timeline: "/timeline",
+  dossiers: "/dossiers",
+  signals: "/signals",
+  briefings: "/briefings",
+  operator: "/operator"
+} as const;
 
 type CaptureTarget = {
   title: string;
@@ -118,31 +127,10 @@ async function waitForServer(server: ChildProcessWithoutNullStreams) {
 }
 
 async function openSurface(page: Page, surface: CaptureTarget["surface"]) {
-  await page.goto(baseUrl, { waitUntil: "domcontentloaded" });
+  const targetSurface = surface ?? "preview";
+  await page.goto(`${baseUrl}${surfacePathMap[targetSurface]}`, { waitUntil: "domcontentloaded" });
   await page.locator("header").waitFor();
-
-  if (!surface || surface === "preview") {
-    await page.locator('[data-preview="preview-surface"]').waitFor();
-    return;
-  }
-
-  const label =
-    surface === "command"
-      ? "Command"
-      : surface === "timeline"
-        ? "Timeline"
-        : surface === "dossiers"
-          ? "Dossiers"
-        : surface === "signals"
-          ? "Signals"
-          : surface === "briefings"
-            ? "Briefings"
-          : "Operator";
-  await page
-    .locator('nav[aria-label="Primary surfaces"]')
-    .getByRole("button", { name: new RegExp(`^${label}$`, "i") })
-    .click();
-  await page.locator(`[data-preview="${surface}-surface"]`).waitFor();
+  await page.locator(`[data-preview="${targetSurface}-surface"]`).waitFor();
 }
 
 async function captureSurface(

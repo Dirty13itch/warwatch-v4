@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
 import { createApp } from "./app";
@@ -234,5 +237,56 @@ describe("WarWatch API", () => {
       .get("/api/operator/review-queue")
       .set("x-warwatch-operator-key", "test-operator-key");
     expect(allowed.status).toBe(200);
+  });
+
+  it("serves route-aware website metadata and sitemap entries from the built client shell", async () => {
+    const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "warwatch-site-"));
+    const clientDir = path.join(tempRoot, "dist", "client");
+    fs.mkdirSync(clientDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(clientDir, "index.html"),
+      `<!doctype html><html><head>
+      <meta name="description" content="Placeholder" />
+      <meta name="robots" content="index,follow" />
+      <meta property="og:title" content="Placeholder" />
+      <meta property="og:description" content="Placeholder" />
+      <meta property="og:image" content="/og-card.svg" />
+      <meta property="og:url" content="https://warwatch.local/" />
+      <meta name="twitter:title" content="Placeholder" />
+      <meta name="twitter:description" content="Placeholder" />
+      <meta name="twitter:image" content="/og-card.svg" />
+      <meta name="twitter:url" content="https://warwatch.local/" />
+      <link rel="canonical" href="https://warwatch.local/" />
+      <title>Placeholder</title>
+      </head><body><div id="root"></div></body></html>`,
+      "utf8"
+    );
+
+    try {
+      const websiteApp = createApp(db, {
+        ...config,
+        rootDir: tempRoot,
+        publicBaseUrl: "https://warwatch.example",
+        enableScheduler: false
+      });
+
+      const dossier = await request(websiteApp).get("/dossiers?entity=iran");
+      expect(dossier.status).toBe(200);
+      expect(dossier.text).toContain("<title>Iran dossier | WarWatch</title>");
+      expect(dossier.text).toContain('rel="canonical" href="https://warwatch.example/dossiers?entity=iran"');
+      expect(dossier.text).toContain('property="og:url" content="https://warwatch.example/dossiers?entity=iran"');
+
+      const operator = await request(websiteApp).get("/operator");
+      expect(operator.status).toBe(200);
+      expect(operator.header["x-robots-tag"]).toBe("noindex,nofollow");
+      expect(operator.text).toContain('<meta name="robots" content="noindex,nofollow" />');
+
+      const sitemap = await request(websiteApp).get("/sitemap.xml");
+      expect(sitemap.status).toBe(200);
+      expect(sitemap.text).toContain("<loc>https://warwatch.example/timeline</loc>");
+      expect(sitemap.text).not.toContain("https://warwatch.example/operator");
+    } finally {
+      fs.rmSync(tempRoot, { recursive: true, force: true });
+    }
   });
 });

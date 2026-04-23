@@ -26,6 +26,7 @@ Primary repo: `C:\Codex Projects\Iran War`
   - the home surface now acts as the public/demo-first website lane instead of a product-shell snapshot
   - the public shell now has shareable route URLs across its website surfaces, so home, timeline, signals, briefings, dossiers, and command can all be opened directly instead of only through in-app state
   - route-aware document metadata now updates with public surface changes, which gives the website lane real page titles/descriptions instead of one static shell title
+  - the server now also injects route-aware metadata into the delivered HTML itself, so canonical, robots, title, and OG/Twitter fields are correct on first response before hydration
   - snapshot and operator/public reader lanes now use differentiated panel roles, stronger severity hierarchy, and explicit focus-visible treatment instead of one repeated shell-card pattern
   - the app chrome is now a compact masthead rather than a second hero, so the homepage can carry the actual first-view composition like a real site
   - the mobile shell header is now compressed enough to surface navigation and status earlier, so homepage content starts sooner on phones
@@ -70,6 +71,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Preview proof also emits `reports/previews/latest/preview-board.png`, a single stitched board artifact for human-facing updates
 - Preview proof now also emits a first-class atlas entrypoint at `reports/previews/latest/index.html` plus `preview-atlas.html` and `preview-atlas.pdf`, so the entire product can be reviewed from one local artifact
 - `npm run preview:open` now opens the latest atlas directly, which turns preview proof into a real walkthrough surface instead of a folder of PNGs
+- Preview proof now opens the public routes directly instead of clicking through the shell, so the artifact lane exercises real URL entry as part of capture
 - Preview proof now includes the Snapshot surface as the primary visual/demo lane
 - Preview proof now also includes the upgraded timeline surface so exploration depth is visible in each artifact pass
 - Preview proof now also includes the briefing reader surface so archive usability is visible in each artifact pass
@@ -79,6 +81,7 @@ Primary repo: `C:\Codex Projects\Iran War`
 - Preview proof now also includes the operator synthesis lane so graph-promotion work stays visible in each artifact pass
 - Build proof now also exists as a repo artifact: every build writes `reports/build/LATEST.md` and `LATEST.json`, and the heartbeat surfaces bundle totals plus the largest client assets
 - A multi-stage Dockerfile now packages the built website/server plus seed sources for fresh runtime bootstrap instead of treating deployment as a future-only docs task
+- Render is now the explicit first deployment target, with a repo-native `render.yaml` blueprint and `docs/DEPLOYMENT.md` runbook for the single-instance persistent-SQLite runtime
 - Event ingestion now writes canonical `entity:*` tags on insert/merge, and `npm run backfill:entity-tags` can normalize the historical event store onto the same tagging scheme
 - Operator KPI suggestions now use entity-aware relevance instead of pure regex scanning, which reduces false positives in stale-metric review
 - `npm run review:publish-holds` can now replace the remaining seed-era strike, Hormuz, and casualty KPIs with explicit reviewed holds in the local runtime
@@ -110,6 +113,7 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - The COO lane can now attach actual UI evidence to updates through local preview screenshots instead of relying only on text artifacts
 - The COO lane can now point to one local full-preview atlas instead of forcing review through individual PNG links or a stitched board alone
 - The website lane now has real static public assets (`favicon.svg`, `og-card.svg`, `site.webmanifest`, `robots.txt`) and route-aware head metadata instead of a generic Vite shell title
+- The website lane now also has first-response route metadata from the server, so direct entries and crawlers no longer depend on client-side meta replacement alone
 - The preview lane now reflects the stronger hierarchy pass instead of the older flatter card system, and the mobile artifact shows the tighter hero/nav/status shell rather than the earlier oversized first screen
 - Public reader surfaces no longer dead-end as quickly: snapshot, source posture, briefing refs, events, stories, and briefings can all jump into dossier graph detail
 - Shared entity matching now reduces drift between what the client thinks is related and what the server uses for dossier context
@@ -119,3 +123,4 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - Scope gating is still heuristic and rules-based, so borderline regional-spillover judgments remain a tuning lane rather than a solved problem
 - Critical claims continue to require operator approval before promotion to primary public surfaces
 - Container build proof is currently machine-blocked on this workstation because `docker` is not installed or not on PATH, even though the repo-level packaging recipe now exists
+- Render blueprint validation and live service creation are likewise blocked by missing local Render tooling/account context, not by missing repo scaffolding

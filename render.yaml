@@ -1,0 +1,31 @@
+services:
+  - type: web
+    runtime: docker
+    name: warwatch-v4
+    plan: starter
+    region: ohio
+    autoDeployTrigger: checksPass
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    numInstances: 1
+    maxShutdownDelaySeconds: 30
+    disk:
+      name: data
+      mountPath: /app/data
+      sizeGB: 10
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "10000"
+      - key: WARWATCH_DB_PATH
+        value: /app/data/warwatch.sqlite
+      - key: WARWATCH_ENABLE_SCHEDULER
+        value: "true"
+      - key: WARWATCH_REQUIRE_OPERATOR_KEY
+        value: "true"
+      - key: PUBLIC_BASE_URL
+        sync: false
+      - key: OPERATOR_API_KEY
+        generateValue: true

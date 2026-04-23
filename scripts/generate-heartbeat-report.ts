@@ -104,7 +104,7 @@ const nextActions = [
     ? "- Clear the remaining stale public KPI lane only where current evidence is defensible"
     : "- Keep reviewed public top-line metrics fresh as new evidence lands",
   !config.publicBaseUrl
-    ? "- Set PUBLIC_BASE_URL and a real deploy target so live public verification stops skipping"
+    ? "- Create the Render service, then set PUBLIC_BASE_URL so live public verification stops skipping"
     : "- Keep live public verification green on the deployed surface",
   "- Keep live ingestion healthy and visible in operator surfaces",
   "- Maintain docs and state surfaces when runtime truth changes"

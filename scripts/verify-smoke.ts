@@ -25,6 +25,51 @@ function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function expectedCanonical(route: string): string {
+  return new URL(route, `http://127.0.0.1:${port}/`).toString();
+}
+
+type PageCheck = {
+  route: string;
+  title: string;
+  robots: string;
+  headerRobots?: string;
+};
+
+const pageChecks: PageCheck[] = [
+  {
+    route: "/",
+    title: "WarWatch | Public briefing website for the Iran conflict",
+    robots: "index,follow"
+  },
+  {
+    route: "/timeline",
+    title: "Timeline | WarWatch",
+    robots: "index,follow"
+  },
+  {
+    route: "/signals",
+    title: "Signals | WarWatch",
+    robots: "index,follow"
+  },
+  {
+    route: "/briefings",
+    title: "Briefings | WarWatch",
+    robots: "index,follow"
+  },
+  {
+    route: "/dossiers",
+    title: "Dossiers | WarWatch",
+    robots: "index,follow"
+  },
+  {
+    route: "/operator",
+    title: "Operator | WarWatch",
+    robots: "noindex,nofollow",
+    headerRobots: "noindex,nofollow"
+  }
+];
+
 let ready = false;
 for (let attempt = 0; attempt < 40; attempt += 1) {
   try {
@@ -44,11 +89,7 @@ if (!ready) {
 }
 
 for (const route of [
-  "/",
-  "/timeline",
-  "/signals",
-  "/briefings",
-  "/dossiers",
+  ...pageChecks.map((page) => page.route),
   "/sitemap.xml",
   "/site.webmanifest",
   "/robots.txt",
@@ -63,11 +104,27 @@ for (const route of [
     throw new Error(`Smoke route failed: ${route} -> ${response.status}`);
   }
 
-  if (["/", "/timeline", "/signals", "/briefings", "/dossiers"].includes(route)) {
+  const pageCheck = pageChecks.find((page) => page.route === route);
+  if (pageCheck) {
     const html = await response.text();
-    if (!html.includes('<div id="root"></div>') || !html.includes("WarWatch")) {
+    if (!html.includes('<div id="root"></div>') || !html.includes(`<title>${pageCheck.title}</title>`)) {
       child.kill("SIGTERM");
       throw new Error("Smoke HTML did not include app shell marker");
+    }
+
+    if (!html.includes(`rel="canonical" href="${expectedCanonical(route)}"`)) {
+      child.kill("SIGTERM");
+      throw new Error(`Smoke HTML canonical mismatch for ${route}`);
+    }
+
+    if (!html.includes(`name="robots" content="${pageCheck.robots}"`)) {
+      child.kill("SIGTERM");
+      throw new Error(`Smoke HTML robots mismatch for ${route}`);
+    }
+
+    if (pageCheck.headerRobots && response.headers.get("x-robots-tag") !== pageCheck.headerRobots) {
+      child.kill("SIGTERM");
+      throw new Error(`Smoke response header robots mismatch for ${route}`);
     }
   }
 

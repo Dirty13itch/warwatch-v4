@@ -133,7 +133,7 @@ Supporting lanes:
 
 Tasks:
 1. Choose and wire a real deployment target.
-   Current state: the website lane now has shareable routes, route-aware metadata, a sitemap endpoint, public static assets, and a multi-stage Docker recipe; the remaining work is provider selection plus live environment wiring rather than repo-local scaffolding.
+   Current state: Render is now the chosen target, and the repo already has a blueprint, runbook, route-aware metadata, a sitemap endpoint, public static assets, and a multi-stage Docker recipe; the remaining work is live workspace wiring, first deploy, and post-deploy URL/secrets configuration rather than provider selection.
 2. Set `PUBLIC_BASE_URL` and make live public verification mandatory instead of skipped.
 3. Add runtime health checks for:
    - stale ingestion
@@ -167,7 +167,7 @@ Tasks:
 2. Improve mobile layout where dense public surfaces still compress poorly.
    Current state: the shell hierarchy pass has landed differentiated panel roles, explicit focus-visible treatment, a compact masthead, and a website-grade homepage hero; the next follow-through is deeper above-the-fold payload efficiency after the oversized-first-screen issue.
 3. Add preview diffs and higher-signal visual proof for before/after slices.
-   Current state: preview proof now has a real local atlas entrypoint (`reports/previews/latest/index.html`, PDF, and board artifact) and the website lane now has real route URLs plus metadata, so the next step is diff-aware and deploy-aware proof rather than basic preview assembly.
+   Current state: preview proof now has a real local atlas entrypoint (`reports/previews/latest/index.html`, PDF, and board artifact), and capture now opens the public routes directly, so the next step is diff-aware and deploy-aware proof rather than basic preview assembly.
 4. Tighten accessibility, readability, and interaction clarity.
 5. Keep Snapshot strong as the default public/demo lane while command remains the deeper operational surface.
 

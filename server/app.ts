@@ -28,6 +28,14 @@ import { confidenceLevels, type OperatorMetricPublishInput } from "../shared/typ
 import { getTopLineSuggestions } from "./topline.js";
 import { getSynthesisSuggestions, queueClaimSuggestion, queueStorySuggestion } from "./synthesis.js";
 
+type PublicPageMeta = {
+  title: string;
+  description: string;
+  robots: string;
+  canonicalUrl: string;
+  imageUrl: string;
+};
+
 function operatorKeyRequired(config: AppConfig): boolean {
   return (
     Boolean(config.operatorApiKey) ||
@@ -61,8 +69,157 @@ function resolvePublicSiteBaseUrl(config: AppConfig, req: express.Request): stri
   return `${protocol}://${host}`;
 }
 
+function normalizePublicPath(pathname: string): string {
+  return pathname.replace(/\/+$/, "") || "/";
+}
+
+function truncateSummary(value: string, maxLength = 180): string {
+  const normalized = value.replace(/\s+/g, " ").trim();
+  if (normalized.length <= maxLength) {
+    return normalized;
+  }
+
+  return `${normalized.slice(0, maxLength - 1).trimEnd()}…`;
+}
+
+function escapeHtmlAttribute(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function escapeHtmlText(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function buildPublicPageMeta(db: DatabaseSync, config: AppConfig, req: express.Request): PublicPageMeta {
+  const pathname = normalizePublicPath(req.path);
+  const baseUrl = resolvePublicSiteBaseUrl(config, req);
+  const canonicalUrl = new URL(req.originalUrl || pathname, `${baseUrl}/`).toString();
+  let title = "WarWatch | Public briefing website for the Iran conflict";
+  let description =
+    "Public briefing website for the Iran conflict with review-gated claims, daily SITREPs, dossiers, timeline context, and live signals.";
+  let robots = "index,follow";
+
+  if (pathname === "/command") {
+    title = "Command | WarWatch";
+    description = "Operational command surface over the public WarWatch runtime.";
+  } else if (pathname === "/timeline") {
+    title = "Timeline | WarWatch";
+    description = "Filterable public timeline with corroboration, significance, and source-linked context.";
+
+    if (typeof req.query.event === "string" && req.query.event.trim()) {
+      const event = getEventById(db, req.query.event);
+      if (event) {
+        title = `${event.title} | WarWatch Timeline`;
+        description = truncateSummary(event.detail);
+      }
+    }
+  } else if (pathname === "/dossiers") {
+    title = "Dossiers | WarWatch";
+    description = "Canonical actor dossiers and claim graph for the public WarWatch site.";
+
+    if (typeof req.query.entity === "string" && req.query.entity.trim()) {
+      const dossier = getEntityDossier(db, req.query.entity);
+      if (dossier) {
+        title = `${dossier.entity.name} dossier | WarWatch`;
+        description = truncateSummary(
+          dossier.claims[0]?.statement ??
+            dossier.stories[0]?.summary ??
+            `${dossier.entity.name} dossier with linked claims, stories, events, and briefings.`
+        );
+      }
+    }
+  } else if (pathname === "/signals") {
+    title = "Signals | WarWatch";
+    description = "Live market pressure, source posture, and signals shaping the public conflict picture.";
+
+    if (typeof req.query.source === "string" && req.query.source.trim()) {
+      const source = getSources(db).find((item) => item.slug === req.query.source);
+      if (source) {
+        title = `${source.name} source posture | WarWatch`;
+        description = truncateSummary(
+          source.notes ||
+            `${source.name} source posture with reliability, bias, and canonical story links in the WarWatch signals lane.`
+        );
+      }
+    }
+  } else if (pathname === "/briefings") {
+    title = "Briefings | WarWatch";
+    description = "Daily SITREPs and briefing archive with operator-reviewed public context.";
+  } else if (pathname === "/operator") {
+    title = "Operator | WarWatch";
+    description = "Operator review controls, synthesis lane, and ingestion oversight.";
+    robots = "noindex,nofollow";
+  }
+
+  return {
+    title,
+    description: truncateSummary(description),
+    robots,
+    canonicalUrl,
+    imageUrl: `${baseUrl}/og-card.svg`
+  };
+}
+
+function renderClientShell(indexHtml: string, meta: PublicPageMeta): string {
+  return indexHtml
+    .replace(/<title>[\s\S]*?<\/title>/i, `<title>${escapeHtmlText(meta.title)}</title>`)
+    .replace(
+      /<meta\s+name="description"\s+content="[^"]*"\s*\/?>/i,
+      `<meta name="description" content="${escapeHtmlAttribute(meta.description)}" />`
+    )
+    .replace(
+      /<meta\s+name="robots"\s+content="[^"]*"\s*\/?>/i,
+      `<meta name="robots" content="${escapeHtmlAttribute(meta.robots)}" />`
+    )
+    .replace(
+      /<meta\s+property="og:title"\s+content="[^"]*"\s*\/?>/i,
+      `<meta property="og:title" content="${escapeHtmlAttribute(meta.title)}" />`
+    )
+    .replace(
+      /<meta\s+property="og:description"\s+content="[^"]*"\s*\/?>/i,
+      `<meta property="og:description" content="${escapeHtmlAttribute(meta.description)}" />`
+    )
+    .replace(
+      /<meta\s+property="og:image"\s+content="[^"]*"\s*\/?>/i,
+      `<meta property="og:image" content="${escapeHtmlAttribute(meta.imageUrl)}" />`
+    )
+    .replace(
+      /<meta\s+property="og:url"\s+content="[^"]*"\s*\/?>/i,
+      `<meta property="og:url" content="${escapeHtmlAttribute(meta.canonicalUrl)}" />`
+    )
+    .replace(
+      /<meta\s+name="twitter:title"\s+content="[^"]*"\s*\/?>/i,
+      `<meta name="twitter:title" content="${escapeHtmlAttribute(meta.title)}" />`
+    )
+    .replace(
+      /<meta\s+name="twitter:description"\s+content="[^"]*"\s*\/?>/i,
+      `<meta name="twitter:description" content="${escapeHtmlAttribute(meta.description)}" />`
+    )
+    .replace(
+      /<meta\s+name="twitter:image"\s+content="[^"]*"\s*\/?>/i,
+      `<meta name="twitter:image" content="${escapeHtmlAttribute(meta.imageUrl)}" />`
+    )
+    .replace(
+      /<meta\s+name="twitter:url"\s+content="[^"]*"\s*\/?>/i,
+      `<meta name="twitter:url" content="${escapeHtmlAttribute(meta.canonicalUrl)}" />`
+    )
+    .replace(
+      /<link\s+rel="canonical"\s+href="[^"]*"\s*\/?>/i,
+      `<link rel="canonical" href="${escapeHtmlAttribute(meta.canonicalUrl)}" />`
+    );
+}
+
 export function createApp(db: DatabaseSync, config: AppConfig) {
   const app = express();
+  app.disable("x-powered-by");
+  app.set("trust proxy", true);
   app.use(express.json());
 
   app.get("/api/health", (_req, res) => {
@@ -287,13 +444,38 @@ export function createApp(db: DatabaseSync, config: AppConfig) {
 
   const clientDist = path.resolve(config.rootDir, "dist/client");
   if (fs.existsSync(clientDist)) {
-    app.use(express.static(clientDist));
-    app.get(/^\/(?!api\/).*/, (req, res, next) => {
-      if (req.path.startsWith("/api/")) {
+    const clientIndexPath = path.join(clientDist, "index.html");
+    const clientIndexHtml = fs.readFileSync(clientIndexPath, "utf8");
+
+    app.use(
+      express.static(clientDist, {
+        index: false,
+        setHeaders(res, filePath) {
+          const fileName = path.basename(filePath);
+          if (filePath.includes(`${path.sep}assets${path.sep}`)) {
+            res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+            return;
+          }
+
+          if (fileName === "site.webmanifest" || fileName === "robots.txt" || fileName.endsWith(".svg")) {
+            res.setHeader("Cache-Control", "public, max-age=3600");
+          }
+        }
+      })
+    );
+
+    app.get(/^\/(?!api(?:\/|$)|sitemap\.xml$).*/, (req, res, next) => {
+      if (req.path === "/api" || req.path.startsWith("/api/")) {
         return next();
       }
 
-      return res.sendFile(path.join(clientDist, "index.html"));
+      const meta = buildPublicPageMeta(db, config, req);
+      res.type("html").set("Cache-Control", "no-cache");
+      if (meta.robots.startsWith("noindex")) {
+        res.set("X-Robots-Tag", meta.robots);
+      }
+
+      return res.send(renderClientShell(clientIndexHtml, meta));
     });
   }
 

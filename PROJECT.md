@@ -10,10 +10,10 @@ Build a living intelligence fusion platform for the Iran conflict that prioritiz
 - Operator console for review queue, ingestion runs, and source governance
 - Canonical data layer for sources, claims, events, metrics, stories, entities, relationships, briefings, review items, and ingestion runs
 - SQLite-backed backend with server-side ingestion and report generation
+- Render-first deployment target via Docker web service plus persistent disk, because the current runtime contract is honest single-instance Express + SQLite rather than fake stateless hosting
 
 ## Non-Negotiables
 - Critical claims require review before public promotion.
 - Legacy V3 content is seed/reference material, not the active app.
 - Every core surface must be type-backed and API-backed.
 - The project carries an autonomous COO lane through docs, scripts, and heartbeat automation.
-
