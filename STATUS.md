@@ -35,6 +35,7 @@
 - RSS ingestion now tolerates same-feed duplicate items (identical title/date) by merging instead of crashing on `events.id` uniqueness
 - Mission-scope filtering is now live on RSS ingestion: clearly off-scope general-news items are skipped before insertion, older auto-ingested noise is quarantined out of public surfaces, and feed-run summaries now report skipped/quarantined counts
 - Feed classification is now less queue-happy on background/explainer/defense-industry copy: explainers, fleet trackers, and submarine-industrial coverage no longer get misread as critical strike items just because they mention bombs, missiles, or carrier strike groups
+- Feed classification now also downranks regional casualty and journalist-targeting spillover coverage into non-critical `regional_strike` items unless a core Iran/Hormuz/nuclear escalator is present, which stops those broad-feed items from reopening the critical queue
 - Freshness truth is corrected: top-line overview state stays stale until the actual KPI metrics are live, even when event ingestion is healthy
 - Signals surface now renders live market cards and sparklines from canonical metric history instead of only seeded indicator stories
 - Daily SITREP refresh now folds in live market movement when current market snapshots exist
@@ -73,6 +74,7 @@
 - A real deployment target has now been selected for the public website lane: Vercel-hosted `public_readonly` delivery, with repo-native config in `vercel.json` and `docs/DEPLOYMENT.md`
 - Preview and build proof have both been refreshed after the UI hierarchy pass, so the current artifact lane reflects the stronger shell and tighter mobile header instead of the older flatter card treatment
 - Verification contract is green locally via `npm run verify`
+- Local smoke verification now isolates itself from the deployed `PUBLIC_BASE_URL`, so local canonical/robots checks no longer fail just because live public verification is enabled in the shell environment
 - Release/auth expectations are tighter: once a public URL exists or production mode is on, operator routes require `OPERATOR_API_KEY` instead of falling open by default
 
 ## Current Goal

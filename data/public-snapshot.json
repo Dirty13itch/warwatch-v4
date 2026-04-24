@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-04-23T16:15:34.559Z",
+  "generatedAt": "2026-04-24T04:23:37.407Z",
   "overview": {
-    "generatedAt": "2026-04-23T16:15:34.561Z",
-    "currentDay": 55,
+    "generatedAt": "2026-04-24T04:23:37.409Z",
+    "currentDay": 56,
     "stale": true,
     "legacyAsOf": null,
     "freshness": {
@@ -88,12 +88,65 @@
       }
     ],
     "queue": {
-      "pending": 2,
-      "critical": 2,
+      "pending": 0,
+      "critical": 0,
       "lastIngestionStatus": "success"
     }
   },
   "events": [
+    {
+      "id": "event_29b53c0af4ad",
+      "date": "2026-04-23",
+      "time": null,
+      "title": "Israeli strikes kill eight Palestinians in Gaza, first responders say",
+      "detail": "One strike killed three children and two adults near a mosque in the northern town of Beit Lahia on Wednesday evening.",
+      "category": "regional_strike",
+      "significance": "high",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "BBC Middle East",
+      "sourceRefs": [
+        "BBC Middle East",
+        "https://www.bbc.com/news/articles/cly60dwxjd1o?at_medium=RSS&at_campaign=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "BBC Middle East",
+        "entity:israel",
+        "auto_reclassified"
+      ],
+      "createdAt": "2026-04-23T14:06:55.607Z"
+    },
+    {
+      "id": "event_e371af1a4ffe",
+      "date": "2026-04-23",
+      "time": null,
+      "title": "Lebanon accuses Israel of targeting journalist killed in air strike",
+      "detail": "Lebanon's prime minister accused Israel of war crimes after IDF attacks on Red Cross vehicles also stopped rescuers from reaching the site.",
+      "category": "regional_strike",
+      "significance": "high",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "BBC Middle East",
+      "sourceRefs": [
+        "BBC Middle East",
+        "https://www.bbc.com/news/articles/c5yvn036evlo?at_medium=RSS&at_campaign=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "BBC Middle East",
+        "entity:israel",
+        "entity:lebanon",
+        "auto_reclassified"
+      ],
+      "createdAt": "2026-04-23T14:06:55.616Z"
+    },
     {
       "id": "event_7508dd8a23cd",
       "date": "2026-04-23",
@@ -5883,6 +5936,16 @@
   ],
   "briefings": [
     {
+      "id": "brief_9d0d944602c4",
+      "briefingDate": "2026-04-24",
+      "title": "WarWatch SITREP 2026-04-24",
+      "body": "SITUATION\nNo newly reviewed public events are available for this cycle.\nMarket signals: Brent $103.50 (+1.6% vs prior print); WTI $94.48 (+1.6% vs prior print); Gold $4,736.80 (+0.1% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 0.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+      "sourceRefs": [],
+      "reviewState": "approved",
+      "publishState": "published",
+      "createdAt": "2026-04-24T04:20:09.088Z"
+    },
+    {
       "id": "brief_acf6b8f13837",
       "briefingDate": "2026-04-23",
       "title": "WarWatch SITREP 2026-04-23",
@@ -8078,6 +8141,16 @@
       ],
       "briefings": [
         {
+          "id": "brief_9d0d944602c4",
+          "briefingDate": "2026-04-24",
+          "title": "WarWatch SITREP 2026-04-24",
+          "body": "SITUATION\nNo newly reviewed public events are available for this cycle.\nMarket signals: Brent $103.50 (+1.6% vs prior print); WTI $94.48 (+1.6% vs prior print); Gold $4,736.80 (+0.1% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 0.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+          "sourceRefs": [],
+          "reviewState": "approved",
+          "publishState": "published",
+          "createdAt": "2026-04-24T04:20:09.088Z"
+        },
+        {
           "id": "brief_acf6b8f13837",
           "briefingDate": "2026-04-23",
           "title": "WarWatch SITREP 2026-04-23",
@@ -8240,8 +8313,8 @@
           "time": null,
           "title": "Israeli strikes kill eight Palestinians in Gaza, first responders say",
           "detail": "One strike killed three children and two adults near a mosque in the northern town of Beit Lahia on Wednesday evening.",
-          "category": "us_strike",
-          "significance": "critical",
+          "category": "regional_strike",
+          "significance": "high",
           "confidence": "unverified",
           "corroboration": 1,
           "sourceText": "BBC Middle East",
@@ -8249,13 +8322,14 @@
             "BBC Middle East",
             "https://www.bbc.com/news/articles/cly60dwxjd1o?at_medium=RSS&at_campaign=rss"
           ],
-          "reviewState": "pending",
-          "visibility": "review_only",
+          "reviewState": "auto_published",
+          "visibility": "secondary",
           "geo": null,
           "tags": [
             "auto_ingest",
             "BBC Middle East",
-            "entity:israel"
+            "entity:israel",
+            "auto_reclassified"
           ],
           "createdAt": "2026-04-23T14:06:55.607Z"
         },
@@ -8265,8 +8339,8 @@
           "time": null,
           "title": "Lebanon accuses Israel of targeting journalist killed in air strike",
           "detail": "Lebanon's prime minister accused Israel of war crimes after IDF attacks on Red Cross vehicles also stopped rescuers from reaching the site.",
-          "category": "us_strike",
-          "significance": "critical",
+          "category": "regional_strike",
+          "significance": "high",
           "confidence": "unverified",
           "corroboration": 1,
           "sourceText": "BBC Middle East",
@@ -8274,14 +8348,15 @@
             "BBC Middle East",
             "https://www.bbc.com/news/articles/c5yvn036evlo?at_medium=RSS&at_campaign=rss"
           ],
-          "reviewState": "pending",
-          "visibility": "review_only",
+          "reviewState": "auto_published",
+          "visibility": "secondary",
           "geo": null,
           "tags": [
             "auto_ingest",
             "BBC Middle East",
             "entity:israel",
-            "entity:lebanon"
+            "entity:lebanon",
+            "auto_reclassified"
           ],
           "createdAt": "2026-04-23T14:06:55.616Z"
         },
@@ -8546,8 +8621,8 @@
           "time": null,
           "title": "Lebanon accuses Israel of targeting journalist killed in air strike",
           "detail": "Lebanon's prime minister accused Israel of war crimes after IDF attacks on Red Cross vehicles also stopped rescuers from reaching the site.",
-          "category": "us_strike",
-          "significance": "critical",
+          "category": "regional_strike",
+          "significance": "high",
           "confidence": "unverified",
           "corroboration": 1,
           "sourceText": "BBC Middle East",
@@ -8555,14 +8630,15 @@
             "BBC Middle East",
             "https://www.bbc.com/news/articles/c5yvn036evlo?at_medium=RSS&at_campaign=rss"
           ],
-          "reviewState": "pending",
-          "visibility": "review_only",
+          "reviewState": "auto_published",
+          "visibility": "secondary",
           "geo": null,
           "tags": [
             "auto_ingest",
             "BBC Middle East",
             "entity:israel",
-            "entity:lebanon"
+            "entity:lebanon",
+            "auto_reclassified"
           ],
           "createdAt": "2026-04-23T14:06:55.616Z"
         },

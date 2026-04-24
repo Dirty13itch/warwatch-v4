@@ -724,10 +724,21 @@ export function classifyFeedEvent(text: string): {
   significance: Significance;
 } {
   const normalized = text.toLowerCase();
-  const hostileAction = /\b(?:missile(?!\s+submarine)|strike(?!\s+group)|bomb(?:ed|ing)?|drone|air raid|rocket|shelling|raid|attack(?:ed|s|ing)?|seized?)\b/;
+  const hostileAction =
+    /\b(?:missiles?(?!\s+submarine)|strikes?(?!\s+group)|bomb(?:ed|ing|s)?|drones?|air raid|rockets?|shelling|raid|attack(?:ed|s|ing)?|seized?|kill(?:ed|s|ing)?)\b/;
   const explainerOrBackground = /(?:^what is\b|\bexplainer\b|how quickly could|breaking down the words you're hearing|what you need to know)/;
   const strategicOrTracker = /(?:holds lessons|commander says|fleet and marine tracker|delivery is .* imperative|sub czar|symposium|shipbuilding|battle force deployed underway)/;
   const nuclearContext = /\b(?:uranium|enrichment|centrifuge|natanz|fordow|iaea|nuclear program|nuclear bomb)\b/;
+  const iranStrikeContext = /\b(?:iran(?:ian|ians)?|natanz|fordow|isfahan|irgc|centrifuge)\b/;
+  const usStrikeContext = /\b(?:u\.s\.|united states|american|centcom|pentagon)\b/;
+  const regionalSpilloverContext =
+    /\b(?:israel(?:i)?|idf|gaza|palestinians?|leban(?:on|ese)|hezbollah|houthi|west bank|red sea)\b/;
+  const humanitarianContext =
+    /\b(?:journalist|first responders?|children|child|civilians?|rescuers?|aid|school|hospital|mosque|red cross)\b/;
+  const strategicEscalator =
+    /\b(?:capital|nuclear|carrier|embassy|natanz|fordow|centrifuge|hormuz|strait|irgc|commander|general|admiral|air base|command center|missile launcher)\b/;
+  const majorCasualtyContext =
+    /\b(?:dozens|scores|hundreds|mass casualty|at least \d{2,}|\d{2,}\s+(?:killed|dead|injured)|killing \d{2,})\b/;
 
   if (explainerOrBackground.test(normalized)) {
     return {
@@ -751,10 +762,21 @@ export function classifyFeedEvent(text: string): {
   }
 
   if (hostileAction.test(normalized)) {
+    const coreStrike = iranStrikeContext.test(normalized) || usStrikeContext.test(normalized);
+    const regionalStrike = regionalSpilloverContext.test(normalized);
+    const humanitarianRegionalSpillover =
+      regionalStrike && humanitarianContext.test(normalized) && !coreStrike;
+
     return {
-      category: normalized.includes("iran") ? "iran_strike" : "us_strike",
-      significance: /(capital|nuclear|carrier|embassy|killed|major)/.test(normalized)
+      category: iranStrikeContext.test(normalized)
+        ? "iran_strike"
+        : regionalStrike
+          ? "regional_strike"
+          : "us_strike",
+      significance: strategicEscalator.test(normalized) || (coreStrike && majorCasualtyContext.test(normalized))
         ? "critical"
+        : humanitarianRegionalSpillover
+          ? "high"
         : "high"
     };
   }

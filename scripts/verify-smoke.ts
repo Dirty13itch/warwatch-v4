@@ -17,7 +17,8 @@ const child = spawn("node", ["dist/server/server/index.js"], {
     ...process.env,
     PORT: String(port),
     WARWATCH_ENABLE_SCHEDULER: "false",
-    WARWATCH_DB_PATH: "data/warwatch-smoke.sqlite"
+    WARWATCH_DB_PATH: "data/warwatch-smoke.sqlite",
+    PUBLIC_BASE_URL: ""
   }
 });
 

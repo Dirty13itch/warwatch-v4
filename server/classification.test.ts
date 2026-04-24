@@ -37,4 +37,33 @@ describe("feed classification guardrails", () => {
     expect(classified.category).toBe("intel");
     expect(classified.significance).toBe("medium");
   });
+
+  it("downranks regional casualty coverage so it does not reopen the critical queue", () => {
+    const classified = classifyFeedEvent(
+      "Israeli strikes kill eight Palestinians in Gaza, first responders say. " +
+        "One strike killed three children and two adults near a mosque in the northern town of Beit Lahia on Wednesday evening."
+    );
+
+    expect(classified.category).toBe("regional_strike");
+    expect(classified.significance).toBe("high");
+  });
+
+  it("downranks journalist-targeting spillover items so they stay out of the critical queue", () => {
+    const classified = classifyFeedEvent(
+      "Lebanon accuses Israel of targeting journalist killed in air strike. " +
+        "Lebanon's prime minister accused Israel of war crimes after IDF attacks on Red Cross vehicles also stopped rescuers from reaching the site."
+    );
+
+    expect(classified.category).toBe("regional_strike");
+    expect(classified.significance).toBe("high");
+  });
+
+  it("still treats core Iran strike escalators as critical", () => {
+    const classified = classifyFeedEvent(
+      "US strikes near Natanz kill senior IRGC commander as Iran threatens Hormuz closure."
+    );
+
+    expect(classified.category).toBe("iran_strike");
+    expect(classified.significance).toBe("critical");
+  });
 });

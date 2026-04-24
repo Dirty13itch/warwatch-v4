@@ -1,12 +1,12 @@
 # WarWatch Build Report
 
-Generated: 2026-04-23T04:10:54.352Z
+Generated: 2026-04-24T04:23:42.693Z
 Client dir: C:\Codex Projects\Iran War\dist\client
 
 ## Totals
 - JavaScript: 1.45 MB
 - CSS: 92.82 kB
-- HTML: 15.59 kB
+- HTML: 15.90 kB
 
 ## Oversized Assets
 - assets/maplibre-vendor-AmtWkS3e.js: 1.00 MB :: gzip 277.11 kB
