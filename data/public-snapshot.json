@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-04-24T04:23:37.407Z",
+  "generatedAt": "2026-04-24T16:30:51.731Z",
   "overview": {
-    "generatedAt": "2026-04-24T04:23:37.409Z",
+    "generatedAt": "2026-04-24T16:30:51.733Z",
     "currentDay": 56,
     "stale": true,
     "legacyAsOf": null,
     "freshness": {
       "topLine": "review_hold",
-      "lastSuccessfulIngestionAt": "2026-04-23T14:11:21.325Z",
+      "lastSuccessfulIngestionAt": "2026-04-24T16:26:10.385Z",
       "hasLiveIngestion": true
     },
     "headline": {
@@ -26,7 +26,7 @@
       {
         "key": "oil_brent",
         "label": "Brent marker",
-        "value": "$103.50",
+        "value": "$98.71",
         "supportingText": "Live market signal from the Yahoo Finance futures feed.",
         "freshness": "ingested"
       },
@@ -94,6 +94,215 @@
     }
   },
   "events": [
+    {
+      "id": "event_ffbd7877eaaf",
+      "date": "2026-04-24",
+      "time": null,
+      "title": "Couple discovers Lebanon home destroyed by Israel from satellite image",
+      "detail": "Joe Elias contacted BBC Verify following reports that his village was among several destroyed by Israeli forces.",
+      "category": "cyber",
+      "significance": "medium",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "BBC Middle East",
+      "sourceRefs": [
+        "BBC Middle East",
+        "https://www.bbc.com/news/articles/cvg30jkvklno?at_medium=RSS&at_campaign=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "BBC Middle East",
+        "entity:israel",
+        "entity:lebanon"
+      ],
+      "createdAt": "2026-04-24T16:26:09.605Z"
+    },
+    {
+      "id": "event_5b07d71b073b",
+      "date": "2026-04-24",
+      "time": null,
+      "title": "US has three aircraft carriers in the Middle East for first time since 2003",
+      "detail": "As tensions ramp up amid fragile truce, US military says it 'redirected' 34 vessels as part of blockade on Iran's ports.",
+      "category": "intel",
+      "significance": "medium",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "Al Jazeera",
+      "sourceRefs": [
+        "Al Jazeera",
+        "https://www.aljazeera.com/news/2026/4/24/us-has-three-aircraft-carriers-in-the-middle-east-for-first-time-since-2003?traffic_source=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "Al Jazeera",
+        "entity:iran"
+      ],
+      "createdAt": "2026-04-24T16:26:09.711Z"
+    },
+    {
+      "id": "event_1ad2eb2ae803",
+      "date": "2026-04-24",
+      "time": null,
+      "title": "PM Sanchez rebuffs US idea of suspending Spain from NATO",
+      "detail": "PM Sanchez responded to reports that the US may suspend Madrid from NATO over its opposition to the war on Iran.",
+      "category": "intel",
+      "significance": "medium",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "Al Jazeera",
+      "sourceRefs": [
+        "Al Jazeera",
+        "https://www.aljazeera.com/video/newsfeed/2026/4/24/pm-sanchez-rebuffs-us-idea-of-suspending-spain-from-nato?traffic_source=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "Al Jazeera",
+        "entity:iran"
+      ],
+      "createdAt": "2026-04-24T16:26:09.715Z"
+    },
+    {
+      "id": "event_05351ad0d8cc",
+      "date": "2026-04-24",
+      "time": null,
+      "title": "Iran-Iraq Tanker War redux? Why the Strait of Hormuz crisis is different",
+      "detail": "The Tanker War between Iran and Iraq in the 1980s also disrupted global shipping. But the situation today is different.",
+      "category": "economic",
+      "significance": "medium",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "Al Jazeera",
+      "sourceRefs": [
+        "Al Jazeera",
+        "https://www.aljazeera.com/news/2026/4/24/iran-iraq-tanker-war-redux-why-the-strait-of-hormuz-crisis-is-different?traffic_source=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "Al Jazeera",
+        "entity:strait-of-hormuz",
+        "entity:iran"
+      ],
+      "createdAt": "2026-04-24T16:26:09.719Z"
+    },
+    {
+      "id": "event_27ae4988dc2b",
+      "date": "2026-04-24",
+      "time": null,
+      "title": "Iranians bring music to sites devastated by US-Israeli attacks",
+      "detail": "Iranian musicians perform on city streets and venture to sites devastated in US-Israeli attacks.",
+      "category": "iran_strike",
+      "significance": "high",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "Al Jazeera",
+      "sourceRefs": [
+        "Al Jazeera",
+        "https://www.aljazeera.com/video/newsfeed/2026/4/24/iranians-bring-music-to-sites-devastated-by-us-israeli-attacks?traffic_source=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "Al Jazeera",
+        "entity:iran",
+        "entity:israel"
+      ],
+      "createdAt": "2026-04-24T16:26:09.723Z"
+    },
+    {
+      "id": "event_5c4f11fc3a5d",
+      "date": "2026-04-24",
+      "time": null,
+      "title": "Israel-Lebanon ceasefire is extended by 3 weeks as tensions rise in Strait of Hormuz",
+      "detail": "Hezbollah and Israel traded fire just hours after the ceasefire extension was announced, underscoring its fragility.",
+      "category": "diplomatic",
+      "significance": "high",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "NPR World",
+      "sourceRefs": [
+        "NPR World",
+        "https://www.npr.org/2026/04/24/g-s1-118595/middle-east-war-updates"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "NPR World",
+        "entity:strait-of-hormuz",
+        "entity:hezbollah",
+        "entity:israel",
+        "entity:lebanon"
+      ],
+      "createdAt": "2026-04-24T16:26:09.806Z"
+    },
+    {
+      "id": "event_f3df71aaf1ac",
+      "date": "2026-04-24",
+      "time": null,
+      "title": "Israel and Lebanon extend ceasefire. And, Trump eases medical marijuana rules",
+      "detail": "Israel and Lebanon have agreed to extend their ceasefire for three weeks, President Trump says. And, the Trump administration is easing rules on medical marijuana. President Trump said Thursday that Israel and Lebanon have agreed to extend their ceasefire for three weeks after the two sides met at the White House for a high-level negotiation.",
+      "category": "diplomatic",
+      "significance": "high",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "NPR World",
+      "sourceRefs": [
+        "NPR World",
+        "https://www.npr.org/2026/04/24/g-s1-118594/up-first-newsletter-strait-of-hormuz-lebanon-israel-marijuana-reclassification-georgia-wildfires-polymarket",
+        "https://www.npr.org/2026/04/23/nx-s1-5796719/iran-middle-east-updates"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "NPR World",
+        "entity:israel",
+        "entity:lebanon"
+      ],
+      "createdAt": "2026-04-24T16:26:09.812Z"
+    },
+    {
+      "id": "event_fa424d1a1024",
+      "date": "2026-04-24",
+      "time": null,
+      "title": "Thousands of seafarers stranded by ongoing U.S. blockade on Strait of Hormuz",
+      "detail": "As the U.S. blockade on Iranian ports drags on, thousands of seafarers are stranded on ships, and economic shockwaves ripple around the world.",
+      "category": "economic",
+      "significance": "medium",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "NPR World",
+      "sourceRefs": [
+        "NPR World",
+        "https://www.npr.org/2026/04/24/nx-s1-5797793/thousands-of-seafarers-stranded-by-ongoing-us-blockade-on-strait-of-hormuz"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "NPR World",
+        "entity:strait-of-hormuz",
+        "entity:iran"
+      ],
+      "createdAt": "2026-04-24T16:26:09.816Z"
+    },
     {
       "id": "event_29b53c0af4ad",
       "date": "2026-04-23",
@@ -326,6 +535,105 @@
         "entity:lebanon"
       ],
       "createdAt": "2026-04-23T14:06:55.782Z"
+    },
+    {
+      "id": "event_b55d5f66f258",
+      "date": "2026-04-23",
+      "time": null,
+      "title": "US-Kuwaiti journalist held in Kuwait over social media posts acquitted, lawyers say",
+      "detail": "Ahmed Shihab-Eldin reportedly faced charges, including spreading false information, after he re-posted images related to the Iran war.",
+      "category": "intel",
+      "significance": "medium",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "BBC Middle East",
+      "sourceRefs": [
+        "BBC Middle East",
+        "https://www.bbc.com/news/articles/cy81ljrd445o?at_medium=RSS&at_campaign=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "BBC Middle East",
+        "entity:iran"
+      ],
+      "createdAt": "2026-04-24T16:26:09.613Z"
+    },
+    {
+      "id": "event_a450516cf0fe",
+      "date": "2026-04-23",
+      "time": null,
+      "title": "Airlines in Europe slash thousands of flights as Iran war cuts jet fuel supplies",
+      "detail": "The soaring cost of jet fuel is forcing European airlines to cancel tens of thousands of flights, while energy authorities warned of a possible jet fuel shortage if supplies aren't replenished soon.",
+      "category": "intel",
+      "significance": "medium",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "NPR World",
+      "sourceRefs": [
+        "NPR World",
+        "https://www.npr.org/2026/04/23/nx-s1-5797307/europe-airlines-jet-fuel-costs"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "NPR World",
+        "entity:iran"
+      ],
+      "createdAt": "2026-04-24T16:26:09.820Z"
+    },
+    {
+      "id": "event_46db89374e15",
+      "date": "2026-04-23",
+      "time": null,
+      "title": "As Iran saps US focus, the troop math for monitoring a Ukraine peace deal looks grim",
+      "detail": "The coalition has also not resolved the question of what any of its forces would be authorized to do once a ceasefire takes hold.",
+      "category": "diplomatic",
+      "significance": "high",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "Defense News",
+      "sourceRefs": [
+        "Defense News",
+        "https://www.defensenews.com/global/europe/2026/04/23/as-iran-saps-us-focus-the-troop-math-for-monitoring-a-ukraine-peace-deal-looks-grim/"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "Defense News",
+        "entity:iran"
+      ],
+      "createdAt": "2026-04-24T16:26:10.005Z"
+    },
+    {
+      "id": "event_549f0ae104a5",
+      "date": "2026-04-23",
+      "time": null,
+      "title": "Carrier USS George H.W. Bush Now in U.S. Central Command After Traveling Around Africa",
+      "detail": "East Coast carrier USS George H.W. Bush (CVN-77) is now operating in the Middle East after a sailing around the southern tip of Africa, U.S. Central Command announced on Thursday. Bush’s entrance into CENTCOM marks the first time three carriers have been in the Middle East since the height of the U.S. wars in Iraq and Afghanistan. USS Abraham Lincoln (CVN-72) has been operating in the Arabian Sea since January while USS Gerald R. Ford (CVN-78) has been operating in the Red Sea since last week, USNI News reported. Bush departed Naval Station Norfolk, Va., on March 31, embarked Carrier",
+      "category": "intel",
+      "significance": "medium",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "USNI News",
+      "sourceRefs": [
+        "USNI News",
+        "https://news.usni.org/2026/04/23/carrier-uss-george-h-w-bush-now-in-u-s-central-command-after-traveling-around-africa"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "USNI News"
+      ],
+      "createdAt": "2026-04-24T16:26:10.202Z"
     },
     {
       "id": "event_0c5098b84941",
@@ -5047,281 +5355,6 @@
         "entity:iran"
       ],
       "createdAt": "2026-03-01T00:00:00.000Z"
-    },
-    {
-      "id": "event_89e2bb26a3f8",
-      "date": "2026-03-01",
-      "time": "02:30Z",
-      "title": "Khamenei Death Confirmed — Ali Larijani Named Acting Leader",
-      "detail": "Iran's government officially confirmed Supreme Leader Khamenei's death. Ali Larijani announced an Interim Leadership Council and stated he would serve as acting head of leadership functions. Larijani had been pre-designated for this continuity role, indicating prior contingency planning. Large mourning crowds gathered in Tehran's Enqelab Square.",
-      "category": "diplomatic",
-      "significance": "critical",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "IRNA / Reuters / Wikipedia",
-      "sourceRefs": [
-        "IRNA",
-        "Reuters",
-        "Wikipedia"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "diplomatic",
-        "entity:iran"
-      ],
-      "createdAt": "2026-03-01T00:00:00.000Z"
-    },
-    {
-      "id": "event_57facd12e15d",
-      "date": "2026-02-28",
-      "time": "18:00Z",
-      "title": "Brent Crude Surges 10–13% on Day 1",
-      "detail": "Brent crude oil prices surged 10–13% on the first day of the war, moving from ~$72–80/barrel to ~$82–84/barrel. Markets priced in immediate Hormuz disruption risk. Asian energy importers began scrambling to secure alternative supply arrangements.",
-      "category": "economic",
-      "significance": "high",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "Bloomberg / Reuters / Intellectia.ai",
-      "sourceRefs": [
-        "Bloomberg",
-        "Reuters",
-        "Intellectia.ai"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "economic",
-        "entity:strait-of-hormuz"
-      ],
-      "createdAt": "2026-02-28T00:00:00.000Z"
-    },
-    {
-      "id": "event_af31375e72f0",
-      "date": "2026-02-28",
-      "time": "15:00Z",
-      "title": "Global Condemnation Wave — Russia, China, Brazil Lead Response",
-      "detail": "Russia, China, Brazil, Cuba, South Africa, Turkey, Spain, and 15+ other nations condemned the US-Israel strikes. UN Secretary-General António Guterres also condemned the attacks. Russia called the strikes \"deeply destabilizing\" and urged an immediate halt. Brazil called them \"a violation of international law\" during active negotiations. China demanded a diplomatic resolution.",
-      "category": "diplomatic",
-      "significance": "high",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "Reuters / CGTN",
-      "sourceRefs": [
-        "Reuters",
-        "CGTN"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "diplomatic",
-        "entity:israel"
-      ],
-      "createdAt": "2026-02-28T00:00:00.000Z"
-    },
-    {
-      "id": "event_9aa9c6caaf87",
-      "date": "2026-02-28",
-      "time": "12:00Z",
-      "title": "GPS Jamming Paralyzes Persian Gulf Shipping Lanes",
-      "detail": "Massive GPS jamming and spoofing operations activated across the Persian Gulf, with jamming zones surging from 21 on Day 1 to 38 by Day 2. Lloyd's List Intelligence recorded 1,735 GPS interference incidents affecting 655 vessels between Feb 28 and March 3. Ships' navigation systems were showing false positions — at airports, nuclear facilities, or inside Iranian territory — effectively halting commercial traffic.",
-      "category": "cyber",
-      "significance": "high",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "CNN / Lloyd's List Intelligence / BBC",
-      "sourceRefs": [
-        "CNN",
-        "Lloyd's List Intelligence",
-        "BBC"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "cyber",
-        "entity:iran"
-      ],
-      "createdAt": "2026-02-28T00:00:00.000Z"
-    },
-    {
-      "id": "event_39d297566022",
-      "date": "2026-02-28",
-      "time": "10:15Z",
-      "title": "Tel Aviv and Haifa Struck on Day 1",
-      "detail": "Iran fired Kheibar Shekan and Emad MRBMs at Israeli population centers, including Tel Aviv and Haifa, in the opening day of retaliation. 1 Israeli civilian was killed and 22 injured in the Day 1 strikes; 89 total injuries recorded across all Israeli targets. Israeli air defenses intercepted a majority of missiles but some penetrated.",
-      "category": "iran_strike",
-      "significance": "high",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "IDF / Wikipedia / ISW",
-      "sourceRefs": [
-        "IDF",
-        "Wikipedia",
-        "ISW"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "iran_strike",
-        "entity:iran",
-        "entity:israel"
-      ],
-      "createdAt": "2026-02-28T00:00:00.000Z"
-    },
-    {
-      "id": "event_4e86eb63d7c6",
-      "date": "2026-02-28",
-      "time": "09:30Z",
-      "title": "Fattah Hypersonic Missiles Strike Persian Gulf Bases — Second Wave",
-      "detail": "Iran launched a second major strike wave deploying Fattah-1 hypersonic maneuvering ballistic missiles (~1,400 km range, maneuvering warhead) against US bases across the Persian Gulf. The Fattah's maneuvering reentry vehicle made interception by THAAD and Patriot extremely difficult. Multiple bases were targeted; US confirmed missile activity but disputed damage levels.",
-      "category": "iran_strike",
-      "significance": "critical",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "EADaily / IRGC / JINSA assessment",
-      "sourceRefs": [
-        "EADaily",
-        "IRGC",
-        "JINSA assessment"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "iran_strike",
-        "entity:iran"
-      ],
-      "createdAt": "2026-02-28T00:00:00.000Z"
-    },
-    {
-      "id": "event_50f48c5f19da",
-      "date": "2026-02-28",
-      "time": "08:00Z",
-      "title": "Iran Fires First Retaliatory Wave — Operation True Promise 4",
-      "detail": "Iran launched the opening wave of \"Operation True Promise 4,\" striking US military assets across 9 countries simultaneously with ballistic missiles and Shahed-136 loitering munitions. Initial targets included Al Udeid Air Base (Qatar), Ali Al Salem Air Base (Kuwait), Al Dhafra Air Base (UAE), US Fifth Fleet HQ (Bahrain), and Victory Base (Baghdad). Iran released attack footage via IRGC channels.",
-      "category": "iran_strike",
-      "significance": "critical",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "IRGC / EADaily / Richard Medhurst",
-      "sourceRefs": [
-        "IRGC",
-        "EADaily",
-        "Richard Medhurst"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "iran_strike",
-        "entity:iran"
-      ],
-      "createdAt": "2026-02-28T00:00:00.000Z"
-    },
-    {
-      "id": "event_9573c348be4b",
-      "date": "2026-02-28",
-      "time": "07:00Z",
-      "title": "Iran Activates Electronic Operations Room",
-      "detail": "Iran stood up a centralized \"Electronic Operations Room\" within hours of the first strikes, coordinating hacktivist and state-sponsored cyber operations across 60+ groups. Within 24 hours, GPS jamming covered 21 new zones across the Persian Gulf. Windward data showed 1,100+ commercial vessels experiencing AIS disruptions on Day 1.",
-      "category": "cyber",
-      "significance": "high",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "Palo Alto Networks Unit 42 / CNN",
-      "sourceRefs": [
-        "Palo Alto Networks Unit 42",
-        "CNN"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "cyber",
-        "entity:iran"
-      ],
-      "createdAt": "2026-02-28T00:00:00.000Z"
-    },
-    {
-      "id": "event_8292f2187bf4",
-      "date": "2026-02-28",
-      "time": "06:30Z",
-      "title": "Supreme Leader Khamenei Killed in Tehran Strike",
-      "detail": "Supreme Leader Ali Khamenei was killed in an Israeli airstrike on his Tehran residence. His daughter, granddaughter (age 14 months), son-in-law, and daughter-in-law were also killed in the strike. Defense Minister Aziz Nasirzadeh and IRGC Commander General Mohammad Pakpour were also killed in separate strikes. Iran did not immediately confirm Khamenei's death.",
-      "category": "us_strike",
-      "significance": "critical",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "Wikipedia / Reuters / ISW",
-      "sourceRefs": [
-        "Wikipedia",
-        "Reuters",
-        "ISW"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "us_strike",
-        "entity:iran",
-        "entity:israel"
-      ],
-      "createdAt": "2026-02-28T00:00:00.000Z"
-    },
-    {
-      "id": "event_9797bd258cee",
-      "date": "2026-02-28",
-      "time": "06:15Z",
-      "title": "Operation Epic Fury / Roaring Lion Launches",
-      "detail": "At 9:45 a.m. IRST (06:15Z), the US (Operation Epic Fury) and Israel (Operation Roaring Lion) launched a coordinated air and missile strike campaign against Iran, targeting nuclear facilities at Natanz, Fordow, and Arak; IRGC bases; missile infrastructure; and senior leadership. Over 100 aircraft including B-2 Spirit bombers and F-35s participated in the opening wave alongside Tomahawk cruise missiles fired from US Navy vessels.",
-      "category": "us_strike",
-      "significance": "critical",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "CENTCOM / Reuters",
-      "sourceRefs": [
-        "CENTCOM",
-        "Reuters"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "us_strike",
-        "entity:iran",
-        "entity:israel"
-      ],
-      "createdAt": "2026-02-28T00:00:00.000Z"
-    },
-    {
-      "id": "event_788c6d53e500",
-      "date": "2026-02-27",
-      "time": null,
-      "title": "Oman FM Declares Diplomatic Breakthrough",
-      "detail": "Omani Foreign Minister Badr Al-Busaidi announced a \"breakthrough\" in US-Iran nuclear talks, one day before the US-Israel strike. Iran's FM Abbas Araghchi had described a \"historic\" agreement as \"within reach\" on Feb 25. The strikes came anyway, destroying the diplomatic track.",
-      "category": "diplomatic",
-      "significance": "critical",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "Reuters / Omani state media",
-      "sourceRefs": [
-        "Reuters",
-        "Omani state media"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "diplomatic",
-        "entity:iran",
-        "entity:israel"
-      ],
-      "createdAt": "2026-02-27T00:00:00.000Z"
     }
   ],
   "stories": [
@@ -5939,11 +5972,20 @@
       "id": "brief_9d0d944602c4",
       "briefingDate": "2026-04-24",
       "title": "WarWatch SITREP 2026-04-24",
-      "body": "SITUATION\nNo newly reviewed public events are available for this cycle.\nMarket signals: Brent $103.50 (+1.6% vs prior print); WTI $94.48 (+1.6% vs prior print); Gold $4,736.80 (+0.1% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 0.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
-      "sourceRefs": [],
+      "body": "SITUATION\nRecent reviewed/public events: Couple discovers Lebanon home destroyed by Israel from satellite image; US has three aircraft carriers in the Middle East for first time since 2003; PM Sanchez rebuffs US idea of suspending Spain from NATO; Iran-Iraq Tanker War redux? Why the Strait of Hormuz crisis is different; Iranians bring music to sites devastated by US-Israeli attacks; Israel-Lebanon ceasefire is extended by 3 weeks as tensions rise in Strait of Hormuz; Israel and Lebanon extend ceasefire. And, Trump eases medical marijuana rules; Thousands of seafarers stranded by ongoing U.S. blockade on Strait of Hormuz.\nMarket signals: Brent $98.71 (-6.1% vs prior print); WTI $94.00 (-1.9% vs prior print); Gold $4,736.10 (+0.7% vs prior print).\n\nENEMY\nHigh-risk activity mix: 1 Iran/proxy strike items, 1 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 2.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+      "sourceRefs": [
+        "Couple discovers Lebanon home destroyed by Israel from satellite image",
+        "US has three aircraft carriers in the Middle East for first time since 2003",
+        "PM Sanchez rebuffs US idea of suspending Spain from NATO",
+        "Iran-Iraq Tanker War redux? Why the Strait of Hormuz crisis is different",
+        "Iranians bring music to sites devastated by US-Israeli attacks",
+        "Israel-Lebanon ceasefire is extended by 3 weeks as tensions rise in Strait of Hormuz",
+        "Israel and Lebanon extend ceasefire. And, Trump eases medical marijuana rules",
+        "Thousands of seafarers stranded by ongoing U.S. blockade on Strait of Hormuz"
+      ],
       "reviewState": "approved",
       "publishState": "published",
-      "createdAt": "2026-04-24T04:20:09.088Z"
+      "createdAt": "2026-04-24T16:26:10.389Z"
     },
     {
       "id": "brief_acf6b8f13837",
@@ -7976,6 +8018,134 @@
       ],
       "events": [
         {
+          "id": "event_5b07d71b073b",
+          "date": "2026-04-24",
+          "time": null,
+          "title": "US has three aircraft carriers in the Middle East for first time since 2003",
+          "detail": "As tensions ramp up amid fragile truce, US military says it 'redirected' 34 vessels as part of blockade on Iran's ports.",
+          "category": "intel",
+          "significance": "medium",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "Al Jazeera",
+          "sourceRefs": [
+            "Al Jazeera",
+            "https://www.aljazeera.com/news/2026/4/24/us-has-three-aircraft-carriers-in-the-middle-east-for-first-time-since-2003?traffic_source=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "Al Jazeera",
+            "entity:iran"
+          ],
+          "createdAt": "2026-04-24T16:26:09.711Z"
+        },
+        {
+          "id": "event_1ad2eb2ae803",
+          "date": "2026-04-24",
+          "time": null,
+          "title": "PM Sanchez rebuffs US idea of suspending Spain from NATO",
+          "detail": "PM Sanchez responded to reports that the US may suspend Madrid from NATO over its opposition to the war on Iran.",
+          "category": "intel",
+          "significance": "medium",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "Al Jazeera",
+          "sourceRefs": [
+            "Al Jazeera",
+            "https://www.aljazeera.com/video/newsfeed/2026/4/24/pm-sanchez-rebuffs-us-idea-of-suspending-spain-from-nato?traffic_source=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "Al Jazeera",
+            "entity:iran"
+          ],
+          "createdAt": "2026-04-24T16:26:09.715Z"
+        },
+        {
+          "id": "event_05351ad0d8cc",
+          "date": "2026-04-24",
+          "time": null,
+          "title": "Iran-Iraq Tanker War redux? Why the Strait of Hormuz crisis is different",
+          "detail": "The Tanker War between Iran and Iraq in the 1980s also disrupted global shipping. But the situation today is different.",
+          "category": "economic",
+          "significance": "medium",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "Al Jazeera",
+          "sourceRefs": [
+            "Al Jazeera",
+            "https://www.aljazeera.com/news/2026/4/24/iran-iraq-tanker-war-redux-why-the-strait-of-hormuz-crisis-is-different?traffic_source=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "Al Jazeera",
+            "entity:strait-of-hormuz",
+            "entity:iran"
+          ],
+          "createdAt": "2026-04-24T16:26:09.719Z"
+        },
+        {
+          "id": "event_27ae4988dc2b",
+          "date": "2026-04-24",
+          "time": null,
+          "title": "Iranians bring music to sites devastated by US-Israeli attacks",
+          "detail": "Iranian musicians perform on city streets and venture to sites devastated in US-Israeli attacks.",
+          "category": "iran_strike",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "Al Jazeera",
+          "sourceRefs": [
+            "Al Jazeera",
+            "https://www.aljazeera.com/video/newsfeed/2026/4/24/iranians-bring-music-to-sites-devastated-by-us-israeli-attacks?traffic_source=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "Al Jazeera",
+            "entity:iran",
+            "entity:israel"
+          ],
+          "createdAt": "2026-04-24T16:26:09.723Z"
+        },
+        {
+          "id": "event_fa424d1a1024",
+          "date": "2026-04-24",
+          "time": null,
+          "title": "Thousands of seafarers stranded by ongoing U.S. blockade on Strait of Hormuz",
+          "detail": "As the U.S. blockade on Iranian ports drags on, thousands of seafarers are stranded on ships, and economic shockwaves ripple around the world.",
+          "category": "economic",
+          "significance": "medium",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "NPR World",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/24/nx-s1-5797793/thousands-of-seafarers-stranded-by-ongoing-us-blockade-on-strait-of-hormuz"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:strait-of-hormuz",
+            "entity:iran"
+          ],
+          "createdAt": "2026-04-24T16:26:09.816Z"
+        },
+        {
           "id": "event_7508dd8a23cd",
           "date": "2026-04-23",
           "time": null,
@@ -8001,142 +8171,6 @@
             "entity:israel"
           ],
           "createdAt": "2026-04-23T14:06:55.622Z"
-        },
-        {
-          "id": "event_dc6155611d76",
-          "date": "2026-04-23",
-          "time": null,
-          "title": "Makan Nasiri, the only child still missing from the school bombed in Iran",
-          "detail": "After nearly seven weeks of searching for remains, authorities tell the seven-year-old's parents his case is closed.",
-          "category": "iran_strike",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/news/2026/4/23/makan-nasiri-the-only-missing-child-from-the-school-bombed-in-irans-minab?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
-            "entity:iran"
-          ],
-          "createdAt": "2026-04-23T14:06:55.717Z"
-        },
-        {
-          "id": "event_0ab8874848e4",
-          "date": "2026-04-23",
-          "time": null,
-          "title": "Infiltration from Within: Israelis recruited to spy for enemy countries",
-          "detail": "Israel’s intelligence exposed - spies, moles and blind spots from early betrayals to October 7 and the war with Iran.",
-          "category": "intel",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/video/al-jazeera-world/2026/4/23/infiltration-from-within-israelis-recruited-to-spy-for-enemy-countries?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
-            "entity:iran",
-            "entity:israel"
-          ],
-          "createdAt": "2026-04-23T14:06:55.720Z"
-        },
-        {
-          "id": "event_919b4de34640",
-          "date": "2026-04-23",
-          "time": null,
-          "title": "Protester hurls red fluid at Reza Pahlavi during Germany visit",
-          "detail": "The exiled former crown prince of Iran Reza Pahlavi was splashed with red fluid by an activist during a visit to Berlin.",
-          "category": "intel",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/video/newsfeed/2026/4/23/protester-hurls-red-fluid-at-reza-pahlavi-during-germany-visit?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
-            "entity:iran"
-          ],
-          "createdAt": "2026-04-23T14:06:55.724Z"
-        },
-        {
-          "id": "event_a4a07783a17f",
-          "date": "2026-04-23",
-          "time": null,
-          "title": "Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted",
-          "detail": "Tensions are rising in the Middle East as shaky ceasefire agreements between the U.S., Israel and Iran, and Lebanon and Israel, are tested. And, the Secretary of the Navy is out of the role.",
-          "category": "diplomatic",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "NPR World",
-          "sourceRefs": [
-            "NPR World",
-            "https://www.npr.org/2026/04/23/g-s1-118440/up-first-newsletter-us-iran-john-phelan-trump-republican-democrat-midterm-fundraising-budget-reconciliation-ice"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "NPR World",
-            "entity:iran",
-            "entity:israel",
-            "entity:lebanon"
-          ],
-          "createdAt": "2026-04-23T14:06:55.782Z"
-        },
-        {
-          "id": "event_1a1dbdc60ac3",
-          "date": "2026-04-22",
-          "time": null,
-          "title": "Iran attacks ships in Hormuz Strait as the U.S. continues its blockade amid ceasefire",
-          "detail": "Three vessels came under fire in the Strait of Hormuz, after the U.S. and Iran failed to meet in Pakistan for talks to end the war and as President Trump extended the ceasefire but kept the blockade. The mood in the Strait of Hormuz remains combustible despite Trump's ceasefire extension. Iran's top negotiator says it's \"not possible to reopen\" the strait due to \"blatent violations\" of US-Iran ceasefire. President Trump says he ordered the Navy to \"shoot and kill any boat\" putting mines in the Strait of Hormuz as the U.S. ramps up minesweeping there. President Trump has extended the ceasefire, but Iran says it's not enough if the naval blockade is still in place.",
-          "category": "diplomatic",
-          "significance": "high",
-          "confidence": "reported",
-          "corroboration": 2,
-          "sourceText": "NPR World / BBC Middle East",
-          "sourceRefs": [
-            "NPR World",
-            "https://www.npr.org/2026/04/22/nx-s1-5795405/iran-middle-east-updates",
-            "BBC Middle East",
-            "https://www.bbc.com/news/articles/c0q9xq7knq2o?at_medium=RSS&at_campaign=rss",
-            "https://www.bbc.com/news/videos/c1l93gg7zmno?at_medium=RSS&at_campaign=rss",
-            "https://www.npr.org/2026/04/23/nx-s1-5796719/iran-middle-east-updates",
-            "https://www.npr.org/2026/04/23/nx-s1-5795829/peace-talks-between-us-and-iran-at-a-standstill-as-trump-extends-ceasefire"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "NPR World",
-            "entity:strait-of-hormuz",
-            "entity:iran",
-            "entity:pakistan",
-            "BBC Middle East"
-          ],
-          "createdAt": "2026-04-22T16:22:40.073Z"
         }
       ],
       "briefings": [
@@ -8144,11 +8178,20 @@
           "id": "brief_9d0d944602c4",
           "briefingDate": "2026-04-24",
           "title": "WarWatch SITREP 2026-04-24",
-          "body": "SITUATION\nNo newly reviewed public events are available for this cycle.\nMarket signals: Brent $103.50 (+1.6% vs prior print); WTI $94.48 (+1.6% vs prior print); Gold $4,736.80 (+0.1% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 0.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
-          "sourceRefs": [],
+          "body": "SITUATION\nRecent reviewed/public events: Couple discovers Lebanon home destroyed by Israel from satellite image; US has three aircraft carriers in the Middle East for first time since 2003; PM Sanchez rebuffs US idea of suspending Spain from NATO; Iran-Iraq Tanker War redux? Why the Strait of Hormuz crisis is different; Iranians bring music to sites devastated by US-Israeli attacks; Israel-Lebanon ceasefire is extended by 3 weeks as tensions rise in Strait of Hormuz; Israel and Lebanon extend ceasefire. And, Trump eases medical marijuana rules; Thousands of seafarers stranded by ongoing U.S. blockade on Strait of Hormuz.\nMarket signals: Brent $98.71 (-6.1% vs prior print); WTI $94.00 (-1.9% vs prior print); Gold $4,736.10 (+0.7% vs prior print).\n\nENEMY\nHigh-risk activity mix: 1 Iran/proxy strike items, 1 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 2.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+          "sourceRefs": [
+            "Couple discovers Lebanon home destroyed by Israel from satellite image",
+            "US has three aircraft carriers in the Middle East for first time since 2003",
+            "PM Sanchez rebuffs US idea of suspending Spain from NATO",
+            "Iran-Iraq Tanker War redux? Why the Strait of Hormuz crisis is different",
+            "Iranians bring music to sites devastated by US-Israeli attacks",
+            "Israel-Lebanon ceasefire is extended by 3 weeks as tensions rise in Strait of Hormuz",
+            "Israel and Lebanon extend ceasefire. And, Trump eases medical marijuana rules",
+            "Thousands of seafarers stranded by ongoing U.S. blockade on Strait of Hormuz"
+          ],
           "reviewState": "approved",
           "publishState": "published",
-          "createdAt": "2026-04-24T04:20:09.088Z"
+          "createdAt": "2026-04-24T16:26:10.389Z"
         },
         {
           "id": "brief_acf6b8f13837",
@@ -8308,6 +8351,113 @@
       ],
       "events": [
         {
+          "id": "event_ffbd7877eaaf",
+          "date": "2026-04-24",
+          "time": null,
+          "title": "Couple discovers Lebanon home destroyed by Israel from satellite image",
+          "detail": "Joe Elias contacted BBC Verify following reports that his village was among several destroyed by Israeli forces.",
+          "category": "cyber",
+          "significance": "medium",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "BBC Middle East",
+          "sourceRefs": [
+            "BBC Middle East",
+            "https://www.bbc.com/news/articles/cvg30jkvklno?at_medium=RSS&at_campaign=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "BBC Middle East",
+            "entity:israel",
+            "entity:lebanon"
+          ],
+          "createdAt": "2026-04-24T16:26:09.605Z"
+        },
+        {
+          "id": "event_27ae4988dc2b",
+          "date": "2026-04-24",
+          "time": null,
+          "title": "Iranians bring music to sites devastated by US-Israeli attacks",
+          "detail": "Iranian musicians perform on city streets and venture to sites devastated in US-Israeli attacks.",
+          "category": "iran_strike",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "Al Jazeera",
+          "sourceRefs": [
+            "Al Jazeera",
+            "https://www.aljazeera.com/video/newsfeed/2026/4/24/iranians-bring-music-to-sites-devastated-by-us-israeli-attacks?traffic_source=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "Al Jazeera",
+            "entity:iran",
+            "entity:israel"
+          ],
+          "createdAt": "2026-04-24T16:26:09.723Z"
+        },
+        {
+          "id": "event_5c4f11fc3a5d",
+          "date": "2026-04-24",
+          "time": null,
+          "title": "Israel-Lebanon ceasefire is extended by 3 weeks as tensions rise in Strait of Hormuz",
+          "detail": "Hezbollah and Israel traded fire just hours after the ceasefire extension was announced, underscoring its fragility.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "NPR World",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/24/g-s1-118595/middle-east-war-updates"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:strait-of-hormuz",
+            "entity:hezbollah",
+            "entity:israel",
+            "entity:lebanon"
+          ],
+          "createdAt": "2026-04-24T16:26:09.806Z"
+        },
+        {
+          "id": "event_f3df71aaf1ac",
+          "date": "2026-04-24",
+          "time": null,
+          "title": "Israel and Lebanon extend ceasefire. And, Trump eases medical marijuana rules",
+          "detail": "Israel and Lebanon have agreed to extend their ceasefire for three weeks, President Trump says. And, the Trump administration is easing rules on medical marijuana. President Trump said Thursday that Israel and Lebanon have agreed to extend their ceasefire for three weeks after the two sides met at the White House for a high-level negotiation.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "NPR World",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/24/g-s1-118594/up-first-newsletter-strait-of-hormuz-lebanon-israel-marijuana-reclassification-georgia-wildfires-polymarket",
+            "https://www.npr.org/2026/04/23/nx-s1-5796719/iran-middle-east-updates"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:israel",
+            "entity:lebanon"
+          ],
+          "createdAt": "2026-04-24T16:26:09.812Z"
+        },
+        {
           "id": "event_29b53c0af4ad",
           "date": "2026-04-23",
           "time": null,
@@ -8359,114 +8509,28 @@
             "auto_reclassified"
           ],
           "createdAt": "2026-04-23T14:06:55.616Z"
-        },
-        {
-          "id": "event_7508dd8a23cd",
-          "date": "2026-04-23",
-          "time": null,
-          "title": "Iran says Strait of Hormuz cannot be opened due to ceasefire breaches",
-          "detail": "Iran's chief negotiator says \"violations\" by the US and Israel make it impossible to open the strait.",
-          "category": "diplomatic",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "BBC Middle East",
-          "sourceRefs": [
-            "BBC Middle East",
-            "https://www.bbc.com/news/articles/c3w3vqv0edpo?at_medium=RSS&at_campaign=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "BBC Middle East",
-            "entity:strait-of-hormuz",
-            "entity:iran",
-            "entity:israel"
-          ],
-          "createdAt": "2026-04-23T14:06:55.622Z"
-        },
-        {
-          "id": "event_f81c567e7930",
-          "date": "2026-04-23",
-          "time": null,
-          "title": "How Lebanese journalist Amal Khalil was pursued and killed by Israel",
-          "detail": "Details of how Lebanese journalist Amal Khalil was “pursued” and killed by Israeli forces have been released.",
-          "category": "intel",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/video/newsfeed/2026/4/23/how-lebanese-journalist-amal-khalil-was-pursued-and-killed-by-israel?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
-            "entity:israel"
-          ],
-          "createdAt": "2026-04-23T14:06:55.712Z"
-        },
-        {
-          "id": "event_0ab8874848e4",
-          "date": "2026-04-23",
-          "time": null,
-          "title": "Infiltration from Within: Israelis recruited to spy for enemy countries",
-          "detail": "Israel’s intelligence exposed - spies, moles and blind spots from early betrayals to October 7 and the war with Iran.",
-          "category": "intel",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/video/al-jazeera-world/2026/4/23/infiltration-from-within-israelis-recruited-to-spy-for-enemy-countries?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
-            "entity:iran",
-            "entity:israel"
-          ],
-          "createdAt": "2026-04-23T14:06:55.720Z"
-        },
-        {
-          "id": "event_a4a07783a17f",
-          "date": "2026-04-23",
-          "time": null,
-          "title": "Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted",
-          "detail": "Tensions are rising in the Middle East as shaky ceasefire agreements between the U.S., Israel and Iran, and Lebanon and Israel, are tested. And, the Secretary of the Navy is out of the role.",
-          "category": "diplomatic",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "NPR World",
-          "sourceRefs": [
-            "NPR World",
-            "https://www.npr.org/2026/04/23/g-s1-118440/up-first-newsletter-us-iran-john-phelan-trump-republican-democrat-midterm-fundraising-budget-reconciliation-ice"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "NPR World",
-            "entity:iran",
-            "entity:israel",
-            "entity:lebanon"
-          ],
-          "createdAt": "2026-04-23T14:06:55.782Z"
         }
       ],
       "briefings": [
+        {
+          "id": "brief_9d0d944602c4",
+          "briefingDate": "2026-04-24",
+          "title": "WarWatch SITREP 2026-04-24",
+          "body": "SITUATION\nRecent reviewed/public events: Couple discovers Lebanon home destroyed by Israel from satellite image; US has three aircraft carriers in the Middle East for first time since 2003; PM Sanchez rebuffs US idea of suspending Spain from NATO; Iran-Iraq Tanker War redux? Why the Strait of Hormuz crisis is different; Iranians bring music to sites devastated by US-Israeli attacks; Israel-Lebanon ceasefire is extended by 3 weeks as tensions rise in Strait of Hormuz; Israel and Lebanon extend ceasefire. And, Trump eases medical marijuana rules; Thousands of seafarers stranded by ongoing U.S. blockade on Strait of Hormuz.\nMarket signals: Brent $98.71 (-6.1% vs prior print); WTI $94.00 (-1.9% vs prior print); Gold $4,736.10 (+0.7% vs prior print).\n\nENEMY\nHigh-risk activity mix: 1 Iran/proxy strike items, 1 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 2.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+          "sourceRefs": [
+            "Couple discovers Lebanon home destroyed by Israel from satellite image",
+            "US has three aircraft carriers in the Middle East for first time since 2003",
+            "PM Sanchez rebuffs US idea of suspending Spain from NATO",
+            "Iran-Iraq Tanker War redux? Why the Strait of Hormuz crisis is different",
+            "Iranians bring music to sites devastated by US-Israeli attacks",
+            "Israel-Lebanon ceasefire is extended by 3 weeks as tensions rise in Strait of Hormuz",
+            "Israel and Lebanon extend ceasefire. And, Trump eases medical marijuana rules",
+            "Thousands of seafarers stranded by ongoing U.S. blockade on Strait of Hormuz"
+          ],
+          "reviewState": "approved",
+          "publishState": "published",
+          "createdAt": "2026-04-24T16:26:10.389Z"
+        },
         {
           "id": "brief_acf6b8f13837",
           "briefingDate": "2026-04-23",
@@ -8616,6 +8680,87 @@
       ],
       "events": [
         {
+          "id": "event_ffbd7877eaaf",
+          "date": "2026-04-24",
+          "time": null,
+          "title": "Couple discovers Lebanon home destroyed by Israel from satellite image",
+          "detail": "Joe Elias contacted BBC Verify following reports that his village was among several destroyed by Israeli forces.",
+          "category": "cyber",
+          "significance": "medium",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "BBC Middle East",
+          "sourceRefs": [
+            "BBC Middle East",
+            "https://www.bbc.com/news/articles/cvg30jkvklno?at_medium=RSS&at_campaign=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "BBC Middle East",
+            "entity:israel",
+            "entity:lebanon"
+          ],
+          "createdAt": "2026-04-24T16:26:09.605Z"
+        },
+        {
+          "id": "event_5c4f11fc3a5d",
+          "date": "2026-04-24",
+          "time": null,
+          "title": "Israel-Lebanon ceasefire is extended by 3 weeks as tensions rise in Strait of Hormuz",
+          "detail": "Hezbollah and Israel traded fire just hours after the ceasefire extension was announced, underscoring its fragility.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "NPR World",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/24/g-s1-118595/middle-east-war-updates"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:strait-of-hormuz",
+            "entity:hezbollah",
+            "entity:israel",
+            "entity:lebanon"
+          ],
+          "createdAt": "2026-04-24T16:26:09.806Z"
+        },
+        {
+          "id": "event_f3df71aaf1ac",
+          "date": "2026-04-24",
+          "time": null,
+          "title": "Israel and Lebanon extend ceasefire. And, Trump eases medical marijuana rules",
+          "detail": "Israel and Lebanon have agreed to extend their ceasefire for three weeks, President Trump says. And, the Trump administration is easing rules on medical marijuana. President Trump said Thursday that Israel and Lebanon have agreed to extend their ceasefire for three weeks after the two sides met at the White House for a high-level negotiation.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "NPR World",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/24/g-s1-118594/up-first-newsletter-strait-of-hormuz-lebanon-israel-marijuana-reclassification-georgia-wildfires-polymarket",
+            "https://www.npr.org/2026/04/23/nx-s1-5796719/iran-middle-east-updates"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:israel",
+            "entity:lebanon"
+          ],
+          "createdAt": "2026-04-24T16:26:09.812Z"
+        },
+        {
           "id": "event_e371af1a4ffe",
           "date": "2026-04-23",
           "time": null,
@@ -8694,87 +8839,29 @@
             "entity:lebanon"
           ],
           "createdAt": "2026-04-22T16:32:48.806Z"
-        },
-        {
-          "id": "event_e1f85f5779a5",
-          "date": "2026-04-22",
-          "time": null,
-          "title": "Bad optics? Israel jails soldiers who smashed Jesus statue in Lebanon",
-          "detail": "Critics say Israeli attacks on Christian sites challenge claims of a Judeo-Christian shared heritage and mutual respect.",
-          "category": "intel",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/features/2026/4/22/bad-optics-israel-jails-soldiers-who-smashed-jesus-statue-in-lebanon?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
-            "entity:israel",
-            "entity:lebanon"
-          ],
-          "createdAt": "2026-04-22T20:03:25.582Z"
-        },
-        {
-          "id": "event_64b248c71845",
-          "date": "2026-04-22",
-          "time": null,
-          "title": "At least four killed in Israeli attacks on Lebanon, journalists wounded",
-          "detail": "Journalists wounded in Israeli attacks in at-Tiri, Lebanon's National News Agency (NNA) reports.",
-          "category": "intel",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/news/2026/4/22/at-least-four-killed-in-israeli-strikes-on-lebanon-journalists-wounded?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
-            "entity:israel",
-            "entity:lebanon"
-          ],
-          "createdAt": "2026-04-22T20:03:25.585Z"
-        },
-        {
-          "id": "event_524c878e7210",
-          "date": "2026-04-21",
-          "time": null,
-          "title": "Israeli soldiers punished over vandalism of Jesus statue in Lebanon",
-          "detail": "Two soldiers will be removed from combat duty and receive 30 days of military detention, Israel's military says.",
-          "category": "intel",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "BBC Middle East",
-          "sourceRefs": [
-            "BBC Middle East",
-            "https://www.bbc.com/news/articles/cew790ppn8jo?at_medium=RSS&at_campaign=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "BBC Middle East",
-            "entity:israel",
-            "entity:lebanon"
-          ],
-          "createdAt": "2026-04-22T16:21:24.184Z"
         }
       ],
-      "briefings": []
+      "briefings": [
+        {
+          "id": "brief_9d0d944602c4",
+          "briefingDate": "2026-04-24",
+          "title": "WarWatch SITREP 2026-04-24",
+          "body": "SITUATION\nRecent reviewed/public events: Couple discovers Lebanon home destroyed by Israel from satellite image; US has three aircraft carriers in the Middle East for first time since 2003; PM Sanchez rebuffs US idea of suspending Spain from NATO; Iran-Iraq Tanker War redux? Why the Strait of Hormuz crisis is different; Iranians bring music to sites devastated by US-Israeli attacks; Israel-Lebanon ceasefire is extended by 3 weeks as tensions rise in Strait of Hormuz; Israel and Lebanon extend ceasefire. And, Trump eases medical marijuana rules; Thousands of seafarers stranded by ongoing U.S. blockade on Strait of Hormuz.\nMarket signals: Brent $98.71 (-6.1% vs prior print); WTI $94.00 (-1.9% vs prior print); Gold $4,736.10 (+0.7% vs prior print).\n\nENEMY\nHigh-risk activity mix: 1 Iran/proxy strike items, 1 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 2.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+          "sourceRefs": [
+            "Couple discovers Lebanon home destroyed by Israel from satellite image",
+            "US has three aircraft carriers in the Middle East for first time since 2003",
+            "PM Sanchez rebuffs US idea of suspending Spain from NATO",
+            "Iran-Iraq Tanker War redux? Why the Strait of Hormuz crisis is different",
+            "Iranians bring music to sites devastated by US-Israeli attacks",
+            "Israel-Lebanon ceasefire is extended by 3 weeks as tensions rise in Strait of Hormuz",
+            "Israel and Lebanon extend ceasefire. And, Trump eases medical marijuana rules",
+            "Thousands of seafarers stranded by ongoing U.S. blockade on Strait of Hormuz"
+          ],
+          "reviewState": "approved",
+          "publishState": "published",
+          "createdAt": "2026-04-24T16:26:10.389Z"
+        }
+      ]
     },
     {
       "entity": {
@@ -9319,6 +9406,86 @@
       ],
       "events": [
         {
+          "id": "event_05351ad0d8cc",
+          "date": "2026-04-24",
+          "time": null,
+          "title": "Iran-Iraq Tanker War redux? Why the Strait of Hormuz crisis is different",
+          "detail": "The Tanker War between Iran and Iraq in the 1980s also disrupted global shipping. But the situation today is different.",
+          "category": "economic",
+          "significance": "medium",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "Al Jazeera",
+          "sourceRefs": [
+            "Al Jazeera",
+            "https://www.aljazeera.com/news/2026/4/24/iran-iraq-tanker-war-redux-why-the-strait-of-hormuz-crisis-is-different?traffic_source=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "Al Jazeera",
+            "entity:strait-of-hormuz",
+            "entity:iran"
+          ],
+          "createdAt": "2026-04-24T16:26:09.719Z"
+        },
+        {
+          "id": "event_5c4f11fc3a5d",
+          "date": "2026-04-24",
+          "time": null,
+          "title": "Israel-Lebanon ceasefire is extended by 3 weeks as tensions rise in Strait of Hormuz",
+          "detail": "Hezbollah and Israel traded fire just hours after the ceasefire extension was announced, underscoring its fragility.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "NPR World",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/24/g-s1-118595/middle-east-war-updates"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:strait-of-hormuz",
+            "entity:hezbollah",
+            "entity:israel",
+            "entity:lebanon"
+          ],
+          "createdAt": "2026-04-24T16:26:09.806Z"
+        },
+        {
+          "id": "event_fa424d1a1024",
+          "date": "2026-04-24",
+          "time": null,
+          "title": "Thousands of seafarers stranded by ongoing U.S. blockade on Strait of Hormuz",
+          "detail": "As the U.S. blockade on Iranian ports drags on, thousands of seafarers are stranded on ships, and economic shockwaves ripple around the world.",
+          "category": "economic",
+          "significance": "medium",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "NPR World",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/24/nx-s1-5797793/thousands-of-seafarers-stranded-by-ongoing-us-blockade-on-strait-of-hormuz"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:strait-of-hormuz",
+            "entity:iran"
+          ],
+          "createdAt": "2026-04-24T16:26:09.816Z"
+        },
+        {
           "id": "event_7508dd8a23cd",
           "date": "2026-04-23",
           "time": null,
@@ -9403,89 +9570,28 @@
             "entity:iran"
           ],
           "createdAt": "2026-04-22T16:21:24.162Z"
-        },
-        {
-          "id": "event_606dfa678e37",
-          "date": "2026-04-22",
-          "time": null,
-          "title": "Ships attacked in Strait of Hormuz. And, VA voters approve redistricting effort",
-          "detail": "Two ships came under attack in the Strait of Hormuz, hours after Trump extended the ceasefire with Iran. And, Virginia voters approved a measure allowing Democrats to redraw the congressional map.",
-          "category": "diplomatic",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "NPR World",
-          "sourceRefs": [
-            "NPR World",
-            "https://www.npr.org/2026/04/22/g-s1-118328/up-first-newsletter-iran-us-ceasefire-virginia-redistricting-aca"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "NPR World",
-            "entity:strait-of-hormuz",
-            "entity:iran"
-          ],
-          "createdAt": "2026-04-22T16:22:40.069Z"
-        },
-        {
-          "id": "event_01e9a484a31c",
-          "date": "2026-04-22",
-          "time": null,
-          "title": "Iran says it seized ships in Strait of Hormuz as U.S. blockade continues amid ceasefire",
-          "detail": "Three vessels came under fire in the Strait of Hormuz, after the U.S. and Iran failed to meet in Pakistan for talks to end the war and as President Trump extended the ceasefire but kept the blockade.",
-          "category": "diplomatic",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "NPR World",
-          "sourceRefs": [
-            "NPR World",
-            "https://www.npr.org/2026/04/22/nx-s1-5795405/iran-middle-east-updates"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "NPR World",
-            "entity:strait-of-hormuz",
-            "entity:iran",
-            "entity:pakistan"
-          ],
-          "createdAt": "2026-04-22T20:03:25.676Z"
-        },
-        {
-          "id": "event_827a79ec3da5",
-          "date": "2026-04-20",
-          "time": null,
-          "title": "Trump says US will not lift Hormuz blockade until deal made with Iran",
-          "detail": "The US president's comments come amid uncertainty over whether Iran will attend peace talks in Pakistan this week.",
-          "category": "diplomatic",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "BBC Middle East",
-          "sourceRefs": [
-            "BBC Middle East",
-            "https://www.bbc.com/news/articles/cdxd88r2wjzo?at_medium=RSS&at_campaign=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "BBC Middle East",
-            "entity:iran",
-            "entity:pakistan",
-            "entity:strait-of-hormuz"
-          ],
-          "createdAt": "2026-04-22T16:21:24.193Z"
         }
       ],
       "briefings": [
+        {
+          "id": "brief_9d0d944602c4",
+          "briefingDate": "2026-04-24",
+          "title": "WarWatch SITREP 2026-04-24",
+          "body": "SITUATION\nRecent reviewed/public events: Couple discovers Lebanon home destroyed by Israel from satellite image; US has three aircraft carriers in the Middle East for first time since 2003; PM Sanchez rebuffs US idea of suspending Spain from NATO; Iran-Iraq Tanker War redux? Why the Strait of Hormuz crisis is different; Iranians bring music to sites devastated by US-Israeli attacks; Israel-Lebanon ceasefire is extended by 3 weeks as tensions rise in Strait of Hormuz; Israel and Lebanon extend ceasefire. And, Trump eases medical marijuana rules; Thousands of seafarers stranded by ongoing U.S. blockade on Strait of Hormuz.\nMarket signals: Brent $98.71 (-6.1% vs prior print); WTI $94.00 (-1.9% vs prior print); Gold $4,736.10 (+0.7% vs prior print).\n\nENEMY\nHigh-risk activity mix: 1 Iran/proxy strike items, 1 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 2.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+          "sourceRefs": [
+            "Couple discovers Lebanon home destroyed by Israel from satellite image",
+            "US has three aircraft carriers in the Middle East for first time since 2003",
+            "PM Sanchez rebuffs US idea of suspending Spain from NATO",
+            "Iran-Iraq Tanker War redux? Why the Strait of Hormuz crisis is different",
+            "Iranians bring music to sites devastated by US-Israeli attacks",
+            "Israel-Lebanon ceasefire is extended by 3 weeks as tensions rise in Strait of Hormuz",
+            "Israel and Lebanon extend ceasefire. And, Trump eases medical marijuana rules",
+            "Thousands of seafarers stranded by ongoing U.S. blockade on Strait of Hormuz"
+          ],
+          "reviewState": "approved",
+          "publishState": "published",
+          "createdAt": "2026-04-24T16:26:10.389Z"
+        },
         {
           "id": "brief_acf6b8f13837",
           "briefingDate": "2026-04-23",
@@ -9605,6 +9711,34 @@
         }
       ],
       "events": [
+        {
+          "id": "event_5c4f11fc3a5d",
+          "date": "2026-04-24",
+          "time": null,
+          "title": "Israel-Lebanon ceasefire is extended by 3 weeks as tensions rise in Strait of Hormuz",
+          "detail": "Hezbollah and Israel traded fire just hours after the ceasefire extension was announced, underscoring its fragility.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "NPR World",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/24/g-s1-118595/middle-east-war-updates"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:strait-of-hormuz",
+            "entity:hezbollah",
+            "entity:israel",
+            "entity:lebanon"
+          ],
+          "createdAt": "2026-04-24T16:26:09.806Z"
+        },
         {
           "id": "event_50c6e33be4f1",
           "date": "2026-04-23",
@@ -9733,31 +9867,6 @@
             "entity:israel"
           ],
           "createdAt": "2026-04-05T00:00:00.000Z"
-        },
-        {
-          "id": "event_8d5415c419ef",
-          "date": "2026-04-04",
-          "time": null,
-          "title": "BP North Rumaila Oilfield Hit — Iraqi Workers Wounded",
-          "detail": "Iraq-based Iranian-aligned militia drones struck the BP-operated North Rumaila oilfield in Basra Province, wounding 3 Iraqi workers. It was the first confirmed targeting of British-operated energy infrastructure in Iraq by pro-Iran militias. The Kataib Hezbollah-controlled 45th PMF Brigade HQ in Anbar Province was struck in retaliation by US-Israeli forces, killing 2 PMF fighters. Islamic Resistance in Iraq claimed 19 drone and rocket attacks against US bases the same day.",
-          "category": "proxy",
-          "significance": "high",
-          "confidence": "reported",
-          "corroboration": 1,
-          "sourceText": "Critical Threats (April 4, 2026)",
-          "sourceRefs": [
-            "Critical Threats (April 4, 2026)"
-          ],
-          "reviewState": "approved",
-          "visibility": "primary",
-          "geo": null,
-          "tags": [
-            "proxy",
-            "entity:hezbollah",
-            "entity:iran",
-            "entity:israel"
-          ],
-          "createdAt": "2026-04-04T00:00:00.000Z"
         }
       ],
       "briefings": [
@@ -11570,10 +11679,27 @@
       {
         "id": "metric_f29a0321a2ad",
         "metricKey": "oil_brent",
-        "value": 103.5,
-        "valueText": "$103.50",
+        "value": 105.06999969482422,
+        "valueText": "$105.07",
         "unit": "usd_per_barrel",
         "timestamp": "2026-04-23T04:00:00.000Z",
+        "sourceText": "Yahoo Finance",
+        "confidence": "confirmed",
+        "reviewState": "approved",
+        "freshness": "ingested",
+        "meta": {
+          "symbol": "BZ=F",
+          "currency": "USD",
+          "exchange": "NYM"
+        }
+      },
+      {
+        "id": "metric_48e5874bce78",
+        "metricKey": "oil_brent",
+        "value": 98.70999908447266,
+        "valueText": "$98.71",
+        "unit": "usd_per_barrel",
+        "timestamp": "2026-04-24T04:00:00.000Z",
         "sourceText": "Yahoo Finance",
         "confidence": "confirmed",
         "reviewState": "approved",
@@ -11963,10 +12089,27 @@
       {
         "id": "metric_3421589d831b",
         "metricKey": "oil_wti",
-        "value": 94.4800033569336,
-        "valueText": "$94.48",
+        "value": 95.8499984741211,
+        "valueText": "$95.85",
         "unit": "usd_per_barrel",
         "timestamp": "2026-04-23T04:00:00.000Z",
+        "sourceText": "Yahoo Finance",
+        "confidence": "confirmed",
+        "reviewState": "approved",
+        "freshness": "ingested",
+        "meta": {
+          "symbol": "CL=F",
+          "currency": "USD",
+          "exchange": "NYM"
+        }
+      },
+      {
+        "id": "metric_a1ad152020c2",
+        "metricKey": "oil_wti",
+        "value": 94,
+        "valueText": "$94.00",
+        "unit": "usd_per_barrel",
+        "timestamp": "2026-04-24T04:00:00.000Z",
         "sourceText": "Yahoo Finance",
         "confidence": "confirmed",
         "reviewState": "approved",
@@ -12356,10 +12499,27 @@
       {
         "id": "metric_c1e249debf67",
         "metricKey": "gold_price",
-        "value": 4736.7998046875,
-        "valueText": "$4,736.80",
+        "value": 4705.10009765625,
+        "valueText": "$4,705.10",
         "unit": "usd_per_ounce",
         "timestamp": "2026-04-23T04:00:00.000Z",
+        "sourceText": "Yahoo Finance",
+        "confidence": "confirmed",
+        "reviewState": "approved",
+        "freshness": "ingested",
+        "meta": {
+          "symbol": "GC=F",
+          "currency": "USD",
+          "exchange": "CMX"
+        }
+      },
+      {
+        "id": "metric_2d5d48731ee4",
+        "metricKey": "gold_price",
+        "value": 4736.10009765625,
+        "valueText": "$4,736.10",
+        "unit": "usd_per_ounce",
+        "timestamp": "2026-04-24T04:00:00.000Z",
         "sourceText": "Yahoo Finance",
         "confidence": "confirmed",
         "reviewState": "approved",

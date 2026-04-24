@@ -105,6 +105,7 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - Heartbeat next actions now use the live Vercel production URL as project truth instead of falling back to stale Render guidance
 - Regional Gaza/Lebanon casualty and journalist-targeting spillover items now classify as non-critical `regional_strike` entries unless a core Iran/Hormuz/nuclear escalator is present, so they stop reopening the critical queue
 - Local smoke verification now clears `PUBLIC_BASE_URL` for its spawned server so local canonical checks stay local while `verify:public` continues to validate the deployed site
+- The top-line suggestion lane now preserves contextual evidence while a metric is on reviewed hold, and it can surface an actionable candidate immediately if fresh evidence becomes publishable
 - The live feed lane is now materially cleaner: obvious sports, tourism, and unrelated global stories from broad RSS feeds are quarantined away from public surfaces
 - Public stale state remains expected, but it is now narrowed to `review_hold` instead of `stale_seed`: strike, Hormuz, and casualty top-line metrics are explicitly on reviewed hold rather than silently carrying bootstrap-era values
 - The operator console can now surface current evidence for stale KPIs, but it will not invent values where extraction is not defensible

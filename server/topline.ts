@@ -80,11 +80,13 @@ function metricRelevanceScore(
     const hasStrikeFigure = /[0-9][0-9,]{2,}\+?\s+(?:strikes|sorties)/i.test(haystack);
     const hasStrikeContext =
       /(?:total|cumulative|combined|campaign|air campaign).{0,40}(?:strikes|sorties)/i.test(haystack) ||
-      /(?:strikes|sorties).{0,40}(?:total|cumulative|combined|campaign|all theaters)/i.test(haystack);
+      /(?:strikes|sorties).{0,40}(?:total|cumulative|combined|campaign|all theaters)/i.test(haystack) ||
+      /(?:largest strike wave|air campaign|campaign tempo|sortie rate|wave of strikes|strike tally|all theaters)/i.test(
+        haystack
+      );
     const hasTheaterActor =
       hasAnyEntityTag(entityTags, ["iran", "israel", "lebanon", "hezbollah", "united-states"]) ||
       /(?:iran|israel|lebanon|hezbollah|united states|u\.s\.)/i.test(haystack);
-
     if (!hasStrikeFigure && !hasStrikeContext) {
       return 0;
     }
@@ -92,7 +94,6 @@ function metricRelevanceScore(
     return (
       (hasStrikeFigure ? 8 : 0) +
       (hasStrikeContext ? 5 : 0) +
-      (event.category.endsWith("_strike") ? 3 : 0) +
       (hasTheaterActor ? 4 : 0) +
       Math.min(event.corroboration, 3)
     );
@@ -101,7 +102,7 @@ function metricRelevanceScore(
   if (key === "hormuz_daily_cap") {
     const hasHormuz = hasEntityTag(entityTags, "strait-of-hormuz") || /(hormuz|strait of hormuz)/i.test(haystack);
     const hasShippingContext =
-      /(shipping corridor|tanker|throughput|transit|vessels?\s+(?:per day|a day|daily)|ships?\s+(?:per day|a day|daily))/i.test(
+      /(shipping corridor|tanker|throughput|transit|blockade|reopen|re-open|reclosed|re-closed|closed|opened|seafarers?|ships?|vessels?\s+(?:per day|a day|daily)|ships?\s+(?:per day|a day|daily))/i.test(
         haystack
       );
     const hasNumericCap =
@@ -109,8 +110,12 @@ function metricRelevanceScore(
         haystack
       ) ||
       /([0-9]{1,3})\s+(?:ships|vessels)\s+(?:yesterday|a day|per day|daily|passed)/i.test(haystack);
+    const hasConstraintContext =
+      /(?:blockade|cannot be opened|shipping shockwaves|stranded|restricted|seized ships?|closed to traffic|corridor)/i.test(
+        haystack
+      );
 
-    if (!hasHormuz || (!hasShippingContext && !hasNumericCap)) {
+    if (!hasHormuz || (!hasShippingContext && !hasNumericCap && !hasConstraintContext)) {
       return 0;
     }
 
@@ -119,26 +124,37 @@ function metricRelevanceScore(
       (/(hormuz|strait of hormuz)/i.test(haystack) ? 6 : 0) +
       (hasShippingContext ? 4 : 0) +
       (hasNumericCap ? 5 : 0) +
+      (hasConstraintContext ? 3 : 0) +
       (event.category === "economic" ? 2 : 0) +
       Math.min(event.corroboration, 3)
     );
   }
 
   if (key === "iran_casualties_estimate") {
-    const hasIran = hasEntityTag(entityTags, "iran") || /(?:iran|iranian|irgc)/i.test(haystack);
+    const hasIranLocationContext =
+      hasEntityTag(entityTags, "iran") ||
+      /(?:in iran|across iran|iranian (?:city|cities|town|towns|school|sites|ports?|territory)|minab)/i.test(haystack);
     const hasCasualtyContext = /(?:casualt|killed|dead|deaths|fatalit)/i.test(haystack);
+    const hasIranVictimContext =
+      /(?:iran(?:ian)?\s+(?:casualties|civilians|children|victims|deaths|killed|dead|toll)|casualties in iran|deaths in iran|killed in iran|dead in iran|victims in iran)/i.test(
+        haystack
+      );
     const hasCasualtyFigure =
       /([0-9][0-9,]{3,})\+?\s+(?:iran(?:ian)?\s+)?(?:casualties|killed|dead|deaths)/i.test(haystack);
+    const hasImpactContext =
+      /(?:bombed in iran|devastated|missing child|school bombed|sites devastated|civilian toll|war crimes)/i.test(haystack);
 
-    if (!hasIran || !hasCasualtyContext) {
+    if (!hasIranLocationContext || (!hasIranVictimContext && !hasCasualtyFigure && !(hasCasualtyContext && hasImpactContext))) {
       return 0;
     }
 
     return (
       (hasEntityTag(entityTags, "iran") ? 6 : 0) +
-      (hasCasualtyContext ? 4 : 0) +
+      (hasIranVictimContext ? 5 : 0) +
+      (hasCasualtyContext ? 2 : 0) +
       (hasCasualtyFigure ? 7 : 0) +
-      (event.category === "intel" || event.category === "iran_strike" ? 2 : 0) +
+      (hasImpactContext ? 3 : 0) +
+      (event.category === "iran_strike" ? 3 : event.category === "intel" ? 1 : 0) +
       Math.min(event.corroboration, 3)
     );
   }
@@ -243,16 +259,6 @@ function buildSuggestion(
     };
   }
 
-  if (current?.freshness === "operator_hold") {
-    return {
-      key: metric.key,
-      status: "reviewed_hold",
-      summary: `${definition.label} is on an operator-reviewed hold because current evidence is not yet defensible enough for public publication.`,
-      candidate: null,
-      evidence: []
-    };
-  }
-
   const relevantEvents = recentEvents
     .map((event) => ({
       event,
@@ -270,6 +276,28 @@ function buildSuggestion(
   const evidence = evidenceForEvents(relevantEvents);
   const candidateEvent = relevantEvents.find((event) => extractCandidate(metric.key, event));
   const candidate = candidateEvent ? extractCandidate(metric.key, candidateEvent) : null;
+
+  if (current?.freshness === "operator_hold") {
+    if (candidate) {
+      return {
+        key: metric.key,
+        status: "candidate",
+        summary: `${definition.label} is currently on an operator-reviewed hold, but recent evidence now supports a candidate refresh. Review the extracted value before publishing.`,
+        candidate,
+        evidence
+      };
+    }
+
+    return {
+      key: metric.key,
+      status: "reviewed_hold",
+      summary: evidence.length
+        ? `${definition.label} remains on an operator-reviewed hold. Recent evidence is contextually relevant, but it still does not support a defensible public number.`
+        : `${definition.label} is on an operator-reviewed hold because current evidence is not yet defensible enough for public publication.`,
+      candidate: null,
+      evidence
+    };
+  }
 
   if (candidate) {
     return {

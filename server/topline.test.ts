@@ -147,4 +147,82 @@ describe("top-line suggestions", () => {
 
     db.close();
   });
+
+  it("keeps reviewed holds contextual when relevant non-numeric evidence exists", () => {
+    const db = makeDb();
+    db.exec("DELETE FROM events;");
+
+    upsertPreparedMetricSnapshot(db, {
+      metricKey: "hormuz_daily_cap",
+      value: null,
+      valueText: "Awaiting reviewed Hormuz throughput cap",
+      unit: "ships_per_day",
+      timestamp: "2026-04-24T12:00:00.000Z",
+      sourceText: "Operator reviewed hold / no defensible current Hormuz throughput cap in the live feed lane",
+      confidence: "reported",
+      reviewState: "approved",
+      freshness: "operator_hold",
+      meta: {
+        note: "Current shipping coverage does not yet support a defensible public throughput cap.",
+        mode: "hold"
+      }
+    });
+
+    insertEvent(db, {
+      id: "event_hormuz_context",
+      date: "2026-04-24",
+      title: "Thousands of seafarers stranded by ongoing blockade on Strait of Hormuz",
+      detail: "The blockade keeps ships waiting and leaves the corridor unable to reopen normally.",
+      category: "economic",
+      tags: ["economic", "entity:strait-of-hormuz", "entity:iran"]
+    });
+
+    const suggestions = getTopLineSuggestions(db);
+    const hormuz = suggestions.find((item) => item.key === "hormuz_daily_cap");
+
+    expect(hormuz?.status).toBe("reviewed_hold");
+    expect(hormuz?.candidate).toBeNull();
+    expect(hormuz?.evidence.length).toBeGreaterThan(0);
+
+    db.close();
+  });
+
+  it("surfaces a candidate even when the current public metric is still on reviewed hold", () => {
+    const db = makeDb();
+    db.exec("DELETE FROM events;");
+
+    upsertPreparedMetricSnapshot(db, {
+      metricKey: "total_strikes",
+      value: null,
+      valueText: "Awaiting reviewed cumulative strike total",
+      unit: "strikes",
+      timestamp: "2026-04-24T12:00:00.000Z",
+      sourceText: "Operator reviewed hold / no defensible cumulative strike total in the live feed lane",
+      confidence: "reported",
+      reviewState: "approved",
+      freshness: "operator_hold",
+      meta: {
+        note: "Current live coverage provides strike context but not a defensible cumulative total for public publication.",
+        mode: "hold"
+      }
+    });
+
+    insertEvent(db, {
+      id: "event_total_strikes_hold_candidate",
+      date: "2026-04-24",
+      title: "Combined campaign crosses 13,420 strikes",
+      detail: "Officials say the combined campaign has now exceeded 13,420 strikes across all theaters.",
+      category: "us_strike",
+      tags: ["us_strike", "entity:united-states", "entity:iran"]
+    });
+
+    const suggestions = getTopLineSuggestions(db);
+    const strikes = suggestions.find((item) => item.key === "total_strikes");
+
+    expect(strikes?.status).toBe("candidate");
+    expect(strikes?.candidate?.value).toBe(13420);
+    expect(strikes?.evidence.length).toBeGreaterThan(0);
+
+    db.close();
+  });
 });

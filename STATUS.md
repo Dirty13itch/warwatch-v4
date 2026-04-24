@@ -42,6 +42,7 @@
 - Operator-reviewed top-line metric publishing is live for `total_strikes`, `oil_brent`, `hormuz_daily_cap`, and `iran_casualties_estimate`
 - Operator-reviewed hold publishing is now live too: the KPI lane can explicitly publish `operator_hold` when current evidence is not yet defensible, which replaces seed-era posture with a reviewed public hold state instead of forcing fake precision
 - Operator KPI lane now includes evidence-backed suggestion cards with extracted candidates when current event evidence supports them
+- Operator KPI holds now retain contextual evidence instead of turning into dead-end cards, and reviewed-hold metrics can now flip directly into actionable candidates when fresh evidence supports publication
 - `npm run review:publish-holds` now converts the remaining seeded strike, Hormuz, and casualty KPIs into reviewed holds for the live local DB when evidence is still insufficient for a current number
 - Operator synthesis lane is now live: recent graph-aware evidence can surface story-promotion and claim-promotion candidates before the operator has to reason from raw event rows alone
 - Operator synthesis is now queue-backed end to end: candidates can be queued straight from the synthesis lane, opened as review dossiers, and approved into canonical stories or claims without silent auto-promotion
