@@ -4,6 +4,7 @@
 - Production URL: `https://warwatch-v4.vercel.app`
 - Stable project alias: `https://warwatch-v4.vercel.app`
 - Published repo: `https://github.com/Dirty13itch/warwatch-v4`
+- Current production deploy path: `npx vercel deploy --prod --yes` from repo root
 
 ## Hosted Contract
 WarWatch is live on Vercel as a deliberate `public_readonly` website lane.
@@ -30,10 +31,14 @@ That contract is honest:
    - `npm run heartbeat`
    - `npm run preview:shots`
 3. Deploy preview with:
-   - `npx vercel deploy --target preview --scope dirty13itchs-projects`
-4. Promote or deploy production with:
-   - `npx vercel deploy --prod --scope dirty13itchs-projects`
+   - `npx vercel deploy --target preview --yes`
+4. Deploy production with:
+   - `npx vercel deploy --prod --yes`
 5. Keep `PUBLIC_BASE_URL=https://warwatch-v4.vercel.app` in the Vercel production environment so canonical and OG metadata stay aligned with the stable alias.
+
+## Current Drift
+- GitHub pushes are not currently creating fresh Vercel deployments for this project.
+- Release truth is therefore the CLI production deploy path above until the Vercel Git integration is fixed.
 
 ## Mutable Runtime Boundary
 The full Express + SQLite + scheduler runtime still exists locally and remains the honest mutable/operator lane. Moving that write-capable lane to hosted infrastructure is a future decision, not something Vercel is pretending to solve for free.

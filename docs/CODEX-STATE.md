@@ -135,4 +135,6 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - Render blueprint validation and live service creation are likewise blocked by missing local Render tooling/account context, not by missing repo scaffolding
 - The GitHub publication blocker is cleared: `origin` now points at the live `Dirty13itch/warwatch-v4` repo on `main`
 - The public website is now live on Vercel at `https://warwatch-v4.vercel.app`
+- The live Vercel alias now reflects a reviewed current Hormuz throughput value (`~8/day observed`) from the canonical snapshot instead of the prior reviewed hold
 - The hosted lane is intentionally read-only and verified against the live site, while the mutable/operator runtime stays local by contract
+- GitHub push is not currently triggering fresh Vercel deployments for this project, so production release truth is the explicit `npx vercel deploy --prod --yes` path until Git integration is repaired

@@ -75,6 +75,8 @@
 - Build proof is now first-class too: every build writes `reports/build/LATEST.md` and `LATEST.json`, and the heartbeat surfaces bundle totals plus the largest client assets so performance pressure stays reviewable
 - A deploy-ready container recipe now exists as a multi-stage Docker build that produces the built app plus runtime seed sources instead of relying on a local dev checkout shape
 - A real deployment target has now been selected for the public website lane: Vercel-hosted `public_readonly` delivery, with repo-native config in `vercel.json` and `docs/DEPLOYMENT.md`
+- The live website now carries a reviewed current Hormuz throughput value at `~8/day observed`, sourced from corroborated weekly transit evidence instead of a synthetic hold
+- Vercel production is currently truthy only after an explicit CLI deploy from repo root; GitHub push is not creating fresh deployments for this project right now
 - Preview and build proof have both been refreshed after the UI hierarchy pass, so the current artifact lane reflects the stronger shell and tighter mobile header instead of the older flatter card treatment
 - Verification contract is green locally via `npm run verify`
 - Local smoke verification now isolates itself from the deployed `PUBLIC_BASE_URL`, so local canonical/robots checks no longer fail just because live public verification is enabled in the shell environment

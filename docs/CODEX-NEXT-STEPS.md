@@ -10,6 +10,7 @@
 
 ## External Boundaries
 - The hosted lane is intentionally read-only; live operator writes and scheduler work still require the local mutable runtime
+- Vercel Git integration is currently not auto-deploying new commits, so production updates require the explicit CLI deploy path until that drift is fixed
 - Local container image proof on this workstation until `docker` exists on PATH
 - Publication decisions that require defensible current evidence or explicit review
 
