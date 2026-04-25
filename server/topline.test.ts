@@ -187,6 +187,98 @@ describe("top-line suggestions", () => {
     db.close();
   });
 
+  it("derives a Hormuz daily throughput candidate from corroborated weekly transit evidence", () => {
+    const db = makeDb();
+    db.exec("DELETE FROM events;");
+
+    insertEvent(db, {
+      id: "event_hormuz_weekly_transits",
+      date: "2026-04-24",
+      title: "Hormuz: 53 Weekly Transits — War-Era High But 93% Below Normal",
+      detail: "Bloomberg's Hormuz tracker recorded 53 vessel transits in the past week, still 93% below the pre-war norm.",
+      category: "economic",
+      corroboration: 2,
+      sourceText: "Bloomberg / Lloyd's List / operator review",
+      tags: ["economic", "entity:strait-of-hormuz", "entity:iran"]
+    });
+
+    const suggestions = getTopLineSuggestions(db);
+    const hormuz = suggestions.find((item) => item.key === "hormuz_daily_cap");
+
+    expect(hormuz?.status).toBe("candidate");
+    expect(hormuz?.candidate?.value).toBe(8);
+    expect(hormuz?.candidate?.valueText).toBe("~8/day observed");
+    expect(hormuz?.candidate?.note).toContain("53 reported weekly Hormuz transits");
+
+    db.close();
+  });
+
+  it("does not derive a Hormuz throughput candidate from single-source weekly transit evidence", () => {
+    const db = makeDb();
+    db.exec("DELETE FROM events;");
+
+    insertEvent(db, {
+      id: "event_hormuz_weekly_transits_single_source",
+      date: "2026-04-24",
+      title: "Hormuz: 53 Weekly Transits — War-Era High But 93% Below Normal",
+      detail: "One tracker recorded 53 vessel transits in the past week, still 93% below the pre-war norm.",
+      category: "economic",
+      corroboration: 1,
+      sourceText: "Single-source tracker",
+      tags: ["economic", "entity:strait-of-hormuz", "entity:iran"]
+    });
+
+    const suggestions = getTopLineSuggestions(db);
+    const hormuz = suggestions.find((item) => item.key === "hormuz_daily_cap");
+
+    expect(hormuz?.status).toBe("context_only");
+    expect(hormuz?.candidate).toBeNull();
+    expect(hormuz?.evidence.length).toBeGreaterThan(0);
+
+    db.close();
+  });
+
+  it("surfaces a Hormuz candidate from weekly transit evidence even while the metric is on reviewed hold", () => {
+    const db = makeDb();
+    db.exec("DELETE FROM events;");
+
+    upsertPreparedMetricSnapshot(db, {
+      metricKey: "hormuz_daily_cap",
+      value: null,
+      valueText: "Awaiting reviewed Hormuz daily throughput",
+      unit: "ships_per_day",
+      timestamp: "2026-04-24T12:00:00.000Z",
+      sourceText: "Operator reviewed hold / no defensible current Hormuz daily throughput in the live feed lane",
+      confidence: "reported",
+      reviewState: "approved",
+      freshness: "operator_hold",
+      meta: {
+        note: "Current shipping coverage is directionally relevant, but it does not yet support a defensible public daily throughput estimate.",
+        mode: "hold"
+      }
+    });
+
+    insertEvent(db, {
+      id: "event_hormuz_weekly_transits_hold_candidate",
+      date: "2026-04-24",
+      title: "Hormuz: 53 Weekly Transits — War-Era High But 93% Below Normal",
+      detail: "Bloomberg's Hormuz tracker recorded 53 vessel transits in the past week, still 93% below the pre-war norm.",
+      category: "economic",
+      corroboration: 2,
+      sourceText: "Bloomberg / Lloyd's List / operator review",
+      tags: ["economic", "entity:strait-of-hormuz", "entity:iran"]
+    });
+
+    const suggestions = getTopLineSuggestions(db);
+    const hormuz = suggestions.find((item) => item.key === "hormuz_daily_cap");
+
+    expect(hormuz?.status).toBe("candidate");
+    expect(hormuz?.candidate?.value).toBe(8);
+    expect(hormuz?.evidence.length).toBeGreaterThan(0);
+
+    db.close();
+  });
+
   it("surfaces a candidate even when the current public metric is still on reviewed hold", () => {
     const db = makeDb();
     db.exec("DELETE FROM events;");

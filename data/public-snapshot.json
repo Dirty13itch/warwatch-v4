@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-04-24T16:30:51.731Z",
+  "generatedAt": "2026-04-25T16:42:54.014Z",
   "overview": {
-    "generatedAt": "2026-04-24T16:30:51.733Z",
-    "currentDay": 56,
+    "generatedAt": "2026-04-25T16:42:54.015Z",
+    "currentDay": 57,
     "stale": true,
     "legacyAsOf": null,
     "freshness": {
       "topLine": "review_hold",
-      "lastSuccessfulIngestionAt": "2026-04-24T16:26:10.385Z",
+      "lastSuccessfulIngestionAt": "2026-04-25T16:35:40.830Z",
       "hasLiveIngestion": true
     },
     "headline": {
       "level": "CRITICAL",
       "label": "Evidence-bound public briefing",
-      "description": "Live feeds are active, but cumulative strike, Hormuz, or casualty totals remain on reviewed hold until defensible public evidence lands."
+      "description": "Live feeds are active, but Total strikes and Iran casualty estimate remain on reviewed hold until defensible public evidence lands."
     },
     "kpis": [
       {
@@ -26,16 +26,16 @@
       {
         "key": "oil_brent",
         "label": "Brent marker",
-        "value": "$98.71",
+        "value": "$105.33",
         "supportingText": "Live market signal from the Yahoo Finance futures feed.",
         "freshness": "ingested"
       },
       {
         "key": "hormuz_daily_cap",
-        "label": "Hormuz throughput cap",
-        "value": "Awaiting reviewed Hormuz throughput cap",
-        "supportingText": "Operator-reviewed hold while current Hormuz throughput evidence remains insufficient for safe publication. Operator reviewed hold / no defensible current Hormuz throughput cap in the live feed lane.",
-        "freshness": "operator_hold"
+        "label": "Hormuz daily throughput",
+        "value": "~8/day observed",
+        "supportingText": "Operator-reviewed refresh from Bloomberg / Al Jazeera / Lloyd's List / NYT (April 4-7, 2026) / operator synthesis.",
+        "freshness": "operator_reviewed"
       },
       {
         "key": "iran_casualties_estimate",
@@ -94,6 +94,135 @@
     }
   },
   "events": [
+    {
+      "id": "event_3b715d223413",
+      "date": "2026-04-25",
+      "time": null,
+      "title": "African governments need to take urgent action on fertiliser shortages",
+      "detail": "Tensions in the Strait of Hormuz have slowed fertiliser shipments which could put harvests at risk.",
+      "category": "economic",
+      "significance": "medium",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "Al Jazeera",
+      "sourceRefs": [
+        "Al Jazeera",
+        "https://www.aljazeera.com/opinions/2026/4/25/african-governments-need-to-take-urgent-action-on-fertiliser-shortages?traffic_source=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "Al Jazeera",
+        "entity:strait-of-hormuz"
+      ],
+      "createdAt": "2026-04-25T16:35:40.159Z"
+    },
+    {
+      "id": "event_837c9ddc5d37",
+      "date": "2026-04-25",
+      "time": null,
+      "title": "Israeli attacks kill four in southern Lebanon",
+      "detail": "Raids on a truck and a motorcycle in the town of Yohmor al-Shaqif kill four people, state media report.",
+      "category": "regional_strike",
+      "significance": "high",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "Al Jazeera",
+      "sourceRefs": [
+        "Al Jazeera",
+        "https://www.aljazeera.com/news/2026/4/25/israeli-strikes-kill-four-in-southern-lebanon?traffic_source=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "Al Jazeera",
+        "entity:israel",
+        "entity:lebanon"
+      ],
+      "createdAt": "2026-04-25T16:35:40.163Z"
+    },
+    {
+      "id": "event_df47686baa39",
+      "date": "2026-04-25",
+      "time": null,
+      "title": "Flights resume at Tehran airport as US-Iran ceasefire holds",
+      "detail": "International flights have resumed at Tehran’s Imam Khomeini International Airport, after weeks of disruption by the war",
+      "category": "diplomatic",
+      "significance": "high",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "Al Jazeera",
+      "sourceRefs": [
+        "Al Jazeera",
+        "https://www.aljazeera.com/video/newsfeed/2026/4/25/flights-resume-at-tehran-airport-as-us-iran-ceasefire-holds?traffic_source=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "Al Jazeera",
+        "entity:iran"
+      ],
+      "createdAt": "2026-04-25T16:35:40.168Z"
+    },
+    {
+      "id": "event_ba6f32ef008e",
+      "date": "2026-04-25",
+      "time": null,
+      "title": "Iran resumes commercial flights from Tehran airport",
+      "detail": "Commercial flights begin for the first time since the conflict with the US and Israel began about two months ago.",
+      "category": "intel",
+      "significance": "medium",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "Al Jazeera",
+      "sourceRefs": [
+        "Al Jazeera",
+        "https://www.aljazeera.com/news/2026/4/25/iran-resumes-commercial-flights-from-tehran-airport?traffic_source=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "Al Jazeera",
+        "entity:iran",
+        "entity:israel"
+      ],
+      "createdAt": "2026-04-25T16:35:40.172Z"
+    },
+    {
+      "id": "event_6598878e0cc8",
+      "date": "2026-04-25",
+      "time": null,
+      "title": "Iran's foreign minister leaves Pakistan, then Trump cancels U.S. delegation's travel",
+      "detail": "After arriving on Friday, Iran's Abbas Araghchi has left Islamabad, prompting President Trump to announce that his envoys Steve Witkoff and Jared Kushner will no longer travel there Saturday for peace talks Iran's foreign minister arrived in Islamabad, and the White House says Steve Witkoff and Jared Kushner will go there Saturday to try to \"move the ball forward towards a deal.\"",
+      "category": "diplomatic",
+      "significance": "high",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "NPR World",
+      "sourceRefs": [
+        "NPR World",
+        "https://www.npr.org/2026/04/25/nx-s1-5799372/iran-middle-east-updates",
+        "https://www.npr.org/2026/04/24/g-s1-118595/middle-east-war-updates"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "NPR World",
+        "entity:iran",
+        "entity:pakistan"
+      ],
+      "createdAt": "2026-04-25T16:35:40.236Z"
+    },
     {
       "id": "event_ffbd7877eaaf",
       "date": "2026-04-24",
@@ -302,6 +431,57 @@
         "entity:iran"
       ],
       "createdAt": "2026-04-24T16:26:09.816Z"
+    },
+    {
+      "id": "event_5667063d237f",
+      "date": "2026-04-24",
+      "time": null,
+      "title": "Vessels seized by the U.S. this week were part of a global 'shadow fleet'",
+      "detail": "NPR's Juana Summers speaks with Elisabeth Braw, senior fellow at the Atlantic Council, about shadow vessels, after the U.S. military's seizure of two Iranian-linked oil tankers.",
+      "category": "iran_strike",
+      "significance": "high",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "NPR World",
+      "sourceRefs": [
+        "NPR World",
+        "https://www.npr.org/2026/04/24/nx-s1-5795895/vessels-seized-by-the-u-s-this-week-were-part-of-a-global-shadow-fleet"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "NPR World",
+        "entity:iran"
+      ],
+      "createdAt": "2026-04-25T16:35:40.240Z"
+    },
+    {
+      "id": "event_c80b19413774",
+      "date": "2026-04-24",
+      "time": null,
+      "title": "Middle East Shipping ‘Paralyzed’ by Dueling U.S., Iranian Blockades, Analysts Say",
+      "detail": "U.S. and Iranian forces are both interdicting ships as the two countries grapple with control of the flow of maritime traffic through the region, leaving the shipping industry ‘paralyzed,’ experts say. In the past week, the U.S. interdicted three ships – two in the Indian Ocean and one in the Strait of Hormuz – while Iran went after three ships, seizing two. There are reports that the third ship was able to continue its journey. The U.S. and Iran also continue to trade barbs, over social media, about the effectiveness of their efforts to wrestle control of the Strait of",
+      "category": "economic",
+      "significance": "medium",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "USNI News",
+      "sourceRefs": [
+        "USNI News",
+        "https://news.usni.org/2026/04/24/middle-east-shipping-paralyzed-by-dueling-u-s-iranian-blockades-analysts-say"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "USNI News",
+        "entity:strait-of-hormuz",
+        "entity:iran"
+      ],
+      "createdAt": "2026-04-25T16:35:40.647Z"
     },
     {
       "id": "event_29b53c0af4ad",
@@ -5179,182 +5359,6 @@
         "entity:iran"
       ],
       "createdAt": "2026-03-02T00:00:00.000Z"
-    },
-    {
-      "id": "event_464109b46ee3",
-      "date": "2026-03-02",
-      "time": "04:00Z",
-      "title": "Iran Begins Mining Strait of Hormuz",
-      "detail": "Iran began deploying mines in the Strait of Hormuz and activating Unmanned Surface Vehicle (USV) swarm tactics against merchant shipping — tactics adapted from Ukrainian naval operations against Russia in the Black Sea. Approximately a dozen mines were laid in the first deployment (Reuters). Iraqi oil terminal operations suspended after two tankers were struck in Iraqi territorial waters.",
-      "category": "iran_strike",
-      "significance": "critical",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "Reuters / USNI News / Al Jazeera",
-      "sourceRefs": [
-        "Reuters",
-        "USNI News",
-        "Al Jazeera"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "iran_strike",
-        "entity:strait-of-hormuz",
-        "entity:iran"
-      ],
-      "createdAt": "2026-03-02T00:00:00.000Z"
-    },
-    {
-      "id": "event_963dcb132e5f",
-      "date": "2026-03-01",
-      "time": "16:00Z",
-      "title": "Global Protests Begin — 3,000+ Events Worldwide",
-      "detail": "Anti-war protests erupted in cities across Europe, the Middle East, Asia, and North America. The protests — ultimately numbering 3,000+ events across 120+ countries — were among the largest sustained global protest movements since the 2003 Iraq War. A key rallying point was the revelation that strikes had occurred during active diplomatic negotiations.",
-      "category": "diplomatic",
-      "significance": "high",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "Wikipedia / Global Times / Al Jazeera",
-      "sourceRefs": [
-        "Wikipedia",
-        "Global Times",
-        "Al Jazeera"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "diplomatic"
-      ],
-      "createdAt": "2026-03-01T00:00:00.000Z"
-    },
-    {
-      "id": "event_6b22f5991fee",
-      "date": "2026-03-01",
-      "time": "14:00Z",
-      "title": "US Embassy in Kuwait Closed Indefinitely After Strike",
-      "detail": "Iranian missiles struck near the US embassy compound in Kuwait, prompting its immediate and indefinite closure. Staff were evacuated. The strike was part of Iran's coordinated targeting of US diplomatic and logistics infrastructure. Iran framed the embassy closures as an achievement in forcing US diplomatic retreat from the Gulf.",
-      "category": "iran_strike",
-      "significance": "high",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "State Department / Al Jazeera",
-      "sourceRefs": [
-        "State Department",
-        "Al Jazeera"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "iran_strike",
-        "entity:iran"
-      ],
-      "createdAt": "2026-03-01T00:00:00.000Z"
-    },
-    {
-      "id": "event_c9fda8df47a0",
-      "date": "2026-03-01",
-      "time": "10:00Z",
-      "title": "Millions Mourn Khamenei in Tehran Streets",
-      "detail": "Millions of Iranians took to the streets of Tehran and other cities to mourn Supreme Leader Khamenei. The mourning demonstrations showed a domestic rally-round-the-flag dynamic, with Iranians uniting against the US-Israel strikes. The images of Khamenei's 14-month-old granddaughter killed in the strike became powerful martyrdom imagery in Iranian and global Muslim media.",
-      "category": "humanitarian",
-      "significance": "high",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "IRNA / Al Jazeera / Wikipedia",
-      "sourceRefs": [
-        "IRNA",
-        "Al Jazeera",
-        "Wikipedia"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "humanitarian",
-        "entity:iran",
-        "entity:israel"
-      ],
-      "createdAt": "2026-03-01T00:00:00.000Z"
-    },
-    {
-      "id": "event_596eb86ff5a4",
-      "date": "2026-03-01",
-      "time": "09:00Z",
-      "title": "Beit Shemesh: 9 Israeli Civilians Killed, 49 Injured",
-      "detail": "Iranian ballistic missiles struck residential areas and a synagogue complex in Beit Shemesh, Israel, killing 9 civilians and injuring 49. The attack was one of the deadliest single-strike events against Israeli civilians in the conflict. IDF confirmed the strike was from an Iranian Emad MRBM that penetrated the Arrow-3 interception layer.",
-      "category": "iran_strike",
-      "significance": "critical",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "IDF / ISW / Al Jazeera",
-      "sourceRefs": [
-        "IDF",
-        "ISW",
-        "Al Jazeera"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "iran_strike",
-        "entity:iran",
-        "entity:israel"
-      ],
-      "createdAt": "2026-03-01T00:00:00.000Z"
-    },
-    {
-      "id": "event_eb33a6fa7f15",
-      "date": "2026-03-01",
-      "time": "08:00Z",
-      "title": "THAAD Radar Destroyed at Muaffaq Air Base, Jordan",
-      "detail": "An Iranian missile strike destroyed the AN/TPY-2 transportable THAAD radar at Muaffaq Salti Air Base, Jordan — valued at approximately $485 million. Satellite imagery confirmed destruction of the radar vehicle and its support shed. The loss significantly degraded US missile defense coverage across the eastern Mediterranean and Jordan Valley approach corridors.",
-      "category": "iran_strike",
-      "significance": "critical",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "CNN / BBC / Wikipedia",
-      "sourceRefs": [
-        "CNN",
-        "BBC",
-        "Wikipedia"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "iran_strike",
-        "entity:iran"
-      ],
-      "createdAt": "2026-03-01T00:00:00.000Z"
-    },
-    {
-      "id": "event_f5112e57aaf5",
-      "date": "2026-03-01",
-      "time": "06:00Z",
-      "title": "6 US Army Reserve Soldiers Killed at Camp Arifjan, Kuwait",
-      "detail": "An Iranian drone strike on Camp Arifjan's tactical operations center near the Shuaiba port area killed 6 US Army Reserve soldiers from the 103rd Expeditionary Sustainment Command — the single largest US casualty event of the war to date. A separate strike at Prince Sultan Air Base, Saudi Arabia, killed 1 additional service member. US CENTCOM confirmed the deaths.",
-      "category": "iran_strike",
-      "significance": "critical",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "CENTCOM / Al Jazeera / Wikipedia",
-      "sourceRefs": [
-        "CENTCOM",
-        "Al Jazeera",
-        "Wikipedia"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "iran_strike",
-        "entity:iran"
-      ],
-      "createdAt": "2026-03-01T00:00:00.000Z"
     }
   ],
   "stories": [
@@ -5968,6 +5972,22 @@
     }
   ],
   "briefings": [
+    {
+      "id": "brief_14e0387fd6c8",
+      "briefingDate": "2026-04-25",
+      "title": "WarWatch SITREP 2026-04-25",
+      "body": "SITUATION\nRecent reviewed/public events: African governments need to take urgent action on fertiliser shortages; Israeli attacks kill four in southern Lebanon; Flights resume at Tehran airport as US-Iran ceasefire holds; Iran resumes commercial flights from Tehran airport; Iran's foreign minister leaves Pakistan, then Trump cancels U.S. delegation's travel.\nMarket signals: Brent $105.33 (+0.2% vs prior print); WTI $94.40 (-1.5% vs prior print); Gold $4,722.30 (+0.4% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 2.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+      "sourceRefs": [
+        "African governments need to take urgent action on fertiliser shortages",
+        "Israeli attacks kill four in southern Lebanon",
+        "Flights resume at Tehran airport as US-Iran ceasefire holds",
+        "Iran resumes commercial flights from Tehran airport",
+        "Iran's foreign minister leaves Pakistan, then Trump cancels U.S. delegation's travel"
+      ],
+      "reviewState": "approved",
+      "publishState": "published",
+      "createdAt": "2026-04-25T16:41:38.347Z"
+    },
     {
       "id": "brief_9d0d944602c4",
       "briefingDate": "2026-04-24",
@@ -8018,6 +8038,84 @@
       ],
       "events": [
         {
+          "id": "event_df47686baa39",
+          "date": "2026-04-25",
+          "time": null,
+          "title": "Flights resume at Tehran airport as US-Iran ceasefire holds",
+          "detail": "International flights have resumed at Tehran’s Imam Khomeini International Airport, after weeks of disruption by the war",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "Al Jazeera",
+          "sourceRefs": [
+            "Al Jazeera",
+            "https://www.aljazeera.com/video/newsfeed/2026/4/25/flights-resume-at-tehran-airport-as-us-iran-ceasefire-holds?traffic_source=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "Al Jazeera",
+            "entity:iran"
+          ],
+          "createdAt": "2026-04-25T16:35:40.168Z"
+        },
+        {
+          "id": "event_ba6f32ef008e",
+          "date": "2026-04-25",
+          "time": null,
+          "title": "Iran resumes commercial flights from Tehran airport",
+          "detail": "Commercial flights begin for the first time since the conflict with the US and Israel began about two months ago.",
+          "category": "intel",
+          "significance": "medium",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "Al Jazeera",
+          "sourceRefs": [
+            "Al Jazeera",
+            "https://www.aljazeera.com/news/2026/4/25/iran-resumes-commercial-flights-from-tehran-airport?traffic_source=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "Al Jazeera",
+            "entity:iran",
+            "entity:israel"
+          ],
+          "createdAt": "2026-04-25T16:35:40.172Z"
+        },
+        {
+          "id": "event_6598878e0cc8",
+          "date": "2026-04-25",
+          "time": null,
+          "title": "Iran's foreign minister leaves Pakistan, then Trump cancels U.S. delegation's travel",
+          "detail": "After arriving on Friday, Iran's Abbas Araghchi has left Islamabad, prompting President Trump to announce that his envoys Steve Witkoff and Jared Kushner will no longer travel there Saturday for peace talks Iran's foreign minister arrived in Islamabad, and the White House says Steve Witkoff and Jared Kushner will go there Saturday to try to \"move the ball forward towards a deal.\"",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "NPR World",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/25/nx-s1-5799372/iran-middle-east-updates",
+            "https://www.npr.org/2026/04/24/g-s1-118595/middle-east-war-updates"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:iran",
+            "entity:pakistan"
+          ],
+          "createdAt": "2026-04-25T16:35:40.236Z"
+        },
+        {
           "id": "event_5b07d71b073b",
           "date": "2026-04-24",
           "time": null,
@@ -8092,88 +8190,25 @@
             "entity:iran"
           ],
           "createdAt": "2026-04-24T16:26:09.719Z"
-        },
-        {
-          "id": "event_27ae4988dc2b",
-          "date": "2026-04-24",
-          "time": null,
-          "title": "Iranians bring music to sites devastated by US-Israeli attacks",
-          "detail": "Iranian musicians perform on city streets and venture to sites devastated in US-Israeli attacks.",
-          "category": "iran_strike",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/video/newsfeed/2026/4/24/iranians-bring-music-to-sites-devastated-by-us-israeli-attacks?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
-            "entity:iran",
-            "entity:israel"
-          ],
-          "createdAt": "2026-04-24T16:26:09.723Z"
-        },
-        {
-          "id": "event_fa424d1a1024",
-          "date": "2026-04-24",
-          "time": null,
-          "title": "Thousands of seafarers stranded by ongoing U.S. blockade on Strait of Hormuz",
-          "detail": "As the U.S. blockade on Iranian ports drags on, thousands of seafarers are stranded on ships, and economic shockwaves ripple around the world.",
-          "category": "economic",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "NPR World",
-          "sourceRefs": [
-            "NPR World",
-            "https://www.npr.org/2026/04/24/nx-s1-5797793/thousands-of-seafarers-stranded-by-ongoing-us-blockade-on-strait-of-hormuz"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "NPR World",
-            "entity:strait-of-hormuz",
-            "entity:iran"
-          ],
-          "createdAt": "2026-04-24T16:26:09.816Z"
-        },
-        {
-          "id": "event_7508dd8a23cd",
-          "date": "2026-04-23",
-          "time": null,
-          "title": "Iran says Strait of Hormuz cannot be opened due to ceasefire breaches",
-          "detail": "Iran's chief negotiator says \"violations\" by the US and Israel make it impossible to open the strait.",
-          "category": "diplomatic",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "BBC Middle East",
-          "sourceRefs": [
-            "BBC Middle East",
-            "https://www.bbc.com/news/articles/c3w3vqv0edpo?at_medium=RSS&at_campaign=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "BBC Middle East",
-            "entity:strait-of-hormuz",
-            "entity:iran",
-            "entity:israel"
-          ],
-          "createdAt": "2026-04-23T14:06:55.622Z"
         }
       ],
       "briefings": [
+        {
+          "id": "brief_14e0387fd6c8",
+          "briefingDate": "2026-04-25",
+          "title": "WarWatch SITREP 2026-04-25",
+          "body": "SITUATION\nRecent reviewed/public events: African governments need to take urgent action on fertiliser shortages; Israeli attacks kill four in southern Lebanon; Flights resume at Tehran airport as US-Iran ceasefire holds; Iran resumes commercial flights from Tehran airport; Iran's foreign minister leaves Pakistan, then Trump cancels U.S. delegation's travel.\nMarket signals: Brent $105.33 (+0.2% vs prior print); WTI $94.40 (-1.5% vs prior print); Gold $4,722.30 (+0.4% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 2.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+          "sourceRefs": [
+            "African governments need to take urgent action on fertiliser shortages",
+            "Israeli attacks kill four in southern Lebanon",
+            "Flights resume at Tehran airport as US-Iran ceasefire holds",
+            "Iran resumes commercial flights from Tehran airport",
+            "Iran's foreign minister leaves Pakistan, then Trump cancels U.S. delegation's travel"
+          ],
+          "reviewState": "approved",
+          "publishState": "published",
+          "createdAt": "2026-04-25T16:41:38.347Z"
+        },
         {
           "id": "brief_9d0d944602c4",
           "briefingDate": "2026-04-24",
@@ -8210,25 +8245,6 @@
           "reviewState": "approved",
           "publishState": "published",
           "createdAt": "2026-04-23T14:11:21.329Z"
-        },
-        {
-          "id": "brief_b07a3cca3356",
-          "briefingDate": "2026-04-22",
-          "title": "WarWatch SITREP 2026-04-22",
-          "body": "SITUATION\nRecent reviewed/public events: Iran says it has seized two ships in Strait of Hormuz after vessels attacked; Trump buys time for Iran deal after frantic day of diplomacy; Israeli settlers block Palestinian children from school in the West Bank; Iran’s leaders debate war and peace after Trump ceasefire extension; Trump calls Iran’s leadership ‘fractured’. Is it, and who’s in charge?; The war on Iran: Breaking down the words you’re hearing; What is uranium enrichment and how quickly could Iran build a nuclear bomb?; Iranians are leaving the country just to access the internet.\nMarket signals: Brent $101.43 (+3.0% vs prior print); WTI $92.54 (+0.4% vs prior print); Gold $4,759.70 (+1.3% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 1 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 1.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
-          "sourceRefs": [
-            "Iran says it has seized two ships in Strait of Hormuz after vessels attacked",
-            "Trump buys time for Iran deal after frantic day of diplomacy",
-            "Israeli settlers block Palestinian children from school in the West Bank",
-            "Iran’s leaders debate war and peace after Trump ceasefire extension",
-            "Trump calls Iran’s leadership ‘fractured’. Is it, and who’s in charge?",
-            "The war on Iran: Breaking down the words you’re hearing",
-            "What is uranium enrichment and how quickly could Iran build a nuclear bomb?",
-            "Iranians are leaving the country just to access the internet"
-          ],
-          "reviewState": "approved",
-          "publishState": "published",
-          "createdAt": "2026-04-22T23:29:23.641Z"
         }
       ]
     },
@@ -8351,6 +8367,58 @@
       ],
       "events": [
         {
+          "id": "event_837c9ddc5d37",
+          "date": "2026-04-25",
+          "time": null,
+          "title": "Israeli attacks kill four in southern Lebanon",
+          "detail": "Raids on a truck and a motorcycle in the town of Yohmor al-Shaqif kill four people, state media report.",
+          "category": "regional_strike",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "Al Jazeera",
+          "sourceRefs": [
+            "Al Jazeera",
+            "https://www.aljazeera.com/news/2026/4/25/israeli-strikes-kill-four-in-southern-lebanon?traffic_source=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "Al Jazeera",
+            "entity:israel",
+            "entity:lebanon"
+          ],
+          "createdAt": "2026-04-25T16:35:40.163Z"
+        },
+        {
+          "id": "event_ba6f32ef008e",
+          "date": "2026-04-25",
+          "time": null,
+          "title": "Iran resumes commercial flights from Tehran airport",
+          "detail": "Commercial flights begin for the first time since the conflict with the US and Israel began about two months ago.",
+          "category": "intel",
+          "significance": "medium",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "Al Jazeera",
+          "sourceRefs": [
+            "Al Jazeera",
+            "https://www.aljazeera.com/news/2026/4/25/iran-resumes-commercial-flights-from-tehran-airport?traffic_source=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "Al Jazeera",
+            "entity:iran",
+            "entity:israel"
+          ],
+          "createdAt": "2026-04-25T16:35:40.172Z"
+        },
+        {
           "id": "event_ffbd7877eaaf",
           "date": "2026-04-24",
           "time": null,
@@ -8456,62 +8524,25 @@
             "entity:lebanon"
           ],
           "createdAt": "2026-04-24T16:26:09.812Z"
-        },
-        {
-          "id": "event_29b53c0af4ad",
-          "date": "2026-04-23",
-          "time": null,
-          "title": "Israeli strikes kill eight Palestinians in Gaza, first responders say",
-          "detail": "One strike killed three children and two adults near a mosque in the northern town of Beit Lahia on Wednesday evening.",
-          "category": "regional_strike",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "BBC Middle East",
-          "sourceRefs": [
-            "BBC Middle East",
-            "https://www.bbc.com/news/articles/cly60dwxjd1o?at_medium=RSS&at_campaign=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "BBC Middle East",
-            "entity:israel",
-            "auto_reclassified"
-          ],
-          "createdAt": "2026-04-23T14:06:55.607Z"
-        },
-        {
-          "id": "event_e371af1a4ffe",
-          "date": "2026-04-23",
-          "time": null,
-          "title": "Lebanon accuses Israel of targeting journalist killed in air strike",
-          "detail": "Lebanon's prime minister accused Israel of war crimes after IDF attacks on Red Cross vehicles also stopped rescuers from reaching the site.",
-          "category": "regional_strike",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "BBC Middle East",
-          "sourceRefs": [
-            "BBC Middle East",
-            "https://www.bbc.com/news/articles/c5yvn036evlo?at_medium=RSS&at_campaign=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "BBC Middle East",
-            "entity:israel",
-            "entity:lebanon",
-            "auto_reclassified"
-          ],
-          "createdAt": "2026-04-23T14:06:55.616Z"
         }
       ],
       "briefings": [
+        {
+          "id": "brief_14e0387fd6c8",
+          "briefingDate": "2026-04-25",
+          "title": "WarWatch SITREP 2026-04-25",
+          "body": "SITUATION\nRecent reviewed/public events: African governments need to take urgent action on fertiliser shortages; Israeli attacks kill four in southern Lebanon; Flights resume at Tehran airport as US-Iran ceasefire holds; Iran resumes commercial flights from Tehran airport; Iran's foreign minister leaves Pakistan, then Trump cancels U.S. delegation's travel.\nMarket signals: Brent $105.33 (+0.2% vs prior print); WTI $94.40 (-1.5% vs prior print); Gold $4,722.30 (+0.4% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 2.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+          "sourceRefs": [
+            "African governments need to take urgent action on fertiliser shortages",
+            "Israeli attacks kill four in southern Lebanon",
+            "Flights resume at Tehran airport as US-Iran ceasefire holds",
+            "Iran resumes commercial flights from Tehran airport",
+            "Iran's foreign minister leaves Pakistan, then Trump cancels U.S. delegation's travel"
+          ],
+          "reviewState": "approved",
+          "publishState": "published",
+          "createdAt": "2026-04-25T16:41:38.347Z"
+        },
         {
           "id": "brief_9d0d944602c4",
           "briefingDate": "2026-04-24",
@@ -8548,25 +8579,6 @@
           "reviewState": "approved",
           "publishState": "published",
           "createdAt": "2026-04-23T14:11:21.329Z"
-        },
-        {
-          "id": "brief_b07a3cca3356",
-          "briefingDate": "2026-04-22",
-          "title": "WarWatch SITREP 2026-04-22",
-          "body": "SITUATION\nRecent reviewed/public events: Iran says it has seized two ships in Strait of Hormuz after vessels attacked; Trump buys time for Iran deal after frantic day of diplomacy; Israeli settlers block Palestinian children from school in the West Bank; Iran’s leaders debate war and peace after Trump ceasefire extension; Trump calls Iran’s leadership ‘fractured’. Is it, and who’s in charge?; The war on Iran: Breaking down the words you’re hearing; What is uranium enrichment and how quickly could Iran build a nuclear bomb?; Iranians are leaving the country just to access the internet.\nMarket signals: Brent $101.43 (+3.0% vs prior print); WTI $92.54 (+0.4% vs prior print); Gold $4,759.70 (+1.3% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 1 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 1.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
-          "sourceRefs": [
-            "Iran says it has seized two ships in Strait of Hormuz after vessels attacked",
-            "Trump buys time for Iran deal after frantic day of diplomacy",
-            "Israeli settlers block Palestinian children from school in the West Bank",
-            "Iran’s leaders debate war and peace after Trump ceasefire extension",
-            "Trump calls Iran’s leadership ‘fractured’. Is it, and who’s in charge?",
-            "The war on Iran: Breaking down the words you’re hearing",
-            "What is uranium enrichment and how quickly could Iran build a nuclear bomb?",
-            "Iranians are leaving the country just to access the internet"
-          ],
-          "reviewState": "approved",
-          "publishState": "published",
-          "createdAt": "2026-04-22T23:29:23.641Z"
         }
       ]
     },
@@ -8679,6 +8691,32 @@
         }
       ],
       "events": [
+        {
+          "id": "event_837c9ddc5d37",
+          "date": "2026-04-25",
+          "time": null,
+          "title": "Israeli attacks kill four in southern Lebanon",
+          "detail": "Raids on a truck and a motorcycle in the town of Yohmor al-Shaqif kill four people, state media report.",
+          "category": "regional_strike",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "Al Jazeera",
+          "sourceRefs": [
+            "Al Jazeera",
+            "https://www.aljazeera.com/news/2026/4/25/israeli-strikes-kill-four-in-southern-lebanon?traffic_source=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "Al Jazeera",
+            "entity:israel",
+            "entity:lebanon"
+          ],
+          "createdAt": "2026-04-25T16:35:40.163Z"
+        },
         {
           "id": "event_ffbd7877eaaf",
           "date": "2026-04-24",
@@ -8813,35 +8851,25 @@
             "entity:lebanon"
           ],
           "createdAt": "2026-04-23T14:06:55.782Z"
-        },
-        {
-          "id": "event_96d44b4533fc",
-          "date": "2026-04-22",
-          "time": null,
-          "title": "How Israel is destroying Lebanon’s water infrastructure",
-          "detail": "Israel is 'deliberately' attacking Lebanon's water, experts say, aiming to displace or kill south Lebanon's population.",
-          "category": "intel",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/features/2026/4/22/how-israel-is-destroying-lebanons-water-infrastructure?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
-            "entity:israel",
-            "entity:lebanon"
-          ],
-          "createdAt": "2026-04-22T16:32:48.806Z"
         }
       ],
       "briefings": [
+        {
+          "id": "brief_14e0387fd6c8",
+          "briefingDate": "2026-04-25",
+          "title": "WarWatch SITREP 2026-04-25",
+          "body": "SITUATION\nRecent reviewed/public events: African governments need to take urgent action on fertiliser shortages; Israeli attacks kill four in southern Lebanon; Flights resume at Tehran airport as US-Iran ceasefire holds; Iran resumes commercial flights from Tehran airport; Iran's foreign minister leaves Pakistan, then Trump cancels U.S. delegation's travel.\nMarket signals: Brent $105.33 (+0.2% vs prior print); WTI $94.40 (-1.5% vs prior print); Gold $4,722.30 (+0.4% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 2.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+          "sourceRefs": [
+            "African governments need to take urgent action on fertiliser shortages",
+            "Israeli attacks kill four in southern Lebanon",
+            "Flights resume at Tehran airport as US-Iran ceasefire holds",
+            "Iran resumes commercial flights from Tehran airport",
+            "Iran's foreign minister leaves Pakistan, then Trump cancels U.S. delegation's travel"
+          ],
+          "reviewState": "approved",
+          "publishState": "published",
+          "createdAt": "2026-04-25T16:41:38.347Z"
+        },
         {
           "id": "brief_9d0d944602c4",
           "briefingDate": "2026-04-24",
@@ -8931,6 +8959,33 @@
         }
       ],
       "events": [
+        {
+          "id": "event_6598878e0cc8",
+          "date": "2026-04-25",
+          "time": null,
+          "title": "Iran's foreign minister leaves Pakistan, then Trump cancels U.S. delegation's travel",
+          "detail": "After arriving on Friday, Iran's Abbas Araghchi has left Islamabad, prompting President Trump to announce that his envoys Steve Witkoff and Jared Kushner will no longer travel there Saturday for peace talks Iran's foreign minister arrived in Islamabad, and the White House says Steve Witkoff and Jared Kushner will go there Saturday to try to \"move the ball forward towards a deal.\"",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "NPR World",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/25/nx-s1-5799372/iran-middle-east-updates",
+            "https://www.npr.org/2026/04/24/g-s1-118595/middle-east-war-updates"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:iran",
+            "entity:pakistan"
+          ],
+          "createdAt": "2026-04-25T16:35:40.236Z"
+        },
         {
           "id": "event_1a1dbdc60ac3",
           "date": "2026-04-22",
@@ -9068,35 +9123,26 @@
             "entity:pakistan"
           ],
           "createdAt": "2026-04-22T16:22:40.084Z"
-        },
-        {
-          "id": "event_720a784846e4",
-          "date": "2026-04-21",
-          "time": null,
-          "title": "Trump extends U.S. ceasefire with Iran at Pakistan's request",
-          "detail": "The extension was announced just hours before it was set to expire. The president did not provide details on how long the new ceasefire extension will last.",
-          "category": "diplomatic",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "NPR World",
-          "sourceRefs": [
-            "NPR World",
-            "https://www.npr.org/2026/04/21/nx-s1-5793638/iran-middle-east-updates"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "NPR World",
-            "entity:iran",
-            "entity:pakistan"
-          ],
-          "createdAt": "2026-04-22T16:22:40.091Z"
         }
       ],
-      "briefings": []
+      "briefings": [
+        {
+          "id": "brief_14e0387fd6c8",
+          "briefingDate": "2026-04-25",
+          "title": "WarWatch SITREP 2026-04-25",
+          "body": "SITUATION\nRecent reviewed/public events: African governments need to take urgent action on fertiliser shortages; Israeli attacks kill four in southern Lebanon; Flights resume at Tehran airport as US-Iran ceasefire holds; Iran resumes commercial flights from Tehran airport; Iran's foreign minister leaves Pakistan, then Trump cancels U.S. delegation's travel.\nMarket signals: Brent $105.33 (+0.2% vs prior print); WTI $94.40 (-1.5% vs prior print); Gold $4,722.30 (+0.4% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 2.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+          "sourceRefs": [
+            "African governments need to take urgent action on fertiliser shortages",
+            "Israeli attacks kill four in southern Lebanon",
+            "Flights resume at Tehran airport as US-Iran ceasefire holds",
+            "Iran resumes commercial flights from Tehran airport",
+            "Iran's foreign minister leaves Pakistan, then Trump cancels U.S. delegation's travel"
+          ],
+          "reviewState": "approved",
+          "publishState": "published",
+          "createdAt": "2026-04-25T16:41:38.347Z"
+        }
+      ]
     },
     {
       "entity": {
@@ -9406,6 +9452,31 @@
       ],
       "events": [
         {
+          "id": "event_3b715d223413",
+          "date": "2026-04-25",
+          "time": null,
+          "title": "African governments need to take urgent action on fertiliser shortages",
+          "detail": "Tensions in the Strait of Hormuz have slowed fertiliser shipments which could put harvests at risk.",
+          "category": "economic",
+          "significance": "medium",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "Al Jazeera",
+          "sourceRefs": [
+            "Al Jazeera",
+            "https://www.aljazeera.com/opinions/2026/4/25/african-governments-need-to-take-urgent-action-on-fertiliser-shortages?traffic_source=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "Al Jazeera",
+            "entity:strait-of-hormuz"
+          ],
+          "createdAt": "2026-04-25T16:35:40.159Z"
+        },
+        {
           "id": "event_05351ad0d8cc",
           "date": "2026-04-24",
           "time": null,
@@ -9486,6 +9557,32 @@
           "createdAt": "2026-04-24T16:26:09.816Z"
         },
         {
+          "id": "event_c80b19413774",
+          "date": "2026-04-24",
+          "time": null,
+          "title": "Middle East Shipping ‘Paralyzed’ by Dueling U.S., Iranian Blockades, Analysts Say",
+          "detail": "U.S. and Iranian forces are both interdicting ships as the two countries grapple with control of the flow of maritime traffic through the region, leaving the shipping industry ‘paralyzed,’ experts say. In the past week, the U.S. interdicted three ships – two in the Indian Ocean and one in the Strait of Hormuz – while Iran went after three ships, seizing two. There are reports that the third ship was able to continue its journey. The U.S. and Iran also continue to trade barbs, over social media, about the effectiveness of their efforts to wrestle control of the Strait of",
+          "category": "economic",
+          "significance": "medium",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "USNI News",
+          "sourceRefs": [
+            "USNI News",
+            "https://news.usni.org/2026/04/24/middle-east-shipping-paralyzed-by-dueling-u-s-iranian-blockades-analysts-say"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "USNI News",
+            "entity:strait-of-hormuz",
+            "entity:iran"
+          ],
+          "createdAt": "2026-04-25T16:35:40.647Z"
+        },
+        {
           "id": "event_7508dd8a23cd",
           "date": "2026-04-23",
           "time": null,
@@ -9511,65 +9608,6 @@
             "entity:israel"
           ],
           "createdAt": "2026-04-23T14:06:55.622Z"
-        },
-        {
-          "id": "event_1a1dbdc60ac3",
-          "date": "2026-04-22",
-          "time": null,
-          "title": "Iran attacks ships in Hormuz Strait as the U.S. continues its blockade amid ceasefire",
-          "detail": "Three vessels came under fire in the Strait of Hormuz, after the U.S. and Iran failed to meet in Pakistan for talks to end the war and as President Trump extended the ceasefire but kept the blockade. The mood in the Strait of Hormuz remains combustible despite Trump's ceasefire extension. Iran's top negotiator says it's \"not possible to reopen\" the strait due to \"blatent violations\" of US-Iran ceasefire. President Trump says he ordered the Navy to \"shoot and kill any boat\" putting mines in the Strait of Hormuz as the U.S. ramps up minesweeping there. President Trump has extended the ceasefire, but Iran says it's not enough if the naval blockade is still in place.",
-          "category": "diplomatic",
-          "significance": "high",
-          "confidence": "reported",
-          "corroboration": 2,
-          "sourceText": "NPR World / BBC Middle East",
-          "sourceRefs": [
-            "NPR World",
-            "https://www.npr.org/2026/04/22/nx-s1-5795405/iran-middle-east-updates",
-            "BBC Middle East",
-            "https://www.bbc.com/news/articles/c0q9xq7knq2o?at_medium=RSS&at_campaign=rss",
-            "https://www.bbc.com/news/videos/c1l93gg7zmno?at_medium=RSS&at_campaign=rss",
-            "https://www.npr.org/2026/04/23/nx-s1-5796719/iran-middle-east-updates",
-            "https://www.npr.org/2026/04/23/nx-s1-5795829/peace-talks-between-us-and-iran-at-a-standstill-as-trump-extends-ceasefire"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "NPR World",
-            "entity:strait-of-hormuz",
-            "entity:iran",
-            "entity:pakistan",
-            "BBC Middle East"
-          ],
-          "createdAt": "2026-04-22T16:22:40.073Z"
-        },
-        {
-          "id": "event_0c5098b84941",
-          "date": "2026-04-22",
-          "time": null,
-          "title": "Iran says it has seized two ships in Strait of Hormuz after vessels attacked",
-          "detail": "One of the cargo ships was 'heavily damaged' by Iranian forces, a British maritime agency reported on Wednesday.",
-          "category": "economic",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "BBC Middle East",
-          "sourceRefs": [
-            "BBC Middle East",
-            "https://www.bbc.com/news/articles/cdxd074kr8go?at_medium=RSS&at_campaign=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "BBC Middle East",
-            "entity:strait-of-hormuz",
-            "entity:iran"
-          ],
-          "createdAt": "2026-04-22T16:21:24.162Z"
         }
       ],
       "briefings": [
@@ -11696,8 +11734,8 @@
       {
         "id": "metric_48e5874bce78",
         "metricKey": "oil_brent",
-        "value": 98.70999908447266,
-        "valueText": "$98.71",
+        "value": 105.33000183105469,
+        "valueText": "$105.33",
         "unit": "usd_per_barrel",
         "timestamp": "2026-04-24T04:00:00.000Z",
         "sourceText": "Yahoo Finance",
@@ -12106,8 +12144,8 @@
       {
         "id": "metric_a1ad152020c2",
         "metricKey": "oil_wti",
-        "value": 94,
-        "valueText": "$94.00",
+        "value": 94.4000015258789,
+        "valueText": "$94.40",
         "unit": "usd_per_barrel",
         "timestamp": "2026-04-24T04:00:00.000Z",
         "sourceText": "Yahoo Finance",
@@ -12516,8 +12554,8 @@
       {
         "id": "metric_2d5d48731ee4",
         "metricKey": "gold_price",
-        "value": 4736.10009765625,
-        "valueText": "$4,736.10",
+        "value": 4722.2998046875,
+        "valueText": "$4,722.30",
         "unit": "usd_per_ounce",
         "timestamp": "2026-04-24T04:00:00.000Z",
         "sourceText": "Yahoo Finance",

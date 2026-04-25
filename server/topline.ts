@@ -110,12 +110,13 @@ function metricRelevanceScore(
         haystack
       ) ||
       /([0-9]{1,3})\s+(?:ships|vessels)\s+(?:yesterday|a day|per day|daily|passed)/i.test(haystack);
+    const hasWeeklyTransitSignal = /([0-9]{1,3})\s+(?:weekly\s+)?(?:vessel\s+)?transits/i.test(haystack);
     const hasConstraintContext =
-      /(?:blockade|cannot be opened|shipping shockwaves|stranded|restricted|seized ships?|closed to traffic|corridor)/i.test(
+      /(?:blockade|cannot be opened|shipping shockwaves|stranded|restricted|seized ships?|closed to traffic|corridor|below normal)/i.test(
         haystack
       );
 
-    if (!hasHormuz || (!hasShippingContext && !hasNumericCap && !hasConstraintContext)) {
+    if (!hasHormuz || (!hasShippingContext && !hasNumericCap && !hasWeeklyTransitSignal && !hasConstraintContext)) {
       return 0;
     }
 
@@ -124,6 +125,7 @@ function metricRelevanceScore(
       (/(hormuz|strait of hormuz)/i.test(haystack) ? 6 : 0) +
       (hasShippingContext ? 4 : 0) +
       (hasNumericCap ? 5 : 0) +
+      (hasWeeklyTransitSignal ? 6 : 0) +
       (hasConstraintContext ? 3 : 0) +
       (event.category === "economic" ? 2 : 0) +
       Math.min(event.corroboration, 3)
@@ -171,6 +173,14 @@ function excerptForEvent(event: EventRecord): string {
   return combined.length > 220 ? `${combined.slice(0, 217)}...` : combined;
 }
 
+function deriveDailyThroughputFromWeeklyTransits(weeklyTransits: number): { display: number; exact: number } {
+  const exact = weeklyTransits / 7;
+  return {
+    display: Math.max(1, Math.round(exact)),
+    exact: Number(exact.toFixed(1))
+  };
+}
+
 function evidenceForEvents(events: EventRecord[]): OperatorSuggestionEvidence[] {
   return events.slice(0, 3).map((event) => ({
     eventId: event.id,
@@ -208,17 +218,30 @@ function extractCandidate(
     const match =
       haystack.match(/(?:<=|up to|max(?:imum)?|cap(?:ped)?(?: at)?|only)\s*([0-9]{1,3})\s*(?:\/day|per day|ships\/day|vessels\/day)/i) ??
       haystack.match(/([0-9]{1,3})\s+(?:ships|vessels)\s+(?:yesterday|a day|per day|daily|passed)/i);
-    if (!match) {
+    if (match) {
+      const value = Number(match[1]);
+      return {
+        value,
+        valueText: `<=${value}/day`,
+        sourceText: `${event.sourceText} / operator synthesis`,
+        confidence: event.corroboration >= 2 ? "reported" : "claimed",
+        note: `Candidate extracted from ${event.title}.`
+      };
+    }
+
+    const weeklyTransitMatch = haystack.match(/([0-9]{1,3})\s+(?:weekly\s+)?(?:vessel\s+)?transits/i);
+    if (!weeklyTransitMatch || event.corroboration < 2) {
       return null;
     }
 
-    const value = Number(match[1]);
+    const weeklyTransits = Number(weeklyTransitMatch[1]);
+    const derived = deriveDailyThroughputFromWeeklyTransits(weeklyTransits);
     return {
-      value,
-      valueText: `<=${value}/day`,
+      value: derived.display,
+      valueText: `~${derived.display}/day observed`,
       sourceText: `${event.sourceText} / operator synthesis`,
-      confidence: event.corroboration >= 2 ? "reported" : "claimed",
-      note: `Candidate extracted from ${event.title}.`
+      confidence: "reported",
+      note: `Derived from ${weeklyTransits} reported weekly Hormuz transits (~${derived.exact}/day observed average) in ${event.title}. This reflects observed throughput, not a formal declared corridor cap.`
     };
   }
 

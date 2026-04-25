@@ -86,6 +86,8 @@ Published remote: `https://github.com/Dirty13itch/warwatch-v4`
 - Render is now the explicit first deployment target, with a repo-native `render.yaml` blueprint and `docs/DEPLOYMENT.md` runbook for the single-instance persistent-SQLite runtime
 - Event ingestion now writes canonical `entity:*` tags on insert/merge, and `npm run backfill:entity-tags` can normalize the historical event store onto the same tagging scheme
 - Operator KPI suggestions now use entity-aware relevance instead of pure regex scanning, which reduces false positives in stale-metric review
+- The Hormuz KPI contract now follows observed daily throughput instead of a notional public cap, which makes weekly transit evidence usable for reviewed publication when corroborated
+- The repo now has a reusable `npm run review:publish-candidate -- <metric-key>` lane for promoting operator suggestions into approved top-line snapshots
 - `npm run review:publish-holds` can now replace the remaining seed-era strike, Hormuz, and casualty KPIs with explicit reviewed holds in the local runtime
 
 ## Operating Assumption
@@ -107,7 +109,7 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - Local smoke verification now clears `PUBLIC_BASE_URL` for its spawned server so local canonical checks stay local while `verify:public` continues to validate the deployed site
 - The top-line suggestion lane now preserves contextual evidence while a metric is on reviewed hold, and it can surface an actionable candidate immediately if fresh evidence becomes publishable
 - The live feed lane is now materially cleaner: obvious sports, tourism, and unrelated global stories from broad RSS feeds are quarantined away from public surfaces
-- Public stale state remains expected, but it is now narrowed to `review_hold` instead of `stale_seed`: strike, Hormuz, and casualty top-line metrics are explicitly on reviewed hold rather than silently carrying bootstrap-era values
+- Public stale state remains expected, but it is now narrowed to `review_hold` instead of `stale_seed`: strike and Iran casualty top-line metrics remain on reviewed hold while Hormuz has moved to a reviewed current throughput value instead of silently carrying bootstrap-era posture
 - The operator console can now surface current evidence for stale KPIs, but it will not invent values where extraction is not defensible
 - The operator console can now publish either reviewed values or reviewed holds, which makes the public stale-state semantics honest even when live evidence is insufficient for a current number
 - The operator console can now also surface graph-aware story and claim candidates, which gives ingestion a canonical promotion path before any write-side automation exists

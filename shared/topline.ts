@@ -43,15 +43,15 @@ export const topLineMetricDefinitions: TopLineMetricDefinition[] = [
   },
   {
     key: "hormuz_daily_cap",
-    label: "Hormuz throughput cap",
-    supportingText: "Current public shell exposes the operating assumption and freshness state",
+    label: "Hormuz daily throughput",
+    supportingText: "Observed corridor throughput stays review-gated until current shipping evidence is defensible",
     unit: "ships_per_day",
-    operatorPrompt: "Publish a reviewed shipping-cap estimate when corridor conditions materially change.",
-    valuePlaceholder: "<=15/day",
+    operatorPrompt: "Publish a reviewed daily throughput estimate when corridor conditions materially change. Use explicit corridor caps when available, or operator-reviewed weekly transit evidence when that is the most defensible signal.",
+    valuePlaceholder: "~8/day observed",
     sourcePlaceholder: "Kpler / Lloyd's List / operator review",
-    holdValueText: "Awaiting reviewed Hormuz throughput cap",
-    holdSourceText: "Operator reviewed hold / no defensible current Hormuz throughput cap in the live feed lane",
-    holdNote: "Current shipping coverage is directionally relevant, but it does not yet support a defensible public throughput cap.",
+    holdValueText: "Awaiting reviewed Hormuz daily throughput",
+    holdSourceText: "Operator reviewed hold / no defensible current Hormuz daily throughput in the live feed lane",
+    holdNote: "Current shipping coverage is directionally relevant, but it does not yet support a defensible public daily throughput estimate.",
     holdSupportingText: "Operator-reviewed hold while current Hormuz throughput evidence remains insufficient for safe publication."
   },
   {

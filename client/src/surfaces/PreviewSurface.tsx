@@ -183,10 +183,8 @@ export default function PreviewSurface({
     )
     .slice(0, 4);
   const homeTone =
-    overview?.freshness.topLine === "review_hold"
-      ? "Live feeds are active, but the public site is explicitly holding cumulative strike, Hormuz, and casualty totals until defensible evidence lands."
-      : overview?.headline.description ??
-        "Review-gated public briefing site over a canonical intelligence spine.";
+    overview?.headline.description ??
+    "Review-gated public briefing site over a canonical intelligence spine.";
 
   return (
     <div

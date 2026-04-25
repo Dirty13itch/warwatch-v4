@@ -28,6 +28,7 @@
     "backfill:entity-tags": "tsx scripts/backfill-entity-tags.ts",
     "ingest:once": "tsx scripts/run-ingest.ts",
     "review:publish-holds": "tsx scripts/publish-review-holds.ts",
+    "review:publish-candidate": "tsx scripts/publish-topline-candidate.ts",
     "review:reconcile": "tsx scripts/reconcile-review-queue.ts",
     "heartbeat": "tsx scripts/generate-heartbeat-report.ts"
   },

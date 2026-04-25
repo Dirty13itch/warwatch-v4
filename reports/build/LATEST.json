@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-04-24T16:30:57.089Z",
+  "generatedAt": "2026-04-25T16:43:13.034Z",
   "clientDir": "C:\\Codex Projects\\Iran War\\dist\\client",
   "totals": {
-    "jsBytes": 1521886,
+    "jsBytes": 1521874,
     "cssBytes": 95043,
-    "htmlBytes": 16279
+    "htmlBytes": 2560
   },
   "oversizedAssets": [
     {
@@ -40,16 +40,16 @@
       "gzipBytes": 10054
     },
     {
-      "file": "assets/index-BeKhHhUR.js",
+      "file": "assets/index-BTOBpzpU.js",
       "type": "js",
-      "bytes": 67266,
-      "gzipBytes": 16401
+      "bytes": 67077,
+      "gzipBytes": 16324
     },
     {
-      "file": "assets/OperatorSurface-MAnhwkOk.js",
+      "file": "assets/OperatorSurface--1jLi5LB.js",
       "type": "js",
-      "bytes": 36337,
-      "gzipBytes": 6094
+      "bytes": 36514,
+      "gzipBytes": 6145
     }
   ]
 }

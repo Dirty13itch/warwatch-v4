@@ -508,6 +508,22 @@ function significanceRank(value: string): number {
   return 3;
 }
 
+function formatLabelList(labels: string[]): string {
+  if (labels.length === 0) {
+    return "";
+  }
+
+  if (labels.length === 1) {
+    return labels[0];
+  }
+
+  if (labels.length === 2) {
+    return `${labels[0]} and ${labels[1]}`;
+  }
+
+  return `${labels.slice(0, -1).join(", ")}, and ${labels.at(-1)}`;
+}
+
 function rankMatchingEvents(
   db: DatabaseSync,
   refs: string[],
@@ -716,6 +732,9 @@ export function getOverview(db: DatabaseSync): OverviewResponse {
     metricMap.get("hormuz_daily_cap")?.freshness ?? "missing",
     metricMap.get("iran_casualties_estimate")?.freshness ?? "missing"
   ];
+  const heldTopLineLabels = topLineMetricDefinitions
+    .filter((definition) => metricMap.get(definition.key)?.freshness === "operator_hold")
+    .map((definition) => definition.label);
   const currentFreshnesses = new Set(["live", "ingested", "operator_reviewed"]);
   const resolvedFreshnesses = new Set(["live", "ingested", "operator_reviewed", "operator_hold"]);
   const topLineFreshness = topLineFreshnesses.includes("missing")
@@ -777,7 +796,9 @@ export function getOverview(db: DatabaseSync): OverviewResponse {
             : "Public intelligence shell",
       description:
         topLineFreshness === "review_hold"
-          ? "Live feeds are active, but cumulative strike, Hormuz, or casualty totals remain on reviewed hold until defensible public evidence lands."
+          ? heldTopLineLabels.length
+            ? `Live feeds are active, but ${formatLabelList(heldTopLineLabels)} remain on reviewed hold until defensible public evidence lands.`
+            : "Live feeds are active, but some top-line metrics remain on reviewed hold until defensible public evidence lands."
           : topLineFreshness === "operator_reviewed" || topLineFreshness === "live"
             ? "Current top-line metrics are live or reviewed, while critical claims remain review-gated."
             : "Critical claims are review-gated. Freshness labels remain explicit while live ingestion and runtime verification ramp."
