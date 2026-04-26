@@ -63,6 +63,7 @@
 - Visual proof is now first-class: `npm run preview:shots` builds the app, captures desktop/mobile screenshots for the command, signals, and operator lanes, and writes a local artifact to `reports/previews/LATEST.md`
 - Preview output now also includes a single `reports/previews/latest/preview-board.png` board artifact so updates can show one readable visual brief instead of a loose image set
 - Preview output now also emits a full atlas entrypoint at `reports/previews/latest/index.html` plus `preview-atlas.html` and `preview-atlas.pdf`, so the entire product can be reviewed from one local artifact instead of a loose screenshot folder
+- Preview output now also has a live-site atlas lane under `reports/previews/live/`, so the deployed Vercel website can be reviewed as an artifact instead of relying only on local-build screenshots
 - `npm run preview:open` now opens the latest local atlas directly, which makes the preview lane usable as a real demo/review surface instead of a hidden build byproduct
 - Preview capture now opens the public routes directly instead of navigating only by in-app clicks, which means the proof lane now exercises real URL entry across the website surfaces
 - The preview lane now centers the website-grade home surface, which gives the product a real public/demo entry point instead of dropping directly into the raw command shell
@@ -99,8 +100,8 @@ Hold and extend the first milestone:
 - The repo now has real container packaging, but image-build proof on this workstation is blocked by the absence of a local `docker` executable rather than by the repo contract
 - Full persistent hosted writes still require a different runtime contract than the current free Vercel website lane
 - Client bundle shaping is improved through vendor/manual chunking and lazy map boot, but the MapLibre vendor chunk still breaches the warning threshold and remains a performance follow-up
-- Preview screenshots are local workspace artifacts today; once a public deployment exists, the same visual-proof lane should validate the deployed surface as well
-- The local preview lane now has a proper atlas entrypoint, but deploy-aware and diff-aware preview proof are still next rather than solved
+- Preview screenshots now exist for both the local build and the deployed Vercel site, but diff-aware proof is still next rather than solved
+- The repo now has both local and live atlas entrypoints, so preview review no longer depends on opening the site manually
 - Mobile shell density is materially better than the earlier oversized hero pass, but above-the-fold efficiency is still a tranche-5 follow-up rather than a solved lane
 - The operator refresh lane now surfaces current evidence and can publish reviewed holds, but actual current KPI publications are still needed to clear the public stale flag completely
 - The critical review queue is cleared, so the remaining stale-truth blocker is now evidence quality for the KPI lane rather than review backlog pressure

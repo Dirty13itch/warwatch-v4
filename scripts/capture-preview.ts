@@ -6,12 +6,20 @@ import { pathToFileURL } from "node:url";
 import { chromium, devices, type Browser, type BrowserContext, type Page } from "playwright";
 
 const rootDir = process.cwd();
-const previewRoot = path.resolve(rootDir, "reports/previews");
+const isLiveMode = process.argv.includes("--live");
+const previewRoot = path.resolve(rootDir, isLiveMode ? "reports/previews/live" : "reports/previews");
 const latestDir = path.join(previewRoot, "latest");
 const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
 const archiveDir = path.join(previewRoot, "archive", timestamp);
 const port = Number(process.env.WARWATCH_PREVIEW_PORT ?? 4327);
-const baseUrl = `http://127.0.0.1:${port}`;
+const configuredBaseUrl = (
+  process.env.WARWATCH_PREVIEW_BASE_URL ??
+  process.env.PUBLIC_BASE_URL ??
+  ""
+)
+  .trim()
+  .replace(/\/+$/, "");
+const baseUrl = isLiveMode ? configuredBaseUrl : `http://127.0.0.1:${port}`;
 const serverEntry = path.resolve(rootDir, "dist/server/server/index.js");
 const clientEntry = path.resolve(rootDir, "dist/client/index.html");
 const surfacePathMap = {
@@ -38,6 +46,12 @@ type PreviewHighlights = {
   heartbeat: string[];
   build: string[];
 };
+
+function ensureBaseUrl() {
+  if (isLiveMode && !baseUrl) {
+    throw new Error("Live preview requires PUBLIC_BASE_URL or WARWATCH_PREVIEW_BASE_URL.");
+  }
+}
 
 function ensureBuildOutputs() {
   if (!fs.existsSync(serverEntry) || !fs.existsSync(clientEntry)) {
@@ -101,12 +115,12 @@ function startServer(): ChildProcessWithoutNullStreams {
   });
 }
 
-async function waitForServer(server: ChildProcessWithoutNullStreams) {
+async function waitForReady(server?: ChildProcessWithoutNullStreams) {
   const deadline = Date.now() + 30_000;
   let lastError = "";
 
   while (Date.now() < deadline) {
-    if (server.exitCode !== null) {
+    if (server && server.exitCode !== null) {
       throw new Error(`Preview server exited early: ${lastError || `code ${server.exitCode}`}`);
     }
 
@@ -176,12 +190,22 @@ function groupLabel(group: CaptureTarget["group"]): string {
 }
 
 function writeAtlasHtml(captures: CaptureTarget[], highlights: PreviewHighlights) {
-  const groups: Array<CaptureTarget["group"]> = ["snapshot", "reader", "operator", "mobile"];
+  const groups = Array.from(new Set(captures.map((capture) => capture.group)));
+  const atlasLabel = isLiveMode ? "WarWatch Live Preview Atlas" : "WarWatch V4 Preview Atlas";
+  const atlasHeadline = isLiveMode
+    ? "Full deployed preview of the public website and mobile path."
+    : "Full local preview of the public website, reader lanes, operator lanes, and mobile path.";
+  const atlasCopy = isLiveMode
+    ? "This atlas is generated from the deployed public site so COO updates can show what is actually live on Vercel, not just the local build."
+    : "This atlas is generated from the built app so COO updates can show concrete product state, not just commit messages, PNG filenames, or markdown artifacts.";
+  const artifactLine = isLiveMode
+    ? "index.html + preview-atlas.pdf + preview-board.png under reports/previews/live/"
+    : "index.html + preview-atlas.pdf + preview-board.png";
   const atlasHtml = `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>WarWatch Preview Atlas</title>
+    <title>${atlasLabel}</title>
     <style>
       :root {
         color-scheme: dark;
@@ -356,24 +380,22 @@ function writeAtlasHtml(captures: CaptureTarget[], highlights: PreviewHighlights
       <div class="shell">
         <section class="hero">
           <div class="panel meta">
-            <div class="eyebrow">WarWatch V4 Preview Atlas</div>
-            <h1>Full local preview of the public website, reader lanes, operator lanes, and mobile path.</h1>
-            <p class="copy">
-              This atlas is generated from the built app so COO updates can show concrete product state, not just commit messages, PNG filenames, or markdown artifacts.
-            </p>
+            <div class="eyebrow">${atlasLabel}</div>
+            <h1>${atlasHeadline}</h1>
+            <p class="copy">${atlasCopy}</p>
           </div>
           <div class="panel metrics">
             <div class="metric"><div class="metric-label">Generated</div><div class="metric-value">${new Date().toISOString()}</div></div>
             <div class="metric"><div class="metric-label">Base URL</div><div class="metric-value">${baseUrl}</div></div>
             <div class="metric"><div class="metric-label">Capture count</div><div class="metric-value">${captures.length}</div></div>
-            <div class="metric"><div class="metric-label">Artifacts</div><div class="metric-value">index.html + preview-atlas.pdf + preview-board.png</div></div>
+            <div class="metric"><div class="metric-label">Artifacts</div><div class="metric-value">${artifactLine}</div></div>
           </div>
         </section>
 
         <nav class="nav">
           <a href="#snapshot">Public Shell</a>
           <a href="#reader">Reader Lanes</a>
-          <a href="#operator">Operator Lanes</a>
+          ${groups.includes("operator") ? '<a href="#operator">Operator Lanes</a>' : ""}
           <a href="#mobile">Mobile</a>
         </nav>
 
@@ -471,18 +493,21 @@ async function captureBoard(browser: Browser) {
 }
 
 function writeLatestReport(captures: CaptureTarget[]) {
+  const latestPrefix = "latest";
+  const artifactTitle = isLiveMode ? "# WarWatch Live Preview Artifact" : "# WarWatch Preview Artifact";
   const lines = [
-    "# WarWatch Preview Artifact",
+    artifactTitle,
     "",
     `Generated: ${new Date().toISOString()}`,
     `Base URL: ${baseUrl}`,
     `Archive: ${archiveDir}`,
+    `Mode: ${isLiveMode ? "live" : "local"}`,
     "",
     "## Best Starting Points",
-    "- latest/index.html",
-    "- latest/preview-atlas.html",
-    "- latest/preview-atlas.pdf",
-    "- latest/preview-board.png",
+    `- ${latestPrefix}/index.html`,
+    `- ${latestPrefix}/preview-atlas.html`,
+    `- ${latestPrefix}/preview-atlas.pdf`,
+    `- ${latestPrefix}/preview-board.png`,
     "",
     "## Captures",
     ...captures.map(
@@ -491,21 +516,101 @@ function writeLatestReport(captures: CaptureTarget[]) {
     ),
     "",
     "## Latest Files",
-    "- latest/index.html",
-    "- latest/preview-atlas.html",
-    "- latest/preview-atlas.pdf",
-    "- latest/preview-board.png",
-    ...captures.map((capture) => `- latest/${capture.fileName}`)
+    `- ${latestPrefix}/index.html`,
+    `- ${latestPrefix}/preview-atlas.html`,
+    `- ${latestPrefix}/preview-atlas.pdf`,
+    `- ${latestPrefix}/preview-board.png`,
+    ...captures.map((capture) => `- ${latestPrefix}/${capture.fileName}`)
   ];
 
   fs.writeFileSync(path.join(previewRoot, "LATEST.md"), `${lines.join("\n")}\n`, "utf8");
 }
 
 async function main() {
-  ensureBuildOutputs();
+  ensureBaseUrl();
+  if (!isLiveMode) {
+    ensureBuildOutputs();
+  }
   ensurePreviewDirs();
 
-  const captures: CaptureTarget[] = [
+  const captures: CaptureTarget[] = isLiveMode
+    ? [
+        {
+          title: "Home Surface",
+          fileName: "preview-desktop.png",
+          notes: "Deployed homepage with posture, SITREP, public paths, live markets, and trust framing",
+          group: "snapshot",
+          surface: "preview"
+        },
+        {
+          title: "Home Dossiers",
+          fileName: "preview-dossiers.png",
+          notes: "Live homepage actor and claim posture cards that open into the canonical dossier graph",
+          group: "snapshot",
+          surface: "preview",
+          selector: '[data-preview="preview-dossiers"]'
+        },
+        {
+          title: "Command Surface",
+          fileName: "command-desktop.png",
+          notes: "Deployed command surface with KPI shell, map lane, and public freshness posture",
+          group: "snapshot",
+          surface: "command"
+        },
+        {
+          title: "Timeline Surface",
+          fileName: "timeline-desktop.png",
+          notes: "Deployed chronology explorer with event detail, corroboration, and public posture",
+          group: "reader",
+          surface: "timeline"
+        },
+        {
+          title: "Dossiers Surface",
+          fileName: "dossiers-desktop.png",
+          notes: "Deployed canonical actor graph with relationships, linked claims, and evidence handoff",
+          group: "reader",
+          surface: "dossiers"
+        },
+        {
+          title: "Dossier Detail",
+          fileName: "dossiers-detail.png",
+          notes: "Deployed actor dossier with influence lanes, claim stack, and linked evidence",
+          group: "reader",
+          surface: "dossiers",
+          selector: '[data-preview="dossiers-detail"]'
+        },
+        {
+          title: "Signals Surface",
+          fileName: "signals-desktop.png",
+          notes: "Deployed signals surface with live market cards and source table",
+          group: "reader",
+          surface: "signals"
+        },
+        {
+          title: "Source Reader",
+          fileName: "source-reader.png",
+          notes: "Deployed source posture with actor-thread handoff into the dossier graph",
+          group: "reader",
+          surface: "signals",
+          selector: '[data-preview="source-reader"]'
+        },
+        {
+          title: "Briefings Surface",
+          fileName: "briefings-desktop.png",
+          notes: "Deployed briefing archive reader with highlights and full SITREP detail",
+          group: "reader",
+          surface: "briefings"
+        },
+        {
+          title: "Home Surface Mobile",
+          fileName: "preview-mobile.png",
+          notes: "Deployed homepage on a narrow mobile viewport",
+          group: "mobile",
+          surface: "preview",
+          mobile: true
+        }
+      ]
+    : [
     {
       title: "Home Surface",
       fileName: "preview-desktop.png",
@@ -613,18 +718,18 @@ async function main() {
     }
   ];
 
-  const server = startServer();
+  const server = isLiveMode ? null : startServer();
   let serverLog = "";
-  server.stdout.on("data", (chunk) => {
+  server?.stdout.on("data", (chunk) => {
     serverLog += chunk.toString();
   });
-  server.stderr.on("data", (chunk) => {
+  server?.stderr.on("data", (chunk) => {
     serverLog += chunk.toString();
   });
 
   let browser: Browser | null = null;
   try {
-    await waitForServer(server);
+    await waitForReady(server ?? undefined);
     browser = await chromium.launch({ headless: true });
     for (const capture of captures) {
       await captureSurface(browser, capture);
@@ -642,7 +747,7 @@ async function main() {
       await browser.close();
     }
 
-    if (server.exitCode === null) {
+    if (server && server.exitCode === null) {
       server.kill("SIGTERM");
       await delay(500);
     }

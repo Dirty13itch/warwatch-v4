@@ -30,11 +30,20 @@ That contract is honest:
    - `npm run verify`
    - `npm run heartbeat`
    - `npm run preview:shots`
+   - `PUBLIC_BASE_URL=https://warwatch-v4.vercel.app npm run preview:live`
 3. Deploy preview with:
    - `npx vercel deploy --target preview --yes`
 4. Deploy production with:
    - `npx vercel deploy --prod --yes`
 5. Keep `PUBLIC_BASE_URL=https://warwatch-v4.vercel.app` in the Vercel production environment so canonical and OG metadata stay aligned with the stable alias.
+
+## Live Preview Proof
+- Local atlas: `reports/previews/latest/index.html`
+- Live atlas: `reports/previews/live/latest/index.html`
+- Generate live deployed screenshots with:
+  - `PUBLIC_BASE_URL=https://warwatch-v4.vercel.app npm run preview:live`
+- Open the latest live atlas with:
+  - `npm run preview:open:live`
 
 ## Current Drift
 - GitHub pushes are not currently creating fresh Vercel deployments for this project.

@@ -3,7 +3,8 @@ import path from "node:path";
 import { spawn } from "node:child_process";
 
 const rootDir = process.cwd();
-const latestDir = path.resolve(rootDir, "reports/previews/latest");
+const isLiveMode = process.argv.includes("--live");
+const latestDir = path.resolve(rootDir, isLiveMode ? "reports/previews/live/latest" : "reports/previews/latest");
 
 const targets = {
   html: {
@@ -62,7 +63,8 @@ function printAvailableTargets() {
 }
 
 function main() {
-  const requested = (process.argv[2] ?? "html") as TargetKey;
+  const args = process.argv.slice(2).filter((value) => value !== "--live");
+  const requested = (args[0] ?? "html") as TargetKey;
   const target = targets[requested];
 
   if (!target) {
@@ -73,7 +75,7 @@ function main() {
 
   if (!fs.existsSync(target.filePath)) {
     console.error(`Preview artifact is missing: ${target.filePath}`);
-    console.error("Run `npm run preview:shots` first.");
+    console.error(`Run \`npm run ${isLiveMode ? "preview:live" : "preview:shots"}\` first.`);
     printAvailableTargets();
     process.exit(1);
   }

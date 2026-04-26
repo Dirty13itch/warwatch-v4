@@ -72,6 +72,7 @@ Published remote: `https://github.com/Dirty13itch/warwatch-v4`
 - Preview proof now exists as a repo script: `npm run preview:shots` captures desktop/mobile screenshots from the built app and writes `reports/previews/LATEST.md`
 - Preview proof also emits `reports/previews/latest/preview-board.png`, a single stitched board artifact for human-facing updates
 - Preview proof now also emits a first-class atlas entrypoint at `reports/previews/latest/index.html` plus `preview-atlas.html` and `preview-atlas.pdf`, so the entire product can be reviewed from one local artifact
+- Preview proof now also supports a deployed-site atlas lane under `reports/previews/live/`, which captures the live Vercel website directly instead of relying only on the built local shell
 - `npm run preview:open` now opens the latest atlas directly, which turns preview proof into a real walkthrough surface instead of a folder of PNGs
 - Preview proof now opens the public routes directly instead of clicking through the shell, so the artifact lane exercises real URL entry as part of capture
 - Preview proof now includes the Snapshot surface as the primary visual/demo lane
@@ -121,6 +122,7 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - The repo now has a deterministic queue-reconciliation script (`npm run review:reconcile`) that reclassifies bad auto-ingest criticals, promotes matched claim suggestions, and rejects superseded launch briefings instead of leaving backlog cleanup as a manual chat loop
 - The COO lane can now attach actual UI evidence to updates through local preview screenshots instead of relying only on text artifacts
 - The COO lane can now point to one local full-preview atlas instead of forcing review through individual PNG links or a stitched board alone
+- The COO lane can now also generate a live Vercel atlas under `reports/previews/live/`, which makes the actual deployed site reviewable as a screenshot artifact without opening the browser manually
 - The website lane now has real static public assets (`favicon.svg`, `og-card.svg`, `site.webmanifest`, `robots.txt`) and route-aware head metadata instead of a generic Vite shell title
 - The website lane now also has first-response route metadata from the server, so direct entries and crawlers no longer depend on client-side meta replacement alone
 - The preview lane now reflects the stronger hierarchy pass instead of the older flatter card system, and the mobile artifact shows the tighter hero/nav/status shell rather than the earlier oversized first screen
