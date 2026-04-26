@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-04-25T16:42:54.014Z",
+  "generatedAt": "2026-04-26T05:10:24.551Z",
   "overview": {
-    "generatedAt": "2026-04-25T16:42:54.015Z",
-    "currentDay": 57,
+    "generatedAt": "2026-04-26T05:10:24.552Z",
+    "currentDay": 58,
     "stale": true,
     "legacyAsOf": null,
     "freshness": {
       "topLine": "review_hold",
-      "lastSuccessfulIngestionAt": "2026-04-25T16:35:40.830Z",
+      "lastSuccessfulIngestionAt": "2026-04-26T04:57:33.539Z",
       "hasLiveIngestion": true
     },
     "headline": {
       "level": "CRITICAL",
       "label": "Evidence-bound public briefing",
-      "description": "Live feeds are active, but Total strikes and Iran casualty estimate remain on reviewed hold until defensible public evidence lands."
+      "description": "Live feeds are active, but Total strikes remain on reviewed hold until defensible public evidence lands."
     },
     "kpis": [
       {
@@ -26,7 +26,7 @@
       {
         "key": "oil_brent",
         "label": "Brent marker",
-        "value": "$105.33",
+        "value": "$99.13",
         "supportingText": "Live market signal from the Yahoo Finance futures feed.",
         "freshness": "ingested"
       },
@@ -40,9 +40,9 @@
       {
         "key": "iran_casualties_estimate",
         "label": "Iran casualty estimate",
-        "value": "Awaiting reviewed Iran casualty estimate",
-        "supportingText": "Operator-reviewed hold while current casualty evidence remains insufficient for safe publication. Operator reviewed hold / no defensible current Iran casualty estimate in the live feed lane.",
-        "freshness": "operator_hold"
+        "value": "22,900 Iran total casualties",
+        "supportingText": "Operator-reviewed refresh from Al-Monitor / ICRC / Reuters (April 2-7, 2026) / operator synthesis.",
+        "freshness": "operator_reviewed"
       }
     ],
     "fronts": [
@@ -94,6 +94,32 @@
     }
   },
   "events": [
+    {
+      "id": "event_df814c5cf7b1",
+      "date": "2026-04-26",
+      "time": null,
+      "title": "Hundreds of Israelis rally as US-Iran peace talks stall",
+      "detail": "Crowds of protesters took to the streets of Tel Aviv on Sunday, amid fears the US-Israeli war on Iran will resume.",
+      "category": "diplomatic",
+      "significance": "high",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "Al Jazeera",
+      "sourceRefs": [
+        "Al Jazeera",
+        "https://www.aljazeera.com/video/newsfeed/2026/4/26/hundreds-of-israelis-rally-as-us-iran-peace-talks-stall?traffic_source=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "Al Jazeera",
+        "entity:iran",
+        "entity:israel"
+      ],
+      "createdAt": "2026-04-26T04:57:32.610Z"
+    },
     {
       "id": "event_3b715d223413",
       "date": "2026-04-25",
@@ -201,16 +227,20 @@
       "date": "2026-04-25",
       "time": null,
       "title": "Iran's foreign minister leaves Pakistan, then Trump cancels U.S. delegation's travel",
-      "detail": "After arriving on Friday, Iran's Abbas Araghchi has left Islamabad, prompting President Trump to announce that his envoys Steve Witkoff and Jared Kushner will no longer travel there Saturday for peace talks Iran's foreign minister arrived in Islamabad, and the White House says Steve Witkoff and Jared Kushner will go there Saturday to try to \"move the ball forward towards a deal.\"",
+      "detail": "After arriving on Friday, Iran's Abbas Araghchi has left Islamabad, prompting President Trump to announce that his envoys Steve Witkoff and Jared Kushner will no longer travel there Saturday for peace talks Iran's foreign minister arrived in Islamabad, and the White House says Steve Witkoff and Jared Kushner will go there Saturday to try to \"move the ball forward towards a deal.\" Iran had earlier said there were no plans for a direct meeting with a US delegation led by Steve Witkoff and Jared Kushner. Trump says Iran did not make a satisfactory offer, as Iranian Foreign Minister Abbas Araghchi departs Pakistan.",
       "category": "diplomatic",
       "significance": "high",
-      "confidence": "unverified",
-      "corroboration": 1,
-      "sourceText": "NPR World",
+      "confidence": "confirmed",
+      "corroboration": 3,
+      "sourceText": "NPR World / BBC Middle East / Al Jazeera",
       "sourceRefs": [
         "NPR World",
         "https://www.npr.org/2026/04/25/nx-s1-5799372/iran-middle-east-updates",
-        "https://www.npr.org/2026/04/24/g-s1-118595/middle-east-war-updates"
+        "https://www.npr.org/2026/04/24/g-s1-118595/middle-east-war-updates",
+        "BBC Middle East",
+        "https://www.bbc.com/news/articles/c4g6nyvl29po?at_medium=RSS&at_campaign=rss",
+        "Al Jazeera",
+        "https://www.aljazeera.com/news/liveblog/2026/4/26/iran-war-live-tehran-rejects-talks-under-siege-trump-cancels-envoys-trip?traffic_source=rss"
       ],
       "reviewState": "auto_published",
       "visibility": "secondary",
@@ -219,9 +249,36 @@
         "auto_ingest",
         "NPR World",
         "entity:iran",
-        "entity:pakistan"
+        "entity:pakistan",
+        "BBC Middle East",
+        "Al Jazeera"
       ],
       "createdAt": "2026-04-25T16:35:40.236Z"
+    },
+    {
+      "id": "event_f101f93a7b16",
+      "date": "2026-04-25",
+      "time": null,
+      "title": "How serious is the rift in NATO?",
+      "detail": "Trump fury over Europeans' refusal to join Iran war.",
+      "category": "intel",
+      "significance": "medium",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "Al Jazeera",
+      "sourceRefs": [
+        "Al Jazeera",
+        "https://www.aljazeera.com/video/inside-story/2026/4/25/how-serious-is-the-rift-in-nato?traffic_source=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "Al Jazeera",
+        "entity:iran"
+      ],
+      "createdAt": "2026-04-26T04:57:32.617Z"
     },
     {
       "id": "event_ffbd7877eaaf",
@@ -5307,58 +5364,6 @@
         "entity:united-states"
       ],
       "createdAt": "2026-03-02T00:00:00.000Z"
-    },
-    {
-      "id": "event_6ec3f5ba8f29",
-      "date": "2026-03-02",
-      "time": "10:00Z",
-      "title": "Hezbollah Officially Resumes Strikes From Lebanon",
-      "detail": "Hezbollah formally resumed strikes against Israel from southern Lebanon, declaring its military return as a direct response to the assassination of Supreme Leader Khamenei. Within 3 days, UNIFIL monitoring stations recorded 210+ missiles fired into northern Israel. Hezbollah Secretary-General Naim Qassem declared Hezbollah would not leave \"the field of honor and resistance.\"",
-      "category": "proxy",
-      "significance": "critical",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "Wikipedia / UNIFIL / Al Jazeera",
-      "sourceRefs": [
-        "Wikipedia",
-        "UNIFIL",
-        "Al Jazeera"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "proxy",
-        "entity:hezbollah",
-        "entity:israel",
-        "entity:lebanon"
-      ],
-      "createdAt": "2026-03-02T00:00:00.000Z"
-    },
-    {
-      "id": "event_766f02a7e965",
-      "date": "2026-03-02",
-      "time": "06:00Z",
-      "title": "THAAD Radars Struck at UAE's Sader and Ruwais Bases",
-      "detail": "Iranian missile strikes targeted THAAD radar vehicle sheds at Sader and Ruwais installations in the UAE, and an additional AN/TPY-2 radar at Prince Sultan Air Base in Saudi Arabia. Total THAAD radar damage in the first 48 hours valued at ~$800 million per BBC/CSIS analysis. The US was later forced to redeploy THAAD components from South Korea to replace losses.",
-      "category": "iran_strike",
-      "significance": "critical",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "CNN / BBC / Chosun English",
-      "sourceRefs": [
-        "CNN",
-        "BBC",
-        "Chosun English"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "iran_strike",
-        "entity:iran"
-      ],
-      "createdAt": "2026-03-02T00:00:00.000Z"
     }
   ],
   "stories": [
@@ -5972,6 +5977,18 @@
     }
   ],
   "briefings": [
+    {
+      "id": "brief_1ba97b31ff14",
+      "briefingDate": "2026-04-26",
+      "title": "WarWatch SITREP 2026-04-26",
+      "body": "SITUATION\nRecent reviewed/public events: Hundreds of Israelis rally as US-Iran peace talks stall.\nMarket signals: Brent $99.13 (-5.7% vs prior print); WTI $94.40 (-1.5% vs prior print); Gold $4,740.90 (+0.8% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 1.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+      "sourceRefs": [
+        "Hundreds of Israelis rally as US-Iran peace talks stall"
+      ],
+      "reviewState": "approved",
+      "publishState": "published",
+      "createdAt": "2026-04-26T04:59:27.061Z"
+    },
     {
       "id": "brief_14e0387fd6c8",
       "briefingDate": "2026-04-25",
@@ -8038,6 +8055,65 @@
       ],
       "events": [
         {
+          "id": "event_df814c5cf7b1",
+          "date": "2026-04-26",
+          "time": null,
+          "title": "Hundreds of Israelis rally as US-Iran peace talks stall",
+          "detail": "Crowds of protesters took to the streets of Tel Aviv on Sunday, amid fears the US-Israeli war on Iran will resume.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "Al Jazeera",
+          "sourceRefs": [
+            "Al Jazeera",
+            "https://www.aljazeera.com/video/newsfeed/2026/4/26/hundreds-of-israelis-rally-as-us-iran-peace-talks-stall?traffic_source=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "Al Jazeera",
+            "entity:iran",
+            "entity:israel"
+          ],
+          "createdAt": "2026-04-26T04:57:32.610Z"
+        },
+        {
+          "id": "event_6598878e0cc8",
+          "date": "2026-04-25",
+          "time": null,
+          "title": "Iran's foreign minister leaves Pakistan, then Trump cancels U.S. delegation's travel",
+          "detail": "After arriving on Friday, Iran's Abbas Araghchi has left Islamabad, prompting President Trump to announce that his envoys Steve Witkoff and Jared Kushner will no longer travel there Saturday for peace talks Iran's foreign minister arrived in Islamabad, and the White House says Steve Witkoff and Jared Kushner will go there Saturday to try to \"move the ball forward towards a deal.\" Iran had earlier said there were no plans for a direct meeting with a US delegation led by Steve Witkoff and Jared Kushner. Trump says Iran did not make a satisfactory offer, as Iranian Foreign Minister Abbas Araghchi departs Pakistan.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "confirmed",
+          "corroboration": 3,
+          "sourceText": "NPR World / BBC Middle East / Al Jazeera",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/25/nx-s1-5799372/iran-middle-east-updates",
+            "https://www.npr.org/2026/04/24/g-s1-118595/middle-east-war-updates",
+            "BBC Middle East",
+            "https://www.bbc.com/news/articles/c4g6nyvl29po?at_medium=RSS&at_campaign=rss",
+            "Al Jazeera",
+            "https://www.aljazeera.com/news/liveblog/2026/4/26/iran-war-live-tehran-rejects-talks-under-siege-trump-cancels-envoys-trip?traffic_source=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:iran",
+            "entity:pakistan",
+            "BBC Middle East",
+            "Al Jazeera"
+          ],
+          "createdAt": "2026-04-25T16:35:40.236Z"
+        },
+        {
           "id": "event_df47686baa39",
           "date": "2026-04-25",
           "time": null,
@@ -8089,31 +8165,29 @@
           "createdAt": "2026-04-25T16:35:40.172Z"
         },
         {
-          "id": "event_6598878e0cc8",
+          "id": "event_f101f93a7b16",
           "date": "2026-04-25",
           "time": null,
-          "title": "Iran's foreign minister leaves Pakistan, then Trump cancels U.S. delegation's travel",
-          "detail": "After arriving on Friday, Iran's Abbas Araghchi has left Islamabad, prompting President Trump to announce that his envoys Steve Witkoff and Jared Kushner will no longer travel there Saturday for peace talks Iran's foreign minister arrived in Islamabad, and the White House says Steve Witkoff and Jared Kushner will go there Saturday to try to \"move the ball forward towards a deal.\"",
-          "category": "diplomatic",
-          "significance": "high",
+          "title": "How serious is the rift in NATO?",
+          "detail": "Trump fury over Europeans' refusal to join Iran war.",
+          "category": "intel",
+          "significance": "medium",
           "confidence": "unverified",
           "corroboration": 1,
-          "sourceText": "NPR World",
+          "sourceText": "Al Jazeera",
           "sourceRefs": [
-            "NPR World",
-            "https://www.npr.org/2026/04/25/nx-s1-5799372/iran-middle-east-updates",
-            "https://www.npr.org/2026/04/24/g-s1-118595/middle-east-war-updates"
+            "Al Jazeera",
+            "https://www.aljazeera.com/video/inside-story/2026/4/25/how-serious-is-the-rift-in-nato?traffic_source=rss"
           ],
           "reviewState": "auto_published",
           "visibility": "secondary",
           "geo": null,
           "tags": [
             "auto_ingest",
-            "NPR World",
-            "entity:iran",
-            "entity:pakistan"
+            "Al Jazeera",
+            "entity:iran"
           ],
-          "createdAt": "2026-04-25T16:35:40.236Z"
+          "createdAt": "2026-04-26T04:57:32.617Z"
         },
         {
           "id": "event_5b07d71b073b",
@@ -8139,60 +8213,21 @@
             "entity:iran"
           ],
           "createdAt": "2026-04-24T16:26:09.711Z"
-        },
-        {
-          "id": "event_1ad2eb2ae803",
-          "date": "2026-04-24",
-          "time": null,
-          "title": "PM Sanchez rebuffs US idea of suspending Spain from NATO",
-          "detail": "PM Sanchez responded to reports that the US may suspend Madrid from NATO over its opposition to the war on Iran.",
-          "category": "intel",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/video/newsfeed/2026/4/24/pm-sanchez-rebuffs-us-idea-of-suspending-spain-from-nato?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
-            "entity:iran"
-          ],
-          "createdAt": "2026-04-24T16:26:09.715Z"
-        },
-        {
-          "id": "event_05351ad0d8cc",
-          "date": "2026-04-24",
-          "time": null,
-          "title": "Iran-Iraq Tanker War redux? Why the Strait of Hormuz crisis is different",
-          "detail": "The Tanker War between Iran and Iraq in the 1980s also disrupted global shipping. But the situation today is different.",
-          "category": "economic",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/news/2026/4/24/iran-iraq-tanker-war-redux-why-the-strait-of-hormuz-crisis-is-different?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
-            "entity:strait-of-hormuz",
-            "entity:iran"
-          ],
-          "createdAt": "2026-04-24T16:26:09.719Z"
         }
       ],
       "briefings": [
+        {
+          "id": "brief_1ba97b31ff14",
+          "briefingDate": "2026-04-26",
+          "title": "WarWatch SITREP 2026-04-26",
+          "body": "SITUATION\nRecent reviewed/public events: Hundreds of Israelis rally as US-Iran peace talks stall.\nMarket signals: Brent $99.13 (-5.7% vs prior print); WTI $94.40 (-1.5% vs prior print); Gold $4,740.90 (+0.8% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 1.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+          "sourceRefs": [
+            "Hundreds of Israelis rally as US-Iran peace talks stall"
+          ],
+          "reviewState": "approved",
+          "publishState": "published",
+          "createdAt": "2026-04-26T04:59:27.061Z"
+        },
         {
           "id": "brief_14e0387fd6c8",
           "briefingDate": "2026-04-25",
@@ -8227,24 +8262,6 @@
           "reviewState": "approved",
           "publishState": "published",
           "createdAt": "2026-04-24T16:26:10.389Z"
-        },
-        {
-          "id": "brief_acf6b8f13837",
-          "briefingDate": "2026-04-23",
-          "title": "WarWatch SITREP 2026-04-23",
-          "body": "SITUATION\nRecent reviewed/public events: Iran says Strait of Hormuz cannot be opened due to ceasefire breaches; How Lebanese journalist Amal Khalil was pursued and killed by Israel; Makan Nasiri, the only child still missing from the school bombed in Iran; Infiltration from Within: Israelis recruited to spy for enemy countries; Protester hurls red fluid at Reza Pahlavi during Germany visit; How has Hezbollah shifted its battle tactics?; Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted.\nMarket signals: Brent $103.50 (+1.6% vs prior print); WTI $94.48 (+1.6% vs prior print); Gold $4,736.80 (+0.1% vs prior print).\n\nENEMY\nHigh-risk activity mix: 1 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 2.\n\nASSESSMENT\nPending review backlog stands at 2. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
-          "sourceRefs": [
-            "Iran says Strait of Hormuz cannot be opened due to ceasefire breaches",
-            "How Lebanese journalist Amal Khalil was pursued and killed by Israel",
-            "Makan Nasiri, the only child still missing from the school bombed in Iran",
-            "Infiltration from Within: Israelis recruited to spy for enemy countries",
-            "Protester hurls red fluid at Reza Pahlavi during Germany visit",
-            "How has Hezbollah shifted its battle tactics?",
-            "Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted"
-          ],
-          "reviewState": "approved",
-          "publishState": "published",
-          "createdAt": "2026-04-23T14:11:21.329Z"
         }
       ]
     },
@@ -8366,6 +8383,32 @@
         }
       ],
       "events": [
+        {
+          "id": "event_df814c5cf7b1",
+          "date": "2026-04-26",
+          "time": null,
+          "title": "Hundreds of Israelis rally as US-Iran peace talks stall",
+          "detail": "Crowds of protesters took to the streets of Tel Aviv on Sunday, amid fears the US-Israeli war on Iran will resume.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "Al Jazeera",
+          "sourceRefs": [
+            "Al Jazeera",
+            "https://www.aljazeera.com/video/newsfeed/2026/4/26/hundreds-of-israelis-rally-as-us-iran-peace-talks-stall?traffic_source=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "Al Jazeera",
+            "entity:iran",
+            "entity:israel"
+          ],
+          "createdAt": "2026-04-26T04:57:32.610Z"
+        },
         {
           "id": "event_837c9ddc5d37",
           "date": "2026-04-25",
@@ -8497,36 +8540,21 @@
             "entity:lebanon"
           ],
           "createdAt": "2026-04-24T16:26:09.806Z"
-        },
-        {
-          "id": "event_f3df71aaf1ac",
-          "date": "2026-04-24",
-          "time": null,
-          "title": "Israel and Lebanon extend ceasefire. And, Trump eases medical marijuana rules",
-          "detail": "Israel and Lebanon have agreed to extend their ceasefire for three weeks, President Trump says. And, the Trump administration is easing rules on medical marijuana. President Trump said Thursday that Israel and Lebanon have agreed to extend their ceasefire for three weeks after the two sides met at the White House for a high-level negotiation.",
-          "category": "diplomatic",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "NPR World",
-          "sourceRefs": [
-            "NPR World",
-            "https://www.npr.org/2026/04/24/g-s1-118594/up-first-newsletter-strait-of-hormuz-lebanon-israel-marijuana-reclassification-georgia-wildfires-polymarket",
-            "https://www.npr.org/2026/04/23/nx-s1-5796719/iran-middle-east-updates"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "NPR World",
-            "entity:israel",
-            "entity:lebanon"
-          ],
-          "createdAt": "2026-04-24T16:26:09.812Z"
         }
       ],
       "briefings": [
+        {
+          "id": "brief_1ba97b31ff14",
+          "briefingDate": "2026-04-26",
+          "title": "WarWatch SITREP 2026-04-26",
+          "body": "SITUATION\nRecent reviewed/public events: Hundreds of Israelis rally as US-Iran peace talks stall.\nMarket signals: Brent $99.13 (-5.7% vs prior print); WTI $94.40 (-1.5% vs prior print); Gold $4,740.90 (+0.8% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 1.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+          "sourceRefs": [
+            "Hundreds of Israelis rally as US-Iran peace talks stall"
+          ],
+          "reviewState": "approved",
+          "publishState": "published",
+          "createdAt": "2026-04-26T04:59:27.061Z"
+        },
         {
           "id": "brief_14e0387fd6c8",
           "briefingDate": "2026-04-25",
@@ -8561,24 +8589,6 @@
           "reviewState": "approved",
           "publishState": "published",
           "createdAt": "2026-04-24T16:26:10.389Z"
-        },
-        {
-          "id": "brief_acf6b8f13837",
-          "briefingDate": "2026-04-23",
-          "title": "WarWatch SITREP 2026-04-23",
-          "body": "SITUATION\nRecent reviewed/public events: Iran says Strait of Hormuz cannot be opened due to ceasefire breaches; How Lebanese journalist Amal Khalil was pursued and killed by Israel; Makan Nasiri, the only child still missing from the school bombed in Iran; Infiltration from Within: Israelis recruited to spy for enemy countries; Protester hurls red fluid at Reza Pahlavi during Germany visit; How has Hezbollah shifted its battle tactics?; Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted.\nMarket signals: Brent $103.50 (+1.6% vs prior print); WTI $94.48 (+1.6% vs prior print); Gold $4,736.80 (+0.1% vs prior print).\n\nENEMY\nHigh-risk activity mix: 1 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 2.\n\nASSESSMENT\nPending review backlog stands at 2. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
-          "sourceRefs": [
-            "Iran says Strait of Hormuz cannot be opened due to ceasefire breaches",
-            "How Lebanese journalist Amal Khalil was pursued and killed by Israel",
-            "Makan Nasiri, the only child still missing from the school bombed in Iran",
-            "Infiltration from Within: Israelis recruited to spy for enemy countries",
-            "Protester hurls red fluid at Reza Pahlavi during Germany visit",
-            "How has Hezbollah shifted its battle tactics?",
-            "Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted"
-          ],
-          "reviewState": "approved",
-          "publishState": "published",
-          "createdAt": "2026-04-23T14:11:21.329Z"
         }
       ]
     },
@@ -8964,16 +8974,20 @@
           "date": "2026-04-25",
           "time": null,
           "title": "Iran's foreign minister leaves Pakistan, then Trump cancels U.S. delegation's travel",
-          "detail": "After arriving on Friday, Iran's Abbas Araghchi has left Islamabad, prompting President Trump to announce that his envoys Steve Witkoff and Jared Kushner will no longer travel there Saturday for peace talks Iran's foreign minister arrived in Islamabad, and the White House says Steve Witkoff and Jared Kushner will go there Saturday to try to \"move the ball forward towards a deal.\"",
+          "detail": "After arriving on Friday, Iran's Abbas Araghchi has left Islamabad, prompting President Trump to announce that his envoys Steve Witkoff and Jared Kushner will no longer travel there Saturday for peace talks Iran's foreign minister arrived in Islamabad, and the White House says Steve Witkoff and Jared Kushner will go there Saturday to try to \"move the ball forward towards a deal.\" Iran had earlier said there were no plans for a direct meeting with a US delegation led by Steve Witkoff and Jared Kushner. Trump says Iran did not make a satisfactory offer, as Iranian Foreign Minister Abbas Araghchi departs Pakistan.",
           "category": "diplomatic",
           "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "NPR World",
+          "confidence": "confirmed",
+          "corroboration": 3,
+          "sourceText": "NPR World / BBC Middle East / Al Jazeera",
           "sourceRefs": [
             "NPR World",
             "https://www.npr.org/2026/04/25/nx-s1-5799372/iran-middle-east-updates",
-            "https://www.npr.org/2026/04/24/g-s1-118595/middle-east-war-updates"
+            "https://www.npr.org/2026/04/24/g-s1-118595/middle-east-war-updates",
+            "BBC Middle East",
+            "https://www.bbc.com/news/articles/c4g6nyvl29po?at_medium=RSS&at_campaign=rss",
+            "Al Jazeera",
+            "https://www.aljazeera.com/news/liveblog/2026/4/26/iran-war-live-tehran-rejects-talks-under-siege-trump-cancels-envoys-trip?traffic_source=rss"
           ],
           "reviewState": "auto_published",
           "visibility": "secondary",
@@ -8982,7 +8996,9 @@
             "auto_ingest",
             "NPR World",
             "entity:iran",
-            "entity:pakistan"
+            "entity:pakistan",
+            "BBC Middle East",
+            "Al Jazeera"
           ],
           "createdAt": "2026-04-25T16:35:40.236Z"
         },
@@ -11734,8 +11750,8 @@
       {
         "id": "metric_48e5874bce78",
         "metricKey": "oil_brent",
-        "value": 105.33000183105469,
-        "valueText": "$105.33",
+        "value": 99.12999725341797,
+        "valueText": "$99.13",
         "unit": "usd_per_barrel",
         "timestamp": "2026-04-24T04:00:00.000Z",
         "sourceText": "Yahoo Finance",
@@ -12554,8 +12570,8 @@
       {
         "id": "metric_2d5d48731ee4",
         "metricKey": "gold_price",
-        "value": 4722.2998046875,
-        "valueText": "$4,722.30",
+        "value": 4740.89990234375,
+        "valueText": "$4,740.90",
         "unit": "usd_per_ounce",
         "timestamp": "2026-04-24T04:00:00.000Z",
         "sourceText": "Yahoo Finance",

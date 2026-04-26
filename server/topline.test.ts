@@ -148,6 +148,64 @@ describe("top-line suggestions", () => {
     db.close();
   });
 
+  it("surfaces total-strike context from older aggregate target summaries even without a publishable strike total", () => {
+    const db = makeDb();
+    db.exec("DELETE FROM events;");
+
+    insertEvent(db, {
+      id: "event_total_targets_struck",
+      date: "2026-04-01",
+      title: "Trump Prime-Time Address: 11,000 Targets Struck, Escalation Vowed",
+      detail: "CENTCOM had confirmed 11,000+ total targets struck since February 28.",
+      category: "intel",
+      corroboration: 2,
+      tags: ["intel", "entity:iran"]
+    });
+
+    const suggestions = getTopLineSuggestions(db);
+    const strikes = suggestions.find((item) => item.key === "total_strikes");
+
+    expect(strikes?.status).toBe("context_only");
+    expect(strikes?.candidate).toBeNull();
+    expect(strikes?.evidence.length).toBeGreaterThan(0);
+
+    db.close();
+  });
+
+  it("keeps generic air-campaign or projectile coverage out of total-strike evidence when it lacks an aggregate strike tally", () => {
+    const db = makeDb();
+    db.exec("DELETE FROM events;");
+
+    insertEvent(db, {
+      id: "event_total_targets_struck_context",
+      date: "2026-04-01",
+      title: "Trump Prime-Time Address: 11,000 Targets Struck, Escalation Vowed",
+      detail: "CENTCOM had confirmed 11,000+ total targets struck since February 28.",
+      category: "intel",
+      corroboration: 2,
+      tags: ["intel", "entity:iran"]
+    });
+
+    insertEvent(db, {
+      id: "event_generic_air_campaign",
+      date: "2026-03-16",
+      title: "IDF Launches Ground Operations in Southern Lebanon",
+      detail: "The second front opened alongside the air campaign against Iran while Hezbollah fired 1,000+ projectiles into Israel.",
+      category: "regional_strike",
+      corroboration: 2,
+      tags: ["regional_strike", "entity:iran", "entity:israel", "entity:hezbollah"]
+    });
+
+    const suggestions = getTopLineSuggestions(db);
+    const strikes = suggestions.find((item) => item.key === "total_strikes");
+
+    expect(strikes?.status).toBe("context_only");
+    expect(strikes?.candidate).toBeNull();
+    expect(strikes?.evidence.map((item) => item.eventId)).toEqual(["event_total_targets_struck_context"]);
+
+    db.close();
+  });
+
   it("keeps reviewed holds contextual when relevant non-numeric evidence exists", () => {
     const db = makeDb();
     db.exec("DELETE FROM events;");
@@ -183,6 +241,72 @@ describe("top-line suggestions", () => {
     expect(hormuz?.status).toBe("reviewed_hold");
     expect(hormuz?.candidate).toBeNull();
     expect(hormuz?.evidence.length).toBeGreaterThan(0);
+
+    db.close();
+  });
+
+  it("derives an Iran casualty candidate from combined killed and injured reporting", () => {
+    const db = makeDb();
+    db.exec("DELETE FROM events;");
+
+    insertEvent(db, {
+      id: "event_iran_casualty_total",
+      date: "2026-04-06",
+      title: "IFRC Alert: CHF 40M Emergency Appeal Only 6% Funded",
+      detail: "The agency reported 1,900+ people killed and 21,000+ injured in Iran since February 28.",
+      category: "humanitarian",
+      corroboration: 2,
+      sourceText: "Al-Monitor / ICRC / Reuters",
+      tags: ["humanitarian", "entity:iran"]
+    });
+
+    const suggestions = getTopLineSuggestions(db);
+    const casualties = suggestions.find((item) => item.key === "iran_casualties_estimate");
+
+    expect(casualties?.status).toBe("candidate");
+    expect(casualties?.candidate?.value).toBe(22900);
+    expect(casualties?.candidate?.valueText).toBe("22,900 Iran total casualties");
+
+    db.close();
+  });
+
+  it("surfaces an Iran casualty candidate while the metric is on reviewed hold", () => {
+    const db = makeDb();
+    db.exec("DELETE FROM events;");
+
+    upsertPreparedMetricSnapshot(db, {
+      metricKey: "iran_casualties_estimate",
+      value: null,
+      valueText: "Awaiting reviewed Iran casualty estimate",
+      unit: "people",
+      timestamp: "2026-04-24T12:00:00.000Z",
+      sourceText: "Operator reviewed hold / no defensible current Iran casualty estimate in the live feed lane",
+      confidence: "reported",
+      reviewState: "approved",
+      freshness: "operator_hold",
+      meta: {
+        note: "Current live coverage does not yet support a defensible public casualty estimate for Iran.",
+        mode: "hold"
+      }
+    });
+
+    insertEvent(db, {
+      id: "event_iran_casualty_hold_candidate",
+      date: "2026-04-06",
+      title: "IFRC Alert: CHF 40M Emergency Appeal Only 6% Funded",
+      detail: "The agency reported 1,900+ people killed and 21,000+ injured in Iran since February 28.",
+      category: "humanitarian",
+      corroboration: 2,
+      sourceText: "Al-Monitor / ICRC / Reuters",
+      tags: ["humanitarian", "entity:iran"]
+    });
+
+    const suggestions = getTopLineSuggestions(db);
+    const casualties = suggestions.find((item) => item.key === "iran_casualties_estimate");
+
+    expect(casualties?.status).toBe("candidate");
+    expect(casualties?.candidate?.value).toBe(22900);
+    expect(casualties?.evidence.length).toBeGreaterThan(0);
 
     db.close();
   });

@@ -55,7 +55,7 @@
 - Suggestion-backed review dossiers now show proposed story/claim payloads plus canonical matches when they exist, which makes promotion review materially faster than reasoning from metadata blobs
 - The operator lane can now hand directly into timeline evidence from both KPI suggestion cards and queue dossiers, which makes tranche-1 review work faster and less abstract
 - The current critical queue has now been reconciled down to zero pending items through a repo script plus claim-suggestion promotion, so stale public truth is no longer blocked by seed-era queue backlog
-- The public stale lane is now narrowed from `stale_seed` to `review_hold`: the remaining KPI bottleneck is now honest reviewed holds rather than silently carrying seed-era top-line values
+- The public stale lane is now narrowed from `stale_seed` to `review_hold`: `hormuz_daily_cap` and `iran_casualties_estimate` are now reviewed current values, and only `total_strikes` remains on an honest evidence-bound hold instead of silently carrying a seed-era top-line value
 - Heartbeat now renders explicit top-line metric values, freshness, source text, and timestamps instead of only aggregate stale-state summaries
 - Heartbeat output is sanitized to an ASCII-safe operator artifact so Windows console review does not corrupt high-signal lines
 - Heartbeat next actions are now queue-aware, so the operator artifact stops telling the repo to reduce pending critical items once the queue is already clear

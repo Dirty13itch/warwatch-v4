@@ -43,7 +43,7 @@ function loadRecentOperatorEvents(db: DatabaseSync): EventRecord[] {
     FROM events
     WHERE review_state <> 'rejected'
     ORDER BY date DESC, COALESCE(time, '00:00Z') DESC, created_at DESC
-    LIMIT 80
+    LIMIT 220
   `).all() as Record<string, unknown>[];
 
   return rows.map(rowToEvent);
@@ -77,13 +77,21 @@ function metricRelevanceScore(
   const entityTags = eventEntityTags(event, entities);
 
   if (key === "total_strikes") {
-    const hasStrikeFigure = /[0-9][0-9,]{2,}\+?\s+(?:strikes|sorties)/i.test(haystack);
-    const hasStrikeContext =
-      /(?:total|cumulative|combined|campaign|air campaign).{0,40}(?:strikes|sorties)/i.test(haystack) ||
-      /(?:strikes|sorties).{0,40}(?:total|cumulative|combined|campaign|all theaters)/i.test(haystack) ||
-      /(?:largest strike wave|air campaign|campaign tempo|sortie rate|wave of strikes|strike tally|all theaters)/i.test(
+    const hasStrikeFigure =
+      /[0-9][0-9,]{2,}\+?\s+(?:strikes|sorties)/i.test(haystack) ||
+      /[0-9][0-9,]{2,}\+?\s+(?:total\s+)?targets\s+(?:struck|hit)/i.test(haystack);
+    const hasAggregateQualifier =
+      /(?:total|cumulative|combined|campaign(?:\s+total)?|air campaign|all theaters|strike tally|sortie tally|since\s+[a-z]+\s+\d{1,2})/i.test(
         haystack
       );
+    const hasStrikeContext =
+      /(?:total|cumulative|combined|campaign(?:\s+total)?|all theaters).{0,40}(?:strikes|sorties|targets struck|targets hit)/i.test(
+        haystack
+      ) ||
+      /(?:strikes|sorties|targets struck|targets hit).{0,40}(?:total|cumulative|combined|campaign(?:\s+total)?|all theaters)/i.test(
+        haystack
+      ) ||
+      (hasStrikeFigure && hasAggregateQualifier);
     const hasTheaterActor =
       hasAnyEntityTag(entityTags, ["iran", "israel", "lebanon", "hezbollah", "united-states"]) ||
       /(?:iran|israel|lebanon|hezbollah|united states|u\.s\.)/i.test(haystack);
@@ -143,10 +151,17 @@ function metricRelevanceScore(
       );
     const hasCasualtyFigure =
       /([0-9][0-9,]{3,})\+?\s+(?:iran(?:ian)?\s+)?(?:casualties|killed|dead|deaths)/i.test(haystack);
+    const hasCombinedCasualtyFigure =
+      /([0-9][0-9,]{2,})\+?\s+(?:people\s+)?killed(?:\s+and|\s*,|\s*;)?\s+([0-9][0-9,]{3,})\+?\s+injured(?:\s+in\s+iran|\s+since|\.)/i.test(
+        haystack
+      ) ||
+      /([0-9][0-9,]{3,})\+?\s+injured(?:\s+and|\s*,|\s*;)?\s+([0-9][0-9,]{2,})\+?\s+(?:people\s+)?killed(?:\s+in\s+iran|\s+since|\.)/i.test(
+        haystack
+      );
     const hasImpactContext =
       /(?:bombed in iran|devastated|missing child|school bombed|sites devastated|civilian toll|war crimes)/i.test(haystack);
 
-    if (!hasIranLocationContext || (!hasIranVictimContext && !hasCasualtyFigure && !(hasCasualtyContext && hasImpactContext))) {
+    if (!hasIranLocationContext || (!hasIranVictimContext && !hasCasualtyFigure && !hasCombinedCasualtyFigure && !(hasCasualtyContext && hasImpactContext))) {
       return 0;
     }
 
@@ -155,6 +170,7 @@ function metricRelevanceScore(
       (hasIranVictimContext ? 5 : 0) +
       (hasCasualtyContext ? 2 : 0) +
       (hasCasualtyFigure ? 7 : 0) +
+      (hasCombinedCasualtyFigure ? 8 : 0) +
       (hasImpactContext ? 3 : 0) +
       (event.category === "iran_strike" ? 3 : event.category === "intel" ? 1 : 0) +
       Math.min(event.corroboration, 3)
@@ -246,6 +262,28 @@ function extractCandidate(
   }
 
   if (key === "iran_casualties_estimate") {
+    const combinedCasualtyMatch =
+      haystack.match(
+        /([0-9][0-9,]{2,})\+?\s+(?:people\s+)?killed(?:\s+and|\s*,|\s*;)?\s+([0-9][0-9,]{3,})\+?\s+injured(?:\s+in\s+iran|\s+since|\.)/i
+      ) ??
+      haystack.match(
+        /([0-9][0-9,]{3,})\+?\s+injured(?:\s+and|\s*,|\s*;)?\s+([0-9][0-9,]{2,})\+?\s+(?:people\s+)?killed(?:\s+in\s+iran|\s+since|\.)/i
+      );
+    if (combinedCasualtyMatch) {
+      const first = Number(combinedCasualtyMatch[1].replace(/,/g, ""));
+      const second = Number(combinedCasualtyMatch[2].replace(/,/g, ""));
+      const [killed, injured] =
+        haystack.match(/killed.{0,80}injured/i) ? [first, second] : [second, first];
+      const total = killed + injured;
+      return {
+        value: total,
+        valueText: `${total.toLocaleString("en-US")} Iran total casualties`,
+        sourceText: `${event.sourceText} / operator synthesis`,
+        confidence: event.corroboration >= 2 ? "reported" : "claimed",
+        note: `Derived from ${killed.toLocaleString("en-US")} killed and ${injured.toLocaleString("en-US")} injured reported in ${event.title}.`
+      };
+    }
+
     const match = haystack.match(/([0-9][0-9,]{3,})\+?\s+(?:iran(?:ian)?\s+)?(?:casualties|killed|dead|deaths)/i);
     if (!match) {
       return null;

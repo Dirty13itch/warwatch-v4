@@ -52,7 +52,7 @@ Tasks:
    Current state: the seeded critical queue is now reconciled to zero pending through classifier hardening plus scripted claim/briefing/event resolution, so the tranche-1 blocker has narrowed to evidence-backed KPI publication rather than backlog pressure.
 3. Tighten operator suggestion quality where evidence is noisy or missing.
 4. Publish defensible reviewed snapshots through the operator lane rather than leaving the public shell in `stale_seed`.
-   Current state: the seeded KPI lane is now narrowed to explicit `operator_hold` / `review_hold` posture for strikes, Hormuz, and casualties; the next unlock is real current publication where evidence becomes defensible, not silent seed carry-forward.
+   Current state: the seeded KPI lane is now narrowed to one explicit `operator_hold` / `review_hold` residual on `total_strikes`; Hormuz throughput and Iran casualty estimates are now real reviewed current publications, so the next unlock is a defensible cumulative strike total rather than silent seed carry-forward.
 5. Refresh heartbeat and briefing outputs once reviewed truth materially changes.
 
 Exit criteria:
