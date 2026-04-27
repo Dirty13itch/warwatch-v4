@@ -1,0 +1,146 @@
+{
+  "generatedAt": "2026-04-27T17:22:19.863Z",
+  "comparableCount": 11,
+  "identicalCount": 3,
+  "driftedCount": 8,
+  "localOnlyCount": 4,
+  "liveOnlyCount": 0,
+  "comparisons": [
+    {
+      "fileName": "briefings-desktop.png",
+      "localBytes": 581420,
+      "liveBytes": 594517,
+      "localSha1": "df1d2167e7389e9fa943ae5de12bc97769cdf0b2",
+      "liveSha1": "a4cd0f87c5c87543d8f38e31642baa2807d9a577",
+      "identical": false
+    },
+    {
+      "fileName": "command-desktop.png",
+      "localBytes": 718541,
+      "liveBytes": 716049,
+      "localSha1": "e5d84a4e9e6e47ffc905cf0017adac834840116f",
+      "liveSha1": "9a4b6c1a178ecdfe7b7e174c25e659aceb3c0ec7",
+      "identical": false
+    },
+    {
+      "fileName": "dossiers-desktop.png",
+      "localBytes": 408270,
+      "liveBytes": 405495,
+      "localSha1": "822b4fbaf41119bcfea5023480086f709625dae5",
+      "liveSha1": "3ab58bd3085e811785202e56f52830706bedb7ac",
+      "identical": false
+    },
+    {
+      "fileName": "dossiers-detail.png",
+      "localBytes": 398306,
+      "liveBytes": 398306,
+      "localSha1": "377f1f78668055f834c25a6f6c5f9cd9551b3d10",
+      "liveSha1": "377f1f78668055f834c25a6f6c5f9cd9551b3d10",
+      "identical": true
+    },
+    {
+      "fileName": "preview-board.png",
+      "localBytes": 5030268,
+      "liveBytes": 3574405,
+      "localSha1": "273be0c8c53c589e9bba1dcc4281c30e3ccdc711",
+      "liveSha1": "3e4b7f4ad3394c74c9450d6a928c30f6809784b4",
+      "identical": false
+    },
+    {
+      "fileName": "preview-desktop.png",
+      "localBytes": 592159,
+      "liveBytes": 592703,
+      "localSha1": "9878db064942bdfc16be57d02e78728aa6fe00c5",
+      "liveSha1": "2b08e9455170ddbd040e81fc1ae5adf326c9ed56",
+      "identical": false
+    },
+    {
+      "fileName": "preview-dossiers.png",
+      "localBytes": 55569,
+      "liveBytes": 55569,
+      "localSha1": "e3c116be94f7b550a92fdf9a4dbaeba2219658af",
+      "liveSha1": "e3c116be94f7b550a92fdf9a4dbaeba2219658af",
+      "identical": true
+    },
+    {
+      "fileName": "preview-mobile.png",
+      "localBytes": 471401,
+      "liveBytes": 467076,
+      "localSha1": "a09bde6ec556be593996557cfc218b08d274512b",
+      "liveSha1": "3cb7d1f6f8a5a29d37c25a22ddaacb4f7617ee65",
+      "identical": false
+    },
+    {
+      "fileName": "signals-desktop.png",
+      "localBytes": 532243,
+      "liveBytes": 529789,
+      "localSha1": "5cdbb9498a839c4397026c44f634cf026c662ac3",
+      "liveSha1": "e8e2fd1bdfc38fc195cbd4ef6a5e2e6ff246d5b4",
+      "identical": false
+    },
+    {
+      "fileName": "source-reader.png",
+      "localBytes": 266214,
+      "liveBytes": 266214,
+      "localSha1": "678b2eeee74d8d192af3d1f215725fc904a62259",
+      "liveSha1": "678b2eeee74d8d192af3d1f215725fc904a62259",
+      "identical": true
+    },
+    {
+      "fileName": "timeline-desktop.png",
+      "localBytes": 290139,
+      "liveBytes": 288555,
+      "localSha1": "a11cf1c498fbcecd8f59798c61471267ed10e546",
+      "liveSha1": "6d4ec8e505d9e57bef2cf27c73e7bd879d7e2c56",
+      "identical": false
+    }
+  ],
+  "localOnly": [
+    "operator-desktop.png",
+    "operator-queue-summary.png",
+    "operator-review-detail.png",
+    "operator-synthesis.png"
+  ],
+  "liveOnly": [],
+  "truthParity": {
+    "matches": true,
+    "headlineLocal": "Live feeds are active, but Total strikes remain on reviewed hold until defensible public evidence lands.",
+    "headlineLive": "Live feeds are active, but Total strikes remain on reviewed hold until defensible public evidence lands.",
+    "topLineFreshnessLocal": "review_hold",
+    "topLineFreshnessLive": "review_hold",
+    "kpis": [
+      {
+        "key": "hormuz_daily_cap",
+        "localValue": "~8/day observed",
+        "localFreshness": "operator_reviewed",
+        "liveValue": "~8/day observed",
+        "liveFreshness": "operator_reviewed",
+        "matches": true
+      },
+      {
+        "key": "iran_casualties_estimate",
+        "localValue": "22,900 Iran total casualties",
+        "localFreshness": "operator_reviewed",
+        "liveValue": "22,900 Iran total casualties",
+        "liveFreshness": "operator_reviewed",
+        "matches": true
+      },
+      {
+        "key": "oil_brent",
+        "localValue": "$99.13",
+        "localFreshness": "ingested",
+        "liveValue": "$99.13",
+        "liveFreshness": "ingested",
+        "matches": true
+      },
+      {
+        "key": "total_strikes",
+        "localValue": "Awaiting reviewed cumulative strike total",
+        "localFreshness": "operator_hold",
+        "liveValue": "Awaiting reviewed cumulative strike total",
+        "liveFreshness": "operator_hold",
+        "matches": true
+      }
+    ]
+  }
+}

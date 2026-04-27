@@ -171,7 +171,7 @@ Tasks:
 2. Improve mobile layout where dense public surfaces still compress poorly.
    Current state: the shell hierarchy pass has landed differentiated panel roles, explicit focus-visible treatment, a compact masthead, and a website-grade homepage hero; the next follow-through is deeper above-the-fold payload efficiency after the oversized-first-screen issue.
 3. Add preview diffs and higher-signal visual proof for before/after slices.
-   Current state: preview proof now has both a local atlas entrypoint (`reports/previews/latest/index.html`) and a deployed-site atlas lane (`reports/previews/live/latest/index.html`), so the next step is diff-aware proof rather than basic preview assembly.
+   Current state: preview proof now has local atlas, live atlas, and a drift report (`reports/previews/DIFF-LATEST.md`), so the next step is stronger regression scoring and gating rather than basic preview assembly.
 4. Tighten accessibility, readability, and interaction clarity.
 5. Keep Snapshot strong as the default public/demo lane while command remains the deeper operational surface.
 

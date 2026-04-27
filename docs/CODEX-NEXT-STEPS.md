@@ -5,7 +5,7 @@
 2. Continue tranche-3 hardening so `total_strikes` can move from `review_hold` to a real reviewed current value when evidence supports it, while keeping `hormuz_daily_cap` and `iran_casualties_estimate` refreshed from defensible operator-reviewed evidence instead of drifting back to synthetic holds.
 3. Keep operator auth and write-side workflows local; do not blur the hosted public-readonly lane into a fake mutable backend.
 4. Use the build artifact lane to drive MapLibre/vendor reduction, then keep pushing tranche-5 mobile density so the website homepage reaches payload faster on phones.
-5. Extend preview proof from the new local-plus-live atlas lanes to diff-aware artifacts.
+5. Extend preview proof from the new local-plus-live atlas lanes to stronger visual regression scoring and gating now that the diff report exists.
 6. Only revisit paid/persistent hosted infrastructure if the project truly needs live hosted writes, ingestion, or scheduler execution.
 
 ## External Boundaries

@@ -40,8 +40,11 @@ That contract is honest:
 ## Live Preview Proof
 - Local atlas: `reports/previews/latest/index.html`
 - Live atlas: `reports/previews/live/latest/index.html`
+- Drift report: `reports/previews/DIFF-LATEST.md`
 - Generate live deployed screenshots with:
   - `PUBLIC_BASE_URL=https://warwatch-v4.vercel.app npm run preview:live`
+- Compare local and live preview artifacts with:
+  - `PUBLIC_BASE_URL=https://warwatch-v4.vercel.app npm run preview:compare`
 - Open the latest live atlas with:
   - `npm run preview:open:live`
 

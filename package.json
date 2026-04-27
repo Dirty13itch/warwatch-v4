@@ -19,6 +19,7 @@
     "integrity": "tsx scripts/verify-integrity.ts",
     "preview:shots": "npm run build && tsx scripts/capture-preview.ts",
     "preview:live": "tsx scripts/capture-preview.ts --live",
+    "preview:compare": "tsx scripts/compare-preview.ts",
     "preview:open": "tsx scripts/open-preview.ts",
     "preview:open:live": "tsx scripts/open-preview.ts --live",
     "smoke": "tsx scripts/verify-smoke.ts",
