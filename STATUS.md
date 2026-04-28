@@ -46,6 +46,7 @@
 - The Hormuz top-line contract now tracks observed daily throughput instead of pretending a formal public corridor cap exists, which let the operator lane publish a reviewed `~8/day observed` value from corroborated weekly transit evidence
 - `npm run review:publish-candidate -- <metric-key>` now promotes a current operator suggestion into a reviewed canonical snapshot through a reusable repo script instead of a one-off local mutation
 - `npm run review:publish-holds` now converts the remaining seeded strike, Hormuz, and casualty KPIs into reviewed holds for the live local DB when evidence is still insufficient for a current number
+- The live website now carries a reviewed current total-strikes metric at `13,000+ campaign strikes`, sourced from approved CENTCOM-backed canonical story evidence through the operator candidate lane
 - Operator synthesis lane is now live: recent graph-aware evidence can surface story-promotion and claim-promotion candidates before the operator has to reason from raw event rows alone
 - Operator synthesis is now queue-backed end to end: candidates can be queued straight from the synthesis lane, opened as review dossiers, and approved into canonical stories or claims without silent auto-promotion
 - Operator synthesis is now cluster-based instead of single-event based: related recent events aggregate into one suggestion with event/source counts, richer evidence packets, and stronger promotion rationale
@@ -55,7 +56,7 @@
 - Suggestion-backed review dossiers now show proposed story/claim payloads plus canonical matches when they exist, which makes promotion review materially faster than reasoning from metadata blobs
 - The operator lane can now hand directly into timeline evidence from both KPI suggestion cards and queue dossiers, which makes tranche-1 review work faster and less abstract
 - The current critical queue has now been reconciled down to zero pending items through a repo script plus claim-suggestion promotion, so stale public truth is no longer blocked by seed-era queue backlog
-- The public stale lane is now narrowed from `stale_seed` to `review_hold`: `hormuz_daily_cap` and `iran_casualties_estimate` are now reviewed current values, and only `total_strikes` remains on an honest evidence-bound hold instead of silently carrying a seed-era top-line value
+- The public stale flag is now cleared: `total_strikes`, `hormuz_daily_cap`, and `iran_casualties_estimate` are all now reviewed current values, while `oil_brent` remains live-ingested
 - Heartbeat now renders explicit top-line metric values, freshness, source text, and timestamps instead of only aggregate stale-state summaries
 - Heartbeat output is sanitized to an ASCII-safe operator artifact so Windows console review does not corrupt high-signal lines
 - Heartbeat next actions are now queue-aware, so the operator artifact stops telling the repo to reduce pending critical items once the queue is already clear
@@ -104,8 +105,8 @@ Hold and extend the first milestone:
 - Preview screenshots and a local-versus-live drift report now exist, but pixel-threshold gating and richer visual regression scoring are still next rather than solved
 - The repo now has local atlas, live atlas, and diff report entrypoints, so preview review no longer depends on opening the site manually
 - Mobile shell density is materially better than the earlier oversized hero pass, but above-the-fold efficiency is still a tranche-5 follow-up rather than a solved lane
-- The operator refresh lane now surfaces current evidence and can publish reviewed holds, but actual current KPI publications are still needed to clear the public stale flag completely
-- The critical review queue is cleared, so the remaining stale-truth blocker is now evidence quality for the KPI lane rather than review backlog pressure
+- The operator refresh lane now surfaces current evidence, can publish reviewed holds, and can also promote approved aggregate narratives into reviewed current KPI snapshots when the live event lane alone is too sparse
+- The critical review queue is cleared and the public stale flag is clear, so the next product bottlenecks are ingestion/synthesis quality, preview regression scoring, and MapLibre bundle weight rather than top-line truth backlog
 - The synthesis write path is now real, but it still needs better merge/extraction quality before broader feed expansion is safe
 - Build pressure is now explicit in repo artifacts, but the MapLibre vendor lane is still the dominant client-weight problem and remains an active tranche-5 follow-up
 - Clustered synthesis now has real time/topic guardrails, but broader structured extraction and canonical merge quality still need hardening before wider feed expansion is safe

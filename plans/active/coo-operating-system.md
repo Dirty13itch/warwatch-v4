@@ -40,10 +40,10 @@ Supporting lanes:
 - Platform / Backend Lead
 
 Tasks:
-1. Resolve the remaining seeded KPI lane:
-   - `total_strikes`
-   - `hormuz_daily_cap`
-   - `iran_casualties_estimate`
+1. Keep the public KPI lane current through reviewed publication:
+   - preserve `total_strikes` via defensible live-event or approved narrative evidence
+   - keep `hormuz_daily_cap` fresh from real shipping signals
+   - keep `iran_casualties_estimate` fresh from defensible casualty reporting
 2. Triage the current critical review queue and clear items that block top-line truth:
    - ceasefire status revalidation
    - threat-level banner review
@@ -52,11 +52,11 @@ Tasks:
    Current state: the seeded critical queue is now reconciled to zero pending through classifier hardening plus scripted claim/briefing/event resolution, so the tranche-1 blocker has narrowed to evidence-backed KPI publication rather than backlog pressure.
 3. Tighten operator suggestion quality where evidence is noisy or missing.
 4. Publish defensible reviewed snapshots through the operator lane rather than leaving the public shell in `stale_seed`.
-   Current state: the seeded KPI lane is now narrowed to one explicit `operator_hold` / `review_hold` residual on `total_strikes`; Hormuz throughput and Iran casualty estimates are now real reviewed current publications, so the next unlock is a defensible cumulative strike total rather than silent seed carry-forward.
-5. Refresh heartbeat and briefing outputs once reviewed truth materially changes.
+   Current state: the public stale flag is now cleared; total strikes, Hormuz throughput, and Iran casualty estimates are all real reviewed current publications, so the tranche is now about keeping refresh quality high rather than clearing seed-era residuals.
+5. Refresh heartbeat, snapshot, deploy, and briefing outputs once reviewed truth materially changes.
 
 Exit criteria:
-- public stale flag is either cleared or narrowed to an explicitly evidence-bound residual
+- public stale flag is cleared or, if truth degrades again later, narrowed to an explicitly evidence-bound residual
 - current top-line metrics are review-backed instead of seed-backed
 - the critical queue no longer blocks the first fully current public SITREP
 
@@ -249,10 +249,10 @@ Exit criteria:
 - keep preview/build/smoke artifacts dependable
 
 ## Immediate Sequence To Run Without Stopping
-1. Clear the remaining stale top-line truth gap through better extractor coverage and reviewed KPI publication.
-2. Harden ingestion synthesis so the graph updates cleanly from live evidence now that the critical queue is clear.
-3. Wire a real deployment target, live verification, and production-safe operator auth.
-4. Reduce the MapLibre/performance burden and improve preview proof.
+1. Harden ingestion synthesis so the graph updates cleanly from live evidence now that the public stale flag and critical queue are both clear.
+2. Improve preview regression scoring and artifact usefulness now that local/live atlas parity is part of the normal proof lane.
+3. Reduce the MapLibre/performance burden and keep pushing mobile density.
+4. Keep the hosted Vercel website honest with explicit CLI production deploys until Git integration is repaired.
 5. Deepen the live canonical entity/claim/relationship graph where public drill-down still feels shallow.
 6. Only then widen scope into more feeds, richer history, and distribution features.
 

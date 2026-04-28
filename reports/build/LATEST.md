@@ -1,6 +1,6 @@
 # WarWatch Build Report
 
-Generated: 2026-04-26T17:16:30.166Z
+Generated: 2026-04-28T17:35:03.785Z
 Client dir: C:\Codex Projects\Iran War\dist\client
 
 ## Totals

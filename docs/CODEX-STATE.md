@@ -111,9 +111,10 @@ Twice-daily COO heartbeat remains the default cadence unless the repo contract c
 - Local smoke verification now clears `PUBLIC_BASE_URL` for its spawned server so local canonical checks stay local while `verify:public` continues to validate the deployed site
 - The top-line suggestion lane now preserves contextual evidence while a metric is on reviewed hold, and it can surface an actionable candidate immediately if fresh evidence becomes publishable
 - The live feed lane is now materially cleaner: obvious sports, tourism, and unrelated global stories from broad RSS feeds are quarantined away from public surfaces
-- Public stale state remains expected, but it is now narrowed to `review_hold` instead of `stale_seed`: `hormuz_daily_cap` and `iran_casualties_estimate` are now reviewed current values, and only `total_strikes` remains on reviewed hold while the public shell waits for a defensible cumulative strike total
+- Public stale state is now cleared: `total_strikes`, `hormuz_daily_cap`, and `iran_casualties_estimate` are all reviewed current values, while `oil_brent` remains live-ingested
 - The operator console can now surface current evidence for stale KPIs, but it will not invent values where extraction is not defensible
 - The operator console can now publish either reviewed values or reviewed holds, which makes the public stale-state semantics honest even when live evidence is insufficient for a current number
+- The operator console can now also promote a reviewed aggregate campaign total from approved canonical story evidence when the live event lane alone is too sparse to support a defensible `total_strikes` refresh
 - The operator console can now also surface graph-aware story and claim candidates, which gives ingestion a canonical promotion path before any write-side automation exists
 - The operator console can now also queue those graph-aware promotion candidates and approve them into canonical stories/claims through the normal review gate
 - The operator console now also sees clustered event/source counts on synthesis candidates and review dossiers, which makes the strength of each promotion lane more legible

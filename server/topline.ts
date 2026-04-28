@@ -2,15 +2,18 @@ import type { DatabaseSync } from "node:sqlite";
 import { getTopLineMetricDefinition } from "../shared/topline.js";
 import { entityTagsForText } from "../shared/entity-matching.js";
 import type {
+  BriefingRecord,
   EntityRecord,
   EventRecord,
   OperatorMetricPublishInput,
   OperatorSuggestionEvidence,
   OperatorTopLineSuggestion,
   OperatorTopLineMetric,
+  Significance,
+  StoryRecord,
   TopLineMetricKey
 } from "../shared/types.js";
-import { getEntities, getTopLineMetrics } from "./store.js";
+import { getBriefings, getEntities, getStories, getTopLineMetrics } from "./store.js";
 
 function parseJson<T>(value: string | null): T {
   return JSON.parse(value ?? "null") as T;
@@ -47,6 +50,58 @@ function loadRecentOperatorEvents(db: DatabaseSync): EventRecord[] {
   `).all() as Record<string, unknown>[];
 
   return rows.map(rowToEvent);
+}
+
+interface NarrativeSource {
+  kind: "story" | "briefing";
+  id: string;
+  date: string;
+  title: string;
+  detail: string;
+  sourceText: string;
+  significance: Significance;
+}
+
+interface CandidateMatch {
+  candidate: OperatorMetricPublishInput;
+  originKind: "event" | "story" | "briefing";
+  originTitle: string;
+}
+
+function storyToNarrativeSource(story: StoryRecord): NarrativeSource {
+  return {
+    kind: "story",
+    id: story.id,
+    date: "",
+    title: story.title,
+    detail: `${story.summary}. ${story.detail}`,
+    sourceText: story.sourceText,
+    significance: story.significance
+  };
+}
+
+function briefingToNarrativeSource(briefing: BriefingRecord): NarrativeSource {
+  return {
+    kind: "briefing",
+    id: briefing.id,
+    date: briefing.briefingDate,
+    title: briefing.title,
+    detail: briefing.body,
+    sourceText: briefing.sourceRefs.join(" / "),
+    significance: "high"
+  };
+}
+
+function loadRecentNarratives(db: DatabaseSync): NarrativeSource[] {
+  const stories = getStories(db)
+    .filter((story) => story.reviewState === "approved")
+    .map(storyToNarrativeSource);
+  const briefings = getBriefings(db)
+    .filter((briefing) => briefing.reviewState === "approved" && briefing.publishState === "published")
+    .slice(0, 8)
+    .map(briefingToNarrativeSource);
+
+  return [...stories, ...briefings];
 }
 
 function uniqueStrings(values: Array<string | null | undefined>): string[] {
@@ -208,6 +263,32 @@ function evidenceForEvents(events: EventRecord[]): OperatorSuggestionEvidence[] 
   }));
 }
 
+function hasOfficialStrikeSource(text: string): boolean {
+  return /\b(?:centcom|reuters|admiral cooper|pentagon|u\.s\. military|officials say)\b/i.test(text);
+}
+
+function strikeValueText(value: number, haystack: string): string {
+  if (/\b(?:over|more than|at least)\b/i.test(haystack) || /\+\s+(?:strikes|sorties|targets struck|targets hit)/i.test(haystack)) {
+    return `${value.toLocaleString("en-US")}+ campaign strikes`;
+  }
+
+  return `${value.toLocaleString("en-US")} campaign strikes`;
+}
+
+function strikeSourceLabel(sourceText: string, haystack: string): string {
+  if (/admiral cooper/i.test(haystack)) {
+    return "CENTCOM Admiral Cooper (Apr 9) / operator review";
+  }
+  if (/centcom/i.test(sourceText) || /\bcentcom\b/i.test(haystack)) {
+    return "CENTCOM / operator review";
+  }
+  if (/reuters/i.test(sourceText) || /\breuters\b/i.test(haystack)) {
+    return "Reuters / operator review";
+  }
+
+  return `${sourceText} / operator review`;
+}
+
 function extractCandidate(
   key: TopLineMetricKey,
   event: EventRecord
@@ -302,10 +383,80 @@ function extractCandidate(
   return null;
 }
 
+function extractNarrativeCandidate(
+  key: TopLineMetricKey,
+  narrative: NarrativeSource
+): OperatorMetricPublishInput | null {
+  const haystack = `${narrative.title} ${narrative.detail}`;
+
+  if (key !== "total_strikes") {
+    return null;
+  }
+
+  if (!hasOfficialStrikeSource(`${narrative.sourceText} ${haystack}`)) {
+    return null;
+  }
+
+  const match =
+    haystack.match(/(?:over|more than|at least|about|approximately)?\s*([0-9][0-9,]{2,})\+?\s+(?:strikes|sorties)/i) ??
+    haystack.match(/([0-9][0-9,]{2,})\+?\s+(?:total\s+)?targets\s+(?:struck|hit)/i);
+  if (!match) {
+    return null;
+  }
+
+  const value = Number(match[1].replace(/,/g, ""));
+  const sourceLabel = strikeSourceLabel(narrative.sourceText, haystack);
+  return {
+    value,
+    valueText: strikeValueText(value, match[0]),
+    sourceText: sourceLabel,
+    confidence: "reported",
+    note: `Candidate derived from approved canonical ${narrative.kind} "${narrative.title}".`
+  };
+}
+
+function selectBestCandidate(
+  metricKey: TopLineMetricKey,
+  events: EventRecord[],
+  narratives: NarrativeSource[]
+): CandidateMatch | null {
+  const eventCandidates = events
+    .map((event) => ({
+      candidate: extractCandidate(metricKey, event),
+      originKind: "event" as const,
+      originTitle: event.title
+    }))
+    .filter((entry) => entry.candidate !== null) as CandidateMatch[];
+  const narrativeCandidates = narratives
+    .map((narrative) => ({
+      candidate: extractNarrativeCandidate(metricKey, narrative),
+      originKind: narrative.kind,
+      originTitle: narrative.title
+    }))
+    .filter((entry) => entry.candidate !== null) as CandidateMatch[];
+
+  const allCandidates = [...eventCandidates, ...narrativeCandidates];
+  if (!allCandidates.length) {
+    return null;
+  }
+
+  return allCandidates.sort((left, right) => {
+    const leftValue = left.candidate.value ?? -1;
+    const rightValue = right.candidate.value ?? -1;
+    if (rightValue !== leftValue) {
+      return rightValue - leftValue;
+    }
+    const leftEvent = left.originKind === "event" ? 1 : 0;
+    const rightEvent = right.originKind === "event" ? 1 : 0;
+    return rightEvent - leftEvent;
+  })[0];
+}
+
 function buildSuggestion(
   metric: OperatorTopLineMetric,
   recentEvents: EventRecord[],
-  entities: EntityRecord[]
+  entities: EntityRecord[],
+  narratives: NarrativeSource[]
 ): OperatorTopLineSuggestion {
   const definition = getTopLineMetricDefinition(metric.key);
   const current = metric.current;
@@ -335,15 +486,18 @@ function buildSuggestion(
     )
     .map((entry) => entry.event);
   const evidence = evidenceForEvents(relevantEvents);
-  const candidateEvent = relevantEvents.find((event) => extractCandidate(metric.key, event));
-  const candidate = candidateEvent ? extractCandidate(metric.key, candidateEvent) : null;
+  const candidateMatch = selectBestCandidate(metric.key, relevantEvents, narratives);
+  const candidate = candidateMatch?.candidate ?? null;
 
   if (current?.freshness === "operator_hold") {
     if (candidate) {
       return {
         key: metric.key,
         status: "candidate",
-        summary: `${definition.label} is currently on an operator-reviewed hold, but recent evidence now supports a candidate refresh. Review the extracted value before publishing.`,
+        summary:
+          candidateMatch?.originKind && candidateMatch.originKind !== "event"
+            ? `${definition.label} is currently on an operator-reviewed hold, but approved aggregate narrative evidence now supports a candidate refresh. Review the extracted value before publishing.`
+            : `${definition.label} is currently on an operator-reviewed hold, but recent evidence now supports a candidate refresh. Review the extracted value before publishing.`,
         candidate,
         evidence
       };
@@ -364,7 +518,10 @@ function buildSuggestion(
     return {
       key: metric.key,
       status: "candidate",
-      summary: `Recent event evidence contains a candidate ${definition.label.toLowerCase()} refresh. Review the extracted value before publishing.`,
+      summary:
+        candidateMatch?.originKind && candidateMatch.originKind !== "event"
+          ? `Approved aggregate narrative evidence contains a candidate ${definition.label.toLowerCase()} refresh. Review the extracted value before publishing.`
+          : `Recent event evidence contains a candidate ${definition.label.toLowerCase()} refresh. Review the extracted value before publishing.`,
       candidate,
       evidence
     };
@@ -393,5 +550,6 @@ export function getTopLineSuggestions(db: DatabaseSync): OperatorTopLineSuggesti
   const metrics = getTopLineMetrics(db);
   const recentEvents = loadRecentOperatorEvents(db);
   const entities = getEntities(db);
-  return metrics.map((metric) => buildSuggestion(metric, recentEvents, entities));
+  const narratives = loadRecentNarratives(db);
+  return metrics.map((metric) => buildSuggestion(metric, recentEvents, entities, narratives));
 }

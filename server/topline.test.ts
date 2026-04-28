@@ -51,6 +51,36 @@ function insertEvent(
   );
 }
 
+function insertStory(
+  db: ReturnType<typeof makeDb>,
+  input: {
+    id: string;
+    title: string;
+    section?: string;
+    summary?: string;
+    detail: string;
+    significance?: "critical" | "high" | "medium" | "low";
+    sourceText?: string;
+  }
+) {
+  db.prepare(`
+    INSERT INTO stories (
+      id, slug, title, section, summary, detail, significance, source_text, review_state, meta_json
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    input.id,
+    input.id.replace(/^story_/, ""),
+    input.title,
+    input.section ?? "front",
+    input.summary ?? "AGGREGATE",
+    input.detail,
+    input.significance ?? "critical",
+    input.sourceText ?? "Operator Story Feed",
+    "approved",
+    "{}"
+  );
+}
+
 describe("top-line suggestions", () => {
   it("extracts operator candidates from recent event evidence", () => {
     const db = makeDb();
@@ -123,6 +153,7 @@ describe("top-line suggestions", () => {
 
   it("surfaces reviewed holds explicitly once a metric is no longer seed-backed", () => {
     const db = makeDb();
+    db.exec("DELETE FROM stories;");
     upsertPreparedMetricSnapshot(db, {
       metricKey: "total_strikes",
       value: null,
@@ -150,7 +181,7 @@ describe("top-line suggestions", () => {
 
   it("surfaces total-strike context from older aggregate target summaries even without a publishable strike total", () => {
     const db = makeDb();
-    db.exec("DELETE FROM events;");
+    db.exec("DELETE FROM events; DELETE FROM stories;");
 
     insertEvent(db, {
       id: "event_total_targets_struck",
@@ -172,9 +203,83 @@ describe("top-line suggestions", () => {
     db.close();
   });
 
+  it("surfaces a total-strikes candidate from approved aggregate story evidence with official-source cues", () => {
+    const db = makeDb();
+    db.exec("DELETE FROM events; DELETE FROM stories;");
+
+    upsertPreparedMetricSnapshot(db, {
+      metricKey: "total_strikes",
+      value: null,
+      valueText: "Awaiting reviewed cumulative strike total",
+      unit: "strikes",
+      timestamp: "2026-04-28T12:00:00.000Z",
+      sourceText: "Operator reviewed hold / no defensible cumulative strike total in the live feed lane",
+      confidence: "reported",
+      reviewState: "approved",
+      freshness: "operator_hold",
+      meta: {
+        note: "Current live coverage provides strike context but not a defensible cumulative total for public publication.",
+        mode: "hold"
+      }
+    });
+
+    insertStory(db, {
+      id: "story_total_strikes_official",
+      title: "Iran Air Campaign",
+      detail: "13,000+ strikes over 38 days of major combat (CENTCOM Admiral Cooper, Apr 9). Ceasefire halted strikes as of Apr 7.",
+      sourceText: "CENTCOM / Reuters / operator review"
+    });
+
+    const suggestions = getTopLineSuggestions(db);
+    const strikes = suggestions.find((item) => item.key === "total_strikes");
+
+    expect(strikes?.status).toBe("candidate");
+    expect(strikes?.candidate?.value).toBe(13000);
+    expect(strikes?.candidate?.valueText).toBe("13,000+ campaign strikes");
+    expect(strikes?.candidate?.sourceText).toBe("CENTCOM Admiral Cooper (Apr 9) / operator review");
+
+    db.close();
+  });
+
+  it("does not surface a total-strikes candidate from approved story text alone when the source is not official enough", () => {
+    const db = makeDb();
+    db.exec("DELETE FROM events; DELETE FROM stories;");
+
+    upsertPreparedMetricSnapshot(db, {
+      metricKey: "total_strikes",
+      value: null,
+      valueText: "Awaiting reviewed cumulative strike total",
+      unit: "strikes",
+      timestamp: "2026-04-28T12:00:00.000Z",
+      sourceText: "Operator reviewed hold / no defensible cumulative strike total in the live feed lane",
+      confidence: "reported",
+      reviewState: "approved",
+      freshness: "operator_hold",
+      meta: {
+        note: "Current live coverage provides strike context but not a defensible cumulative total for public publication.",
+        mode: "hold"
+      }
+    });
+
+    insertStory(db, {
+      id: "story_total_strikes_weak",
+      title: "Legacy strike recap",
+      detail: "13,000+ strikes over the campaign, according to recap slides compiled after the ceasefire.",
+      sourceText: "Legacy deck / analyst recap"
+    });
+
+    const suggestions = getTopLineSuggestions(db);
+    const strikes = suggestions.find((item) => item.key === "total_strikes");
+
+    expect(strikes?.status).toBe("reviewed_hold");
+    expect(strikes?.candidate).toBeNull();
+
+    db.close();
+  });
+
   it("keeps generic air-campaign or projectile coverage out of total-strike evidence when it lacks an aggregate strike tally", () => {
     const db = makeDb();
-    db.exec("DELETE FROM events;");
+    db.exec("DELETE FROM events; DELETE FROM stories;");
 
     insertEvent(db, {
       id: "event_total_targets_struck_context",

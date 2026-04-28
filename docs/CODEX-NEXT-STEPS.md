@@ -2,7 +2,7 @@
 
 ## Current Autonomous Order
 1. Keep the live Vercel website honest by refreshing and recommitting `data/public-snapshot.json` whenever the public truth materially changes.
-2. Continue tranche-3 hardening so `total_strikes` can move from `review_hold` to a real reviewed current value when evidence supports it, while keeping `hormuz_daily_cap` and `iran_casualties_estimate` refreshed from defensible operator-reviewed evidence instead of drifting back to synthetic holds.
+2. Continue tranche-3 hardening so future top-line refreshes stay defensible from live events plus approved canonical narratives, without drifting back to synthetic holds or stale seed-era carry-forward.
 3. Keep operator auth and write-side workflows local; do not blur the hosted public-readonly lane into a fake mutable backend.
 4. Use the build artifact lane to drive MapLibre/vendor reduction, then keep pushing tranche-5 mobile density so the website homepage reaches payload faster on phones.
 5. Extend preview proof from the new local-plus-live atlas lanes to stronger visual regression scoring and gating now that the diff report exists.
@@ -16,5 +16,5 @@
 
 ## Explicit Depriorities
 - broader source expansion before synthesis quality improves
-- delivery/notification features before the public truth lane improves
+- delivery/notification features before ingestion quality and preview regression proof improve
 - map animation polish before the current map bundle cost is reduced

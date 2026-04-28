@@ -1,32 +1,32 @@
 {
-  "generatedAt": "2026-04-26T05:10:24.551Z",
+  "generatedAt": "2026-04-28T17:35:00.226Z",
   "overview": {
-    "generatedAt": "2026-04-26T05:10:24.552Z",
-    "currentDay": 58,
-    "stale": true,
+    "generatedAt": "2026-04-28T17:35:00.228Z",
+    "currentDay": 60,
+    "stale": false,
     "legacyAsOf": null,
     "freshness": {
-      "topLine": "review_hold",
-      "lastSuccessfulIngestionAt": "2026-04-26T04:57:33.539Z",
+      "topLine": "operator_reviewed",
+      "lastSuccessfulIngestionAt": "2026-04-28T14:02:10.893Z",
       "hasLiveIngestion": true
     },
     "headline": {
       "level": "CRITICAL",
-      "label": "Evidence-bound public briefing",
-      "description": "Live feeds are active, but Total strikes remain on reviewed hold until defensible public evidence lands."
+      "label": "Public intelligence briefing",
+      "description": "Current top-line metrics are live or reviewed, while critical claims remain review-gated."
     },
     "kpis": [
       {
         "key": "total_strikes",
         "label": "Total strikes",
-        "value": "Awaiting reviewed cumulative strike total",
-        "supportingText": "Operator-reviewed hold while cumulative strike evidence remains insufficient for safe publication. Operator reviewed hold / no defensible cumulative strike total in the live feed lane.",
-        "freshness": "operator_hold"
+        "value": "13,000+ campaign strikes",
+        "supportingText": "Operator-reviewed refresh from CENTCOM / operator review.",
+        "freshness": "operator_reviewed"
       },
       {
         "key": "oil_brent",
         "label": "Brent marker",
-        "value": "$99.13",
+        "value": "$103.42",
         "supportingText": "Live market signal from the Yahoo Finance futures feed.",
         "freshness": "ingested"
       },
@@ -95,6 +95,135 @@
   },
   "events": [
     {
+      "id": "event_4b502ba53a45",
+      "date": "2026-04-28",
+      "time": null,
+      "title": "Russian superyacht sails through Strait of Hormuz despite blockade",
+      "detail": "The 141m-long vessel, linked to a close ally of Russian President Vladimir Putin, cleared the waterway despite an ongoing blockade.",
+      "category": "economic",
+      "significance": "medium",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "BBC Middle East",
+      "sourceRefs": [
+        "BBC Middle East",
+        "https://www.bbc.com/news/articles/cm2pn8zdxdjo?at_medium=RSS&at_campaign=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "BBC Middle East",
+        "entity:strait-of-hormuz"
+      ],
+      "createdAt": "2026-04-28T14:02:10.155Z"
+    },
+    {
+      "id": "event_274f5929e63e",
+      "date": "2026-04-28",
+      "time": null,
+      "title": "What’s in Iran’s latest proposal – and how has the US responded?",
+      "detail": "Trump administration signals rejection of Iran’s offer, citing incomplete resolution of Tehran’s nuclear ambitions.",
+      "category": "intel",
+      "significance": "medium",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "Al Jazeera",
+      "sourceRefs": [
+        "Al Jazeera",
+        "https://www.aljazeera.com/news/2026/4/28/whats-in-irans-latest-proposal-and-how-has-the-us-responded?traffic_source=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "Al Jazeera",
+        "entity:iran"
+      ],
+      "createdAt": "2026-04-28T14:02:10.239Z"
+    },
+    {
+      "id": "event_cac5dc0e97c8",
+      "date": "2026-04-28",
+      "time": null,
+      "title": "Deadlock over Iran's nuclear program and the Strait of Hormuz cripples peace efforts",
+      "detail": "Two months after the U.S.-Israeli attack on Iran started the war, peace talks are on hold, with control of the Strait of Hormuz and the future of Iran's nuclear program as the two main points of contention.",
+      "category": "diplomatic",
+      "significance": "high",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "NPR World",
+      "sourceRefs": [
+        "NPR World",
+        "https://www.npr.org/2026/04/28/nx-s1-5802283/iran-middle-east-updates"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "NPR World",
+        "entity:strait-of-hormuz",
+        "entity:iran",
+        "entity:israel"
+      ],
+      "createdAt": "2026-04-28T14:02:10.354Z"
+    },
+    {
+      "id": "event_2b042d381fc7",
+      "date": "2026-04-27",
+      "time": null,
+      "title": "Iran's flurry of diplomacy continues in Russia, as Trump reviews Iran's latest proposal",
+      "detail": "Iran's foreign minister arrived in Russia on Monday, after a whirlwind weekend of diplomacy, seeking to gain political leverage and foreign backing as peace talks with the U.S. remain on hold.",
+      "category": "diplomatic",
+      "significance": "high",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "NPR World",
+      "sourceRefs": [
+        "NPR World",
+        "https://www.npr.org/2026/04/27/nx-s1-5800669/iran-middle-east-updates"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "NPR World",
+        "entity:iran"
+      ],
+      "createdAt": "2026-04-28T14:02:10.358Z"
+    },
+    {
+      "id": "event_f3f98a22fd8d",
+      "date": "2026-04-26",
+      "time": "17:09Z",
+      "title": "Seismic event M4.5 near 111 km WNW of Türkmenbaşy, Turkmenistan",
+      "detail": "USGS seismic monitor item. Public shell should treat seismic signals as monitoring intelligence, not causal proof.",
+      "category": "seismic",
+      "significance": "medium",
+      "confidence": "auto_extracted",
+      "corroboration": 1,
+      "sourceText": "USGS Iran Earthquakes",
+      "sourceRefs": [
+        "USGS Iran Earthquakes"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": {
+        "lat": 40.311,
+        "lon": 51.7016
+      },
+      "tags": [
+        "auto_ingest",
+        "usgs",
+        "entity:iran"
+      ],
+      "createdAt": "2026-04-26T17:09:17.927Z"
+    },
+    {
       "id": "event_df814c5cf7b1",
       "date": "2026-04-26",
       "time": null,
@@ -119,6 +248,34 @@
         "entity:israel"
       ],
       "createdAt": "2026-04-26T04:57:32.610Z"
+    },
+    {
+      "id": "event_f61f2f7ec7fe",
+      "date": "2026-04-26",
+      "time": null,
+      "title": "Israeli strikes kill 14 in Lebanon amid ongoing ceasefire",
+      "detail": "The US announced three days ago that the ceasefire was extended by three weeks after talks. The Israeli PM's directive comes as six people were killed by strikes in Lebanon despite a ceasefire being extended by three weeks.",
+      "category": "diplomatic",
+      "significance": "high",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "BBC Middle East",
+      "sourceRefs": [
+        "BBC Middle East",
+        "https://www.bbc.com/news/articles/c4gxgv8j7zlo?at_medium=RSS&at_campaign=rss",
+        "https://www.bbc.com/news/articles/c5yv1nvd4gjo?at_medium=RSS&at_campaign=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "BBC Middle East",
+        "entity:israel",
+        "entity:lebanon",
+        "entity:hezbollah"
+      ],
+      "createdAt": "2026-04-28T14:02:10.161Z"
     },
     {
       "id": "event_3b715d223413",
@@ -539,6 +696,31 @@
         "entity:iran"
       ],
       "createdAt": "2026-04-25T16:35:40.647Z"
+    },
+    {
+      "id": "event_f84fd450c929",
+      "date": "2026-04-24",
+      "time": null,
+      "title": "Who is making decisions in Iran?",
+      "detail": "Iran's new supreme leader is supposed to have the final say, but in practice the picture is far murkier.",
+      "category": "intel",
+      "significance": "medium",
+      "confidence": "unverified",
+      "corroboration": 1,
+      "sourceText": "BBC Middle East",
+      "sourceRefs": [
+        "BBC Middle East",
+        "https://www.bbc.com/news/articles/cm29m732vgno?at_medium=RSS&at_campaign=rss"
+      ],
+      "reviewState": "auto_published",
+      "visibility": "secondary",
+      "geo": null,
+      "tags": [
+        "auto_ingest",
+        "BBC Middle East",
+        "entity:iran"
+      ],
+      "createdAt": "2026-04-28T14:02:10.170Z"
     },
     {
       "id": "event_29b53c0af4ad",
@@ -5187,183 +5369,6 @@
         "economic"
       ],
       "createdAt": "2026-03-05T00:00:00.000Z"
-    },
-    {
-      "id": "event_5f88b4206ddc",
-      "date": "2026-03-05",
-      "time": "10:00Z",
-      "title": "WSJ Exposes Iran's Vast Underground Missile Cities",
-      "detail": "The Wall Street Journal published a major investigative report revealing Iran's network of deep underground \"missile cities\" largely impervious to conventional strikes. The Imam Hussein Base in Yazd Province was built into the Sheru granite formation at 440–500 meters depth. The system featured underground rail connecting assembly halls, storage depots, and multiple tunnel exits on different mountainsides — and had been \"only fully activated in 2026.\"",
-      "category": "intel",
-      "significance": "critical",
-      "confidence": "reported",
-      "corroboration": 1,
-      "sourceText": "Wall Street Journal",
-      "sourceRefs": [
-        "Wall Street Journal"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "intel",
-        "entity:iran"
-      ],
-      "createdAt": "2026-03-05T00:00:00.000Z"
-    },
-    {
-      "id": "event_b62f269e1cd8",
-      "date": "2026-03-04",
-      "time": "08:00Z",
-      "title": "Hezbollah Launches Drones at Israeli Oil and Gas Infrastructure",
-      "detail": "Hezbollah launched coordinated drone and missile salvos targeting Israeli military bases and oil/gas infrastructure along the northern coast. Anti-tank guided missile fire caused severe injuries to 5 Israeli soldiers near the Lebanese border. The targeting of energy infrastructure marked Hezbollah's alignment with Iran's strategic goal of imposing economic costs on Israel.",
-      "category": "proxy",
-      "significance": "high",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "IDF / Wikipedia / ISW",
-      "sourceRefs": [
-        "IDF",
-        "Wikipedia",
-        "ISW"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "proxy",
-        "entity:hezbollah",
-        "entity:iran",
-        "entity:israel"
-      ],
-      "createdAt": "2026-03-04T00:00:00.000Z"
-    },
-    {
-      "id": "event_a4d21b47d8d2",
-      "date": "2026-03-03",
-      "time": "14:00Z",
-      "title": "Handala Hack Compromises Israeli Energy Company and Jordan Fuel Systems",
-      "detail": "MOIS-linked hacktivist group Handala Hack claimed successful intrusions into an Israeli energy company's operational networks and Jordan fuel distribution systems. Separately, the FAD Team/Fatimiyoun deployed wiper malware and claimed access to SCADA/PLC control systems of 24+ Israeli security company devices. The Cyber Islamic Resistance umbrella collective claimed to compromise Israeli payment infrastructure.",
-      "category": "cyber",
-      "significance": "high",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "Palo Alto Networks Unit 42 / Axios / Industrial Cyber",
-      "sourceRefs": [
-        "Palo Alto Networks Unit 42",
-        "Axios",
-        "Industrial Cyber"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "cyber",
-        "entity:israel"
-      ],
-      "createdAt": "2026-03-03T00:00:00.000Z"
-    },
-    {
-      "id": "event_105eeb900899",
-      "date": "2026-03-03",
-      "time": "10:00Z",
-      "title": "Hezbollah Fires Missiles at Ramat David Airbase and Camp Yitzhak",
-      "detail": "Hezbollah fired missiles and drones at Ramat David Airbase, the Meron monitoring base, and Camp Yitzhak in northern Israel. The strikes marked a significant escalation — targeting Israeli Air Force infrastructure rather than just border communities. Anti-tank guided missile fire from Lebanese positions caused the first Israeli injuries of the Lebanon front.",
-      "category": "proxy",
-      "significance": "high",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "IDF / Wikipedia / ISW",
-      "sourceRefs": [
-        "IDF",
-        "Wikipedia",
-        "ISW"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "proxy",
-        "entity:hezbollah",
-        "entity:israel",
-        "entity:lebanon"
-      ],
-      "createdAt": "2026-03-03T00:00:00.000Z"
-    },
-    {
-      "id": "event_c3a27f8260c4",
-      "date": "2026-03-03",
-      "time": "06:00Z",
-      "title": "IRGC: \"Final Stages\" of Selecting New Supreme Leader",
-      "detail": "The IRGC announced it was in \"final stages\" of selecting a new Supreme Leader, just 3 days after Khamenei's death. Five senior officials and analysts cited by Reuters warned against assuming imminent collapse, noting \"Iran has been structured to endure loss of leader.\" The Atlantic Council observed: \"The Iranian system is larger than any individual — Khamenei's removal could fortify the regime.\"",
-      "category": "diplomatic",
-      "significance": "high",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "IRNA / Reuters / Atlantic Council",
-      "sourceRefs": [
-        "IRNA",
-        "Reuters",
-        "Atlantic Council"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "diplomatic",
-        "entity:iran"
-      ],
-      "createdAt": "2026-03-03T00:00:00.000Z"
-    },
-    {
-      "id": "event_846cd374978c",
-      "date": "2026-03-02",
-      "time": "18:00Z",
-      "title": "Shipping Insurance Rates Surge 1,000%+ in Days",
-      "detail": "War risk hull insurance for vessels transiting the Persian Gulf surged from 0.025–0.05% of vessel value to ~1–1.5% within the first days of the war — a 1,000%+ increase. Insuring a $100 million tanker went from ~$25,000 to ~$1.5 million per voyage. Major P&I clubs including American Club, Gard, and Skuld began withdrawing war risk coverage. VLCC rates from the Middle East to China surged 94% in a single day to $423,736/day.",
-      "category": "economic",
-      "significance": "high",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "Reuters / Bloomberg / Insurance Journal",
-      "sourceRefs": [
-        "Reuters",
-        "Bloomberg",
-        "Insurance Journal"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "economic"
-      ],
-      "createdAt": "2026-03-02T00:00:00.000Z"
-    },
-    {
-      "id": "event_6e0edf3a1920",
-      "date": "2026-03-02",
-      "time": "14:00Z",
-      "title": "GPS Daily Interference Events Double to 672",
-      "detail": "Daily GPS interference events in the Persian Gulf region doubled from approximately 350 at war start to 672 by March 2. New jamming zones surged from 21 to 38 in 24 hours. Multiple parties were jamming simultaneously — Iran to confuse Western missile targeting, Gulf states to defend bases, and US Navy to protect surface vessels. Iran's switch to Chinese BeiDou guidance made it largely immune to the jamming it was itself deploying.",
-      "category": "cyber",
-      "significance": "medium",
-      "confidence": "reported",
-      "corroboration": 2,
-      "sourceText": "CNBC / CNN / BBC",
-      "sourceRefs": [
-        "CNBC",
-        "CNN",
-        "BBC"
-      ],
-      "reviewState": "approved",
-      "visibility": "primary",
-      "geo": null,
-      "tags": [
-        "cyber",
-        "entity:iran",
-        "entity:united-states"
-      ],
-      "createdAt": "2026-03-02T00:00:00.000Z"
     }
   ],
   "stories": [
@@ -5977,6 +5982,20 @@
     }
   ],
   "briefings": [
+    {
+      "id": "brief_788baa63bb47",
+      "briefingDate": "2026-04-28",
+      "title": "WarWatch SITREP 2026-04-28",
+      "body": "SITUATION\nRecent reviewed/public events: Russian superyacht sails through Strait of Hormuz despite blockade; What’s in Iran’s latest proposal – and how has the US responded?; Deadlock over Iran's nuclear program and the Strait of Hormuz cripples peace efforts.\nMarket signals: Brent $103.42 (-4.4% vs prior print); WTI $98.83 (+2.6% vs prior print); Gold $4,602.20 (-1.6% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 1.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+      "sourceRefs": [
+        "Russian superyacht sails through Strait of Hormuz despite blockade",
+        "What’s in Iran’s latest proposal – and how has the US responded?",
+        "Deadlock over Iran's nuclear program and the Strait of Hormuz cripples peace efforts"
+      ],
+      "reviewState": "approved",
+      "publishState": "published",
+      "createdAt": "2026-04-28T17:32:29.603Z"
+    },
     {
       "id": "brief_1ba97b31ff14",
       "briefingDate": "2026-04-26",
@@ -8055,6 +8074,110 @@
       ],
       "events": [
         {
+          "id": "event_274f5929e63e",
+          "date": "2026-04-28",
+          "time": null,
+          "title": "What’s in Iran’s latest proposal – and how has the US responded?",
+          "detail": "Trump administration signals rejection of Iran’s offer, citing incomplete resolution of Tehran’s nuclear ambitions.",
+          "category": "intel",
+          "significance": "medium",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "Al Jazeera",
+          "sourceRefs": [
+            "Al Jazeera",
+            "https://www.aljazeera.com/news/2026/4/28/whats-in-irans-latest-proposal-and-how-has-the-us-responded?traffic_source=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "Al Jazeera",
+            "entity:iran"
+          ],
+          "createdAt": "2026-04-28T14:02:10.239Z"
+        },
+        {
+          "id": "event_cac5dc0e97c8",
+          "date": "2026-04-28",
+          "time": null,
+          "title": "Deadlock over Iran's nuclear program and the Strait of Hormuz cripples peace efforts",
+          "detail": "Two months after the U.S.-Israeli attack on Iran started the war, peace talks are on hold, with control of the Strait of Hormuz and the future of Iran's nuclear program as the two main points of contention.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "NPR World",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/28/nx-s1-5802283/iran-middle-east-updates"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:strait-of-hormuz",
+            "entity:iran",
+            "entity:israel"
+          ],
+          "createdAt": "2026-04-28T14:02:10.354Z"
+        },
+        {
+          "id": "event_2b042d381fc7",
+          "date": "2026-04-27",
+          "time": null,
+          "title": "Iran's flurry of diplomacy continues in Russia, as Trump reviews Iran's latest proposal",
+          "detail": "Iran's foreign minister arrived in Russia on Monday, after a whirlwind weekend of diplomacy, seeking to gain political leverage and foreign backing as peace talks with the U.S. remain on hold.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "NPR World",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/27/nx-s1-5800669/iran-middle-east-updates"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:iran"
+          ],
+          "createdAt": "2026-04-28T14:02:10.358Z"
+        },
+        {
+          "id": "event_f3f98a22fd8d",
+          "date": "2026-04-26",
+          "time": "17:09Z",
+          "title": "Seismic event M4.5 near 111 km WNW of Türkmenbaşy, Turkmenistan",
+          "detail": "USGS seismic monitor item. Public shell should treat seismic signals as monitoring intelligence, not causal proof.",
+          "category": "seismic",
+          "significance": "medium",
+          "confidence": "auto_extracted",
+          "corroboration": 1,
+          "sourceText": "USGS Iran Earthquakes",
+          "sourceRefs": [
+            "USGS Iran Earthquakes"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": {
+            "lat": 40.311,
+            "lon": 51.7016
+          },
+          "tags": [
+            "auto_ingest",
+            "usgs",
+            "entity:iran"
+          ],
+          "createdAt": "2026-04-26T17:09:17.927Z"
+        },
+        {
           "id": "event_df814c5cf7b1",
           "date": "2026-04-26",
           "time": null,
@@ -8112,110 +8235,23 @@
             "Al Jazeera"
           ],
           "createdAt": "2026-04-25T16:35:40.236Z"
-        },
-        {
-          "id": "event_df47686baa39",
-          "date": "2026-04-25",
-          "time": null,
-          "title": "Flights resume at Tehran airport as US-Iran ceasefire holds",
-          "detail": "International flights have resumed at Tehran’s Imam Khomeini International Airport, after weeks of disruption by the war",
-          "category": "diplomatic",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/video/newsfeed/2026/4/25/flights-resume-at-tehran-airport-as-us-iran-ceasefire-holds?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
-            "entity:iran"
-          ],
-          "createdAt": "2026-04-25T16:35:40.168Z"
-        },
-        {
-          "id": "event_ba6f32ef008e",
-          "date": "2026-04-25",
-          "time": null,
-          "title": "Iran resumes commercial flights from Tehran airport",
-          "detail": "Commercial flights begin for the first time since the conflict with the US and Israel began about two months ago.",
-          "category": "intel",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/news/2026/4/25/iran-resumes-commercial-flights-from-tehran-airport?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
-            "entity:iran",
-            "entity:israel"
-          ],
-          "createdAt": "2026-04-25T16:35:40.172Z"
-        },
-        {
-          "id": "event_f101f93a7b16",
-          "date": "2026-04-25",
-          "time": null,
-          "title": "How serious is the rift in NATO?",
-          "detail": "Trump fury over Europeans' refusal to join Iran war.",
-          "category": "intel",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/video/inside-story/2026/4/25/how-serious-is-the-rift-in-nato?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
-            "entity:iran"
-          ],
-          "createdAt": "2026-04-26T04:57:32.617Z"
-        },
-        {
-          "id": "event_5b07d71b073b",
-          "date": "2026-04-24",
-          "time": null,
-          "title": "US has three aircraft carriers in the Middle East for first time since 2003",
-          "detail": "As tensions ramp up amid fragile truce, US military says it 'redirected' 34 vessels as part of blockade on Iran's ports.",
-          "category": "intel",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/news/2026/4/24/us-has-three-aircraft-carriers-in-the-middle-east-for-first-time-since-2003?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
-            "entity:iran"
-          ],
-          "createdAt": "2026-04-24T16:26:09.711Z"
         }
       ],
       "briefings": [
+        {
+          "id": "brief_788baa63bb47",
+          "briefingDate": "2026-04-28",
+          "title": "WarWatch SITREP 2026-04-28",
+          "body": "SITUATION\nRecent reviewed/public events: Russian superyacht sails through Strait of Hormuz despite blockade; What’s in Iran’s latest proposal – and how has the US responded?; Deadlock over Iran's nuclear program and the Strait of Hormuz cripples peace efforts.\nMarket signals: Brent $103.42 (-4.4% vs prior print); WTI $98.83 (+2.6% vs prior print); Gold $4,602.20 (-1.6% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 1.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+          "sourceRefs": [
+            "Russian superyacht sails through Strait of Hormuz despite blockade",
+            "What’s in Iran’s latest proposal – and how has the US responded?",
+            "Deadlock over Iran's nuclear program and the Strait of Hormuz cripples peace efforts"
+          ],
+          "reviewState": "approved",
+          "publishState": "published",
+          "createdAt": "2026-04-28T17:32:29.603Z"
+        },
         {
           "id": "brief_1ba97b31ff14",
           "briefingDate": "2026-04-26",
@@ -8243,25 +8279,6 @@
           "reviewState": "approved",
           "publishState": "published",
           "createdAt": "2026-04-25T16:41:38.347Z"
-        },
-        {
-          "id": "brief_9d0d944602c4",
-          "briefingDate": "2026-04-24",
-          "title": "WarWatch SITREP 2026-04-24",
-          "body": "SITUATION\nRecent reviewed/public events: Couple discovers Lebanon home destroyed by Israel from satellite image; US has three aircraft carriers in the Middle East for first time since 2003; PM Sanchez rebuffs US idea of suspending Spain from NATO; Iran-Iraq Tanker War redux? Why the Strait of Hormuz crisis is different; Iranians bring music to sites devastated by US-Israeli attacks; Israel-Lebanon ceasefire is extended by 3 weeks as tensions rise in Strait of Hormuz; Israel and Lebanon extend ceasefire. And, Trump eases medical marijuana rules; Thousands of seafarers stranded by ongoing U.S. blockade on Strait of Hormuz.\nMarket signals: Brent $98.71 (-6.1% vs prior print); WTI $94.00 (-1.9% vs prior print); Gold $4,736.10 (+0.7% vs prior print).\n\nENEMY\nHigh-risk activity mix: 1 Iran/proxy strike items, 1 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 2.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
-          "sourceRefs": [
-            "Couple discovers Lebanon home destroyed by Israel from satellite image",
-            "US has three aircraft carriers in the Middle East for first time since 2003",
-            "PM Sanchez rebuffs US idea of suspending Spain from NATO",
-            "Iran-Iraq Tanker War redux? Why the Strait of Hormuz crisis is different",
-            "Iranians bring music to sites devastated by US-Israeli attacks",
-            "Israel-Lebanon ceasefire is extended by 3 weeks as tensions rise in Strait of Hormuz",
-            "Israel and Lebanon extend ceasefire. And, Trump eases medical marijuana rules",
-            "Thousands of seafarers stranded by ongoing U.S. blockade on Strait of Hormuz"
-          ],
-          "reviewState": "approved",
-          "publishState": "published",
-          "createdAt": "2026-04-24T16:26:10.389Z"
         }
       ]
     },
@@ -8384,6 +8401,33 @@
       ],
       "events": [
         {
+          "id": "event_cac5dc0e97c8",
+          "date": "2026-04-28",
+          "time": null,
+          "title": "Deadlock over Iran's nuclear program and the Strait of Hormuz cripples peace efforts",
+          "detail": "Two months after the U.S.-Israeli attack on Iran started the war, peace talks are on hold, with control of the Strait of Hormuz and the future of Iran's nuclear program as the two main points of contention.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "NPR World",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/28/nx-s1-5802283/iran-middle-east-updates"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:strait-of-hormuz",
+            "entity:iran",
+            "entity:israel"
+          ],
+          "createdAt": "2026-04-28T14:02:10.354Z"
+        },
+        {
           "id": "event_df814c5cf7b1",
           "date": "2026-04-26",
           "time": null,
@@ -8408,6 +8452,34 @@
             "entity:israel"
           ],
           "createdAt": "2026-04-26T04:57:32.610Z"
+        },
+        {
+          "id": "event_f61f2f7ec7fe",
+          "date": "2026-04-26",
+          "time": null,
+          "title": "Israeli strikes kill 14 in Lebanon amid ongoing ceasefire",
+          "detail": "The US announced three days ago that the ceasefire was extended by three weeks after talks. The Israeli PM's directive comes as six people were killed by strikes in Lebanon despite a ceasefire being extended by three weeks.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "BBC Middle East",
+          "sourceRefs": [
+            "BBC Middle East",
+            "https://www.bbc.com/news/articles/c4gxgv8j7zlo?at_medium=RSS&at_campaign=rss",
+            "https://www.bbc.com/news/articles/c5yv1nvd4gjo?at_medium=RSS&at_campaign=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "BBC Middle East",
+            "entity:israel",
+            "entity:lebanon",
+            "entity:hezbollah"
+          ],
+          "createdAt": "2026-04-28T14:02:10.161Z"
         },
         {
           "id": "event_837c9ddc5d37",
@@ -8486,60 +8558,6 @@
             "entity:lebanon"
           ],
           "createdAt": "2026-04-24T16:26:09.605Z"
-        },
-        {
-          "id": "event_27ae4988dc2b",
-          "date": "2026-04-24",
-          "time": null,
-          "title": "Iranians bring music to sites devastated by US-Israeli attacks",
-          "detail": "Iranian musicians perform on city streets and venture to sites devastated in US-Israeli attacks.",
-          "category": "iran_strike",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "Al Jazeera",
-          "sourceRefs": [
-            "Al Jazeera",
-            "https://www.aljazeera.com/video/newsfeed/2026/4/24/iranians-bring-music-to-sites-devastated-by-us-israeli-attacks?traffic_source=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "Al Jazeera",
-            "entity:iran",
-            "entity:israel"
-          ],
-          "createdAt": "2026-04-24T16:26:09.723Z"
-        },
-        {
-          "id": "event_5c4f11fc3a5d",
-          "date": "2026-04-24",
-          "time": null,
-          "title": "Israel-Lebanon ceasefire is extended by 3 weeks as tensions rise in Strait of Hormuz",
-          "detail": "Hezbollah and Israel traded fire just hours after the ceasefire extension was announced, underscoring its fragility.",
-          "category": "diplomatic",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "NPR World",
-          "sourceRefs": [
-            "NPR World",
-            "https://www.npr.org/2026/04/24/g-s1-118595/middle-east-war-updates"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "NPR World",
-            "entity:strait-of-hormuz",
-            "entity:hezbollah",
-            "entity:israel",
-            "entity:lebanon"
-          ],
-          "createdAt": "2026-04-24T16:26:09.806Z"
         }
       ],
       "briefings": [
@@ -8702,6 +8720,34 @@
       ],
       "events": [
         {
+          "id": "event_f61f2f7ec7fe",
+          "date": "2026-04-26",
+          "time": null,
+          "title": "Israeli strikes kill 14 in Lebanon amid ongoing ceasefire",
+          "detail": "The US announced three days ago that the ceasefire was extended by three weeks after talks. The Israeli PM's directive comes as six people were killed by strikes in Lebanon despite a ceasefire being extended by three weeks.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "BBC Middle East",
+          "sourceRefs": [
+            "BBC Middle East",
+            "https://www.bbc.com/news/articles/c4gxgv8j7zlo?at_medium=RSS&at_campaign=rss",
+            "https://www.bbc.com/news/articles/c5yv1nvd4gjo?at_medium=RSS&at_campaign=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "BBC Middle East",
+            "entity:israel",
+            "entity:lebanon",
+            "entity:hezbollah"
+          ],
+          "createdAt": "2026-04-28T14:02:10.161Z"
+        },
+        {
           "id": "event_837c9ddc5d37",
           "date": "2026-04-25",
           "time": null,
@@ -8834,33 +8880,6 @@
             "auto_reclassified"
           ],
           "createdAt": "2026-04-23T14:06:55.616Z"
-        },
-        {
-          "id": "event_a4a07783a17f",
-          "date": "2026-04-23",
-          "time": null,
-          "title": "Tensions rise in two ceasefires in the Middle East. And, the Navy secretary ousted",
-          "detail": "Tensions are rising in the Middle East as shaky ceasefire agreements between the U.S., Israel and Iran, and Lebanon and Israel, are tested. And, the Secretary of the Navy is out of the role.",
-          "category": "diplomatic",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "NPR World",
-          "sourceRefs": [
-            "NPR World",
-            "https://www.npr.org/2026/04/23/g-s1-118440/up-first-newsletter-us-iran-john-phelan-trump-republican-democrat-midterm-fundraising-budget-reconciliation-ice"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "NPR World",
-            "entity:iran",
-            "entity:israel",
-            "entity:lebanon"
-          ],
-          "createdAt": "2026-04-23T14:06:55.782Z"
         }
       ],
       "briefings": [
@@ -9468,6 +9487,58 @@
       ],
       "events": [
         {
+          "id": "event_4b502ba53a45",
+          "date": "2026-04-28",
+          "time": null,
+          "title": "Russian superyacht sails through Strait of Hormuz despite blockade",
+          "detail": "The 141m-long vessel, linked to a close ally of Russian President Vladimir Putin, cleared the waterway despite an ongoing blockade.",
+          "category": "economic",
+          "significance": "medium",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "BBC Middle East",
+          "sourceRefs": [
+            "BBC Middle East",
+            "https://www.bbc.com/news/articles/cm2pn8zdxdjo?at_medium=RSS&at_campaign=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "BBC Middle East",
+            "entity:strait-of-hormuz"
+          ],
+          "createdAt": "2026-04-28T14:02:10.155Z"
+        },
+        {
+          "id": "event_cac5dc0e97c8",
+          "date": "2026-04-28",
+          "time": null,
+          "title": "Deadlock over Iran's nuclear program and the Strait of Hormuz cripples peace efforts",
+          "detail": "Two months after the U.S.-Israeli attack on Iran started the war, peace talks are on hold, with control of the Strait of Hormuz and the future of Iran's nuclear program as the two main points of contention.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "NPR World",
+          "sourceRefs": [
+            "NPR World",
+            "https://www.npr.org/2026/04/28/nx-s1-5802283/iran-middle-east-updates"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "NPR World",
+            "entity:strait-of-hormuz",
+            "entity:iran",
+            "entity:israel"
+          ],
+          "createdAt": "2026-04-28T14:02:10.354Z"
+        },
+        {
           "id": "event_3b715d223413",
           "date": "2026-04-25",
           "time": null,
@@ -9571,62 +9642,23 @@
             "entity:iran"
           ],
           "createdAt": "2026-04-24T16:26:09.816Z"
-        },
-        {
-          "id": "event_c80b19413774",
-          "date": "2026-04-24",
-          "time": null,
-          "title": "Middle East Shipping ‘Paralyzed’ by Dueling U.S., Iranian Blockades, Analysts Say",
-          "detail": "U.S. and Iranian forces are both interdicting ships as the two countries grapple with control of the flow of maritime traffic through the region, leaving the shipping industry ‘paralyzed,’ experts say. In the past week, the U.S. interdicted three ships – two in the Indian Ocean and one in the Strait of Hormuz – while Iran went after three ships, seizing two. There are reports that the third ship was able to continue its journey. The U.S. and Iran also continue to trade barbs, over social media, about the effectiveness of their efforts to wrestle control of the Strait of",
-          "category": "economic",
-          "significance": "medium",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "USNI News",
-          "sourceRefs": [
-            "USNI News",
-            "https://news.usni.org/2026/04/24/middle-east-shipping-paralyzed-by-dueling-u-s-iranian-blockades-analysts-say"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "USNI News",
-            "entity:strait-of-hormuz",
-            "entity:iran"
-          ],
-          "createdAt": "2026-04-25T16:35:40.647Z"
-        },
-        {
-          "id": "event_7508dd8a23cd",
-          "date": "2026-04-23",
-          "time": null,
-          "title": "Iran says Strait of Hormuz cannot be opened due to ceasefire breaches",
-          "detail": "Iran's chief negotiator says \"violations\" by the US and Israel make it impossible to open the strait.",
-          "category": "diplomatic",
-          "significance": "high",
-          "confidence": "unverified",
-          "corroboration": 1,
-          "sourceText": "BBC Middle East",
-          "sourceRefs": [
-            "BBC Middle East",
-            "https://www.bbc.com/news/articles/c3w3vqv0edpo?at_medium=RSS&at_campaign=rss"
-          ],
-          "reviewState": "auto_published",
-          "visibility": "secondary",
-          "geo": null,
-          "tags": [
-            "auto_ingest",
-            "BBC Middle East",
-            "entity:strait-of-hormuz",
-            "entity:iran",
-            "entity:israel"
-          ],
-          "createdAt": "2026-04-23T14:06:55.622Z"
         }
       ],
       "briefings": [
+        {
+          "id": "brief_788baa63bb47",
+          "briefingDate": "2026-04-28",
+          "title": "WarWatch SITREP 2026-04-28",
+          "body": "SITUATION\nRecent reviewed/public events: Russian superyacht sails through Strait of Hormuz despite blockade; What’s in Iran’s latest proposal – and how has the US responded?; Deadlock over Iran's nuclear program and the Strait of Hormuz cripples peace efforts.\nMarket signals: Brent $103.42 (-4.4% vs prior print); WTI $98.83 (+2.6% vs prior print); Gold $4,602.20 (-1.6% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 0 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 1.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
+          "sourceRefs": [
+            "Russian superyacht sails through Strait of Hormuz despite blockade",
+            "What’s in Iran’s latest proposal – and how has the US responded?",
+            "Deadlock over Iran's nuclear program and the Strait of Hormuz cripples peace efforts"
+          ],
+          "reviewState": "approved",
+          "publishState": "published",
+          "createdAt": "2026-04-28T17:32:29.603Z"
+        },
         {
           "id": "brief_9d0d944602c4",
           "briefingDate": "2026-04-24",
@@ -9663,25 +9695,6 @@
           "reviewState": "approved",
           "publishState": "published",
           "createdAt": "2026-04-23T14:11:21.329Z"
-        },
-        {
-          "id": "brief_b07a3cca3356",
-          "briefingDate": "2026-04-22",
-          "title": "WarWatch SITREP 2026-04-22",
-          "body": "SITUATION\nRecent reviewed/public events: Iran says it has seized two ships in Strait of Hormuz after vessels attacked; Trump buys time for Iran deal after frantic day of diplomacy; Israeli settlers block Palestinian children from school in the West Bank; Iran’s leaders debate war and peace after Trump ceasefire extension; Trump calls Iran’s leadership ‘fractured’. Is it, and who’s in charge?; The war on Iran: Breaking down the words you’re hearing; What is uranium enrichment and how quickly could Iran build a nuclear bomb?; Iranians are leaving the country just to access the internet.\nMarket signals: Brent $101.43 (+3.0% vs prior print); WTI $92.54 (+0.4% vs prior print); Gold $4,759.70 (+1.3% vs prior print).\n\nENEMY\nHigh-risk activity mix: 0 Iran/proxy strike items, 1 cyber/signal items.\n\nFRIENDLY\nReviewed/public US or coalition action items: 0. Diplomatic items: 1.\n\nASSESSMENT\nPending review backlog stands at 0. Public truth remains gated away from critical unreviewed claims.\n\nOUTLOOK\nPrimary near-term leverage is to reduce the pending review queue and refresh live-source ingestion.",
-          "sourceRefs": [
-            "Iran says it has seized two ships in Strait of Hormuz after vessels attacked",
-            "Trump buys time for Iran deal after frantic day of diplomacy",
-            "Israeli settlers block Palestinian children from school in the West Bank",
-            "Iran’s leaders debate war and peace after Trump ceasefire extension",
-            "Trump calls Iran’s leadership ‘fractured’. Is it, and who’s in charge?",
-            "The war on Iran: Breaking down the words you’re hearing",
-            "What is uranium enrichment and how quickly could Iran build a nuclear bomb?",
-            "Iranians are leaving the country just to access the internet"
-          ],
-          "reviewState": "approved",
-          "publishState": "published",
-          "createdAt": "2026-04-22T23:29:23.641Z"
         }
       ]
     },
@@ -9765,6 +9778,34 @@
         }
       ],
       "events": [
+        {
+          "id": "event_f61f2f7ec7fe",
+          "date": "2026-04-26",
+          "time": null,
+          "title": "Israeli strikes kill 14 in Lebanon amid ongoing ceasefire",
+          "detail": "The US announced three days ago that the ceasefire was extended by three weeks after talks. The Israeli PM's directive comes as six people were killed by strikes in Lebanon despite a ceasefire being extended by three weeks.",
+          "category": "diplomatic",
+          "significance": "high",
+          "confidence": "unverified",
+          "corroboration": 1,
+          "sourceText": "BBC Middle East",
+          "sourceRefs": [
+            "BBC Middle East",
+            "https://www.bbc.com/news/articles/c4gxgv8j7zlo?at_medium=RSS&at_campaign=rss",
+            "https://www.bbc.com/news/articles/c5yv1nvd4gjo?at_medium=RSS&at_campaign=rss"
+          ],
+          "reviewState": "auto_published",
+          "visibility": "secondary",
+          "geo": null,
+          "tags": [
+            "auto_ingest",
+            "BBC Middle East",
+            "entity:israel",
+            "entity:lebanon",
+            "entity:hezbollah"
+          ],
+          "createdAt": "2026-04-28T14:02:10.161Z"
+        },
         {
           "id": "event_5c4f11fc3a5d",
           "date": "2026-04-24",
@@ -9893,31 +9934,6 @@
           "tags": [
             "proxy",
             "entity:hezbollah",
-            "entity:israel"
-          ],
-          "createdAt": "2026-04-05T00:00:00.000Z"
-        },
-        {
-          "id": "event_1d90227f441e",
-          "date": "2026-04-05",
-          "time": null,
-          "title": "Houthis Conduct 8th Attack on Israel — Coordination With Iran and Hezbollah",
-          "detail": "Houthis launched their 8th attack on Israel since March 28, targeting Ben Gurion Airport and military sites in southern Israel with a cluster missile and several drones. All were intercepted by Israeli air defenses. Houthis claimed coordination with Iran and Hezbollah in a joint operation. The Houthis had not yet resumed commercial shipping attacks in the Red Sea as of April 7, but explicitly threatened to impose a naval blockade at Bab al-Mandab targeting \"aggressor country\" vessels.",
-          "category": "proxy",
-          "significance": "high",
-          "confidence": "reported",
-          "corroboration": 1,
-          "sourceText": "Wikipedia (2026 Houthi Strikes on Israel)",
-          "sourceRefs": [
-            "Wikipedia (2026 Houthi Strikes on Israel)"
-          ],
-          "reviewState": "approved",
-          "visibility": "primary",
-          "geo": null,
-          "tags": [
-            "proxy",
-            "entity:hezbollah",
-            "entity:iran",
             "entity:israel"
           ],
           "createdAt": "2026-04-05T00:00:00.000Z"
@@ -11750,10 +11766,44 @@
       {
         "id": "metric_48e5874bce78",
         "metricKey": "oil_brent",
-        "value": 99.12999725341797,
-        "valueText": "$99.13",
+        "value": 105.33000183105469,
+        "valueText": "$105.33",
         "unit": "usd_per_barrel",
         "timestamp": "2026-04-24T04:00:00.000Z",
+        "sourceText": "Yahoo Finance",
+        "confidence": "confirmed",
+        "reviewState": "approved",
+        "freshness": "ingested",
+        "meta": {
+          "symbol": "BZ=F",
+          "currency": "USD",
+          "exchange": "NYM"
+        }
+      },
+      {
+        "id": "metric_a61c3be993fe",
+        "metricKey": "oil_brent",
+        "value": 108.2300033569336,
+        "valueText": "$108.23",
+        "unit": "usd_per_barrel",
+        "timestamp": "2026-04-27T04:00:00.000Z",
+        "sourceText": "Yahoo Finance",
+        "confidence": "confirmed",
+        "reviewState": "approved",
+        "freshness": "ingested",
+        "meta": {
+          "symbol": "BZ=F",
+          "currency": "USD",
+          "exchange": "NYM"
+        }
+      },
+      {
+        "id": "metric_31a14a17b77a",
+        "metricKey": "oil_brent",
+        "value": 103.41999816894531,
+        "valueText": "$103.42",
+        "unit": "usd_per_barrel",
+        "timestamp": "2026-04-28T04:00:00.000Z",
         "sourceText": "Yahoo Finance",
         "confidence": "confirmed",
         "reviewState": "approved",
@@ -12173,6 +12223,40 @@
           "currency": "USD",
           "exchange": "NYM"
         }
+      },
+      {
+        "id": "metric_66aca81344b4",
+        "metricKey": "oil_wti",
+        "value": 96.37000274658203,
+        "valueText": "$96.37",
+        "unit": "usd_per_barrel",
+        "timestamp": "2026-04-27T04:00:00.000Z",
+        "sourceText": "Yahoo Finance",
+        "confidence": "confirmed",
+        "reviewState": "approved",
+        "freshness": "ingested",
+        "meta": {
+          "symbol": "CL=F",
+          "currency": "USD",
+          "exchange": "NYM"
+        }
+      },
+      {
+        "id": "metric_b49e6045f9c0",
+        "metricKey": "oil_wti",
+        "value": 98.83000183105469,
+        "valueText": "$98.83",
+        "unit": "usd_per_barrel",
+        "timestamp": "2026-04-28T04:00:00.000Z",
+        "sourceText": "Yahoo Finance",
+        "confidence": "confirmed",
+        "reviewState": "approved",
+        "freshness": "ingested",
+        "meta": {
+          "symbol": "CL=F",
+          "currency": "USD",
+          "exchange": "NYM"
+        }
       }
     ],
     "gold_price": [
@@ -12570,10 +12654,44 @@
       {
         "id": "metric_2d5d48731ee4",
         "metricKey": "gold_price",
-        "value": 4740.89990234375,
-        "valueText": "$4,740.90",
+        "value": 4722.2998046875,
+        "valueText": "$4,722.30",
         "unit": "usd_per_ounce",
         "timestamp": "2026-04-24T04:00:00.000Z",
+        "sourceText": "Yahoo Finance",
+        "confidence": "confirmed",
+        "reviewState": "approved",
+        "freshness": "ingested",
+        "meta": {
+          "symbol": "GC=F",
+          "currency": "USD",
+          "exchange": "CMX"
+        }
+      },
+      {
+        "id": "metric_93c66b482c29",
+        "metricKey": "gold_price",
+        "value": 4675.39990234375,
+        "valueText": "$4,675.40",
+        "unit": "usd_per_ounce",
+        "timestamp": "2026-04-27T04:00:00.000Z",
+        "sourceText": "Yahoo Finance",
+        "confidence": "confirmed",
+        "reviewState": "approved",
+        "freshness": "ingested",
+        "meta": {
+          "symbol": "GC=F",
+          "currency": "USD",
+          "exchange": "CMX"
+        }
+      },
+      {
+        "id": "metric_2b15b4e6ce7b",
+        "metricKey": "gold_price",
+        "value": 4602.2001953125,
+        "valueText": "$4,602.20",
+        "unit": "usd_per_ounce",
+        "timestamp": "2026-04-28T04:00:00.000Z",
         "sourceText": "Yahoo Finance",
         "confidence": "confirmed",
         "reviewState": "approved",

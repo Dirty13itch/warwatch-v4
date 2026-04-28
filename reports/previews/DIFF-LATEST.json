@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-27T17:22:19.863Z",
+  "generatedAt": "2026-04-28T17:34:47.230Z",
   "comparableCount": 11,
   "identicalCount": 3,
   "driftedCount": 8,
@@ -8,74 +8,74 @@
   "comparisons": [
     {
       "fileName": "briefings-desktop.png",
-      "localBytes": 581420,
-      "liveBytes": 594517,
-      "localSha1": "df1d2167e7389e9fa943ae5de12bc97769cdf0b2",
-      "liveSha1": "a4cd0f87c5c87543d8f38e31642baa2807d9a577",
+      "localBytes": 620081,
+      "liveBytes": 617511,
+      "localSha1": "571ba1d8d131d2d1b8e47f3e5682be5d664995c8",
+      "liveSha1": "5e012e4907c2207e3c13575a336bed5c17fdad33",
       "identical": false
     },
     {
       "fileName": "command-desktop.png",
-      "localBytes": 718541,
-      "liveBytes": 716049,
-      "localSha1": "e5d84a4e9e6e47ffc905cf0017adac834840116f",
-      "liveSha1": "9a4b6c1a178ecdfe7b7e174c25e659aceb3c0ec7",
+      "localBytes": 709702,
+      "liveBytes": 707064,
+      "localSha1": "64b062c3cf9966bbc82cc87ca183c08203d6f9b5",
+      "liveSha1": "e155df819ed294f0e1642d066b7a9d276cd5cc62",
       "identical": false
     },
     {
       "fileName": "dossiers-desktop.png",
-      "localBytes": 408270,
-      "liveBytes": 405495,
-      "localSha1": "822b4fbaf41119bcfea5023480086f709625dae5",
-      "liveSha1": "3ab58bd3085e811785202e56f52830706bedb7ac",
+      "localBytes": 409099,
+      "liveBytes": 406346,
+      "localSha1": "a721c26a8fe005a9a8e68ddada403f13786c88ef",
+      "liveSha1": "5adc97f77e69738c21e71e50fc38e069c82cace3",
       "identical": false
     },
     {
       "fileName": "dossiers-detail.png",
-      "localBytes": 398306,
-      "liveBytes": 398306,
-      "localSha1": "377f1f78668055f834c25a6f6c5f9cd9551b3d10",
-      "liveSha1": "377f1f78668055f834c25a6f6c5f9cd9551b3d10",
+      "localBytes": 421468,
+      "liveBytes": 421468,
+      "localSha1": "1584f3aa40eeabffc6411a4764f278ec70024dbc",
+      "liveSha1": "1584f3aa40eeabffc6411a4764f278ec70024dbc",
       "identical": true
     },
     {
       "fileName": "preview-board.png",
-      "localBytes": 5030268,
-      "liveBytes": 3574405,
-      "localSha1": "273be0c8c53c589e9bba1dcc4281c30e3ccdc711",
-      "liveSha1": "3e4b7f4ad3394c74c9450d6a928c30f6809784b4",
+      "localBytes": 5073505,
+      "liveBytes": 3613821,
+      "localSha1": "3334aca7a1402ba5d0d6e578c4bfdad0cd9f7c3d",
+      "liveSha1": "cc0e36f4a4e8a7d1defd2b3f9e57b4db5264eff8",
       "identical": false
     },
     {
       "fileName": "preview-desktop.png",
-      "localBytes": 592159,
-      "liveBytes": 592703,
-      "localSha1": "9878db064942bdfc16be57d02e78728aa6fe00c5",
-      "liveSha1": "2b08e9455170ddbd040e81fc1ae5adf326c9ed56",
+      "localBytes": 603919,
+      "liveBytes": 601362,
+      "localSha1": "8775591c880cc69b609ae5c16417e19b18e31c52",
+      "liveSha1": "24e309f693bf10a1a840cb17567676a90cb11b28",
       "identical": false
     },
     {
       "fileName": "preview-dossiers.png",
-      "localBytes": 55569,
-      "liveBytes": 55569,
-      "localSha1": "e3c116be94f7b550a92fdf9a4dbaeba2219658af",
-      "liveSha1": "e3c116be94f7b550a92fdf9a4dbaeba2219658af",
+      "localBytes": 55488,
+      "liveBytes": 55488,
+      "localSha1": "a917573d177a07e00232b7c87d0be9c31b5eb05e",
+      "liveSha1": "a917573d177a07e00232b7c87d0be9c31b5eb05e",
       "identical": true
     },
     {
       "fileName": "preview-mobile.png",
-      "localBytes": 471401,
-      "liveBytes": 467076,
-      "localSha1": "a09bde6ec556be593996557cfc218b08d274512b",
-      "liveSha1": "3cb7d1f6f8a5a29d37c25a22ddaacb4f7617ee65",
+      "localBytes": 470775,
+      "liveBytes": 466707,
+      "localSha1": "53a5de7d69b49fe81979c97b611c6a293cecf32c",
+      "liveSha1": "70764240e21d00e4d21c66e1f8b1525a9b9d08ff",
       "identical": false
     },
     {
       "fileName": "signals-desktop.png",
-      "localBytes": 532243,
-      "liveBytes": 529789,
-      "localSha1": "5cdbb9498a839c4397026c44f634cf026c662ac3",
-      "liveSha1": "e8e2fd1bdfc38fc195cbd4ef6a5e2e6ff246d5b4",
+      "localBytes": 536960,
+      "liveBytes": 532769,
+      "localSha1": "30562f092de9e039544124e8800dbc216e21982e",
+      "liveSha1": "03e3d2bd4984200234972a32554c09d2e8075cdf",
       "identical": false
     },
     {
@@ -88,10 +88,10 @@
     },
     {
       "fileName": "timeline-desktop.png",
-      "localBytes": 290139,
-      "liveBytes": 288555,
-      "localSha1": "a11cf1c498fbcecd8f59798c61471267ed10e546",
-      "liveSha1": "6d4ec8e505d9e57bef2cf27c73e7bd879d7e2c56",
+      "localBytes": 299691,
+      "liveBytes": 298156,
+      "localSha1": "31910862f1f561d42b5d29f7fdf4520665ce7e8b",
+      "liveSha1": "f0c3076dcd141d0418a00a22f6eacb912b9b31ba",
       "identical": false
     }
   ],
@@ -104,10 +104,10 @@
   "liveOnly": [],
   "truthParity": {
     "matches": true,
-    "headlineLocal": "Live feeds are active, but Total strikes remain on reviewed hold until defensible public evidence lands.",
-    "headlineLive": "Live feeds are active, but Total strikes remain on reviewed hold until defensible public evidence lands.",
-    "topLineFreshnessLocal": "review_hold",
-    "topLineFreshnessLive": "review_hold",
+    "headlineLocal": "Current top-line metrics are live or reviewed, while critical claims remain review-gated.",
+    "headlineLive": "Current top-line metrics are live or reviewed, while critical claims remain review-gated.",
+    "topLineFreshnessLocal": "operator_reviewed",
+    "topLineFreshnessLive": "operator_reviewed",
     "kpis": [
       {
         "key": "hormuz_daily_cap",
@@ -127,18 +127,18 @@
       },
       {
         "key": "oil_brent",
-        "localValue": "$99.13",
+        "localValue": "$103.42",
         "localFreshness": "ingested",
-        "liveValue": "$99.13",
+        "liveValue": "$103.42",
         "liveFreshness": "ingested",
         "matches": true
       },
       {
         "key": "total_strikes",
-        "localValue": "Awaiting reviewed cumulative strike total",
-        "localFreshness": "operator_hold",
-        "liveValue": "Awaiting reviewed cumulative strike total",
-        "liveFreshness": "operator_hold",
+        "localValue": "13,000+ campaign strikes",
+        "localFreshness": "operator_reviewed",
+        "liveValue": "13,000+ campaign strikes",
+        "liveFreshness": "operator_reviewed",
         "matches": true
       }
     ]

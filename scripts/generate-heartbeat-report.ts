@@ -101,7 +101,9 @@ const topLineLines = topLineMetrics.map((metric) => {
 const nextActions = [
   queueSummary.pending > 0
     ? "- Reduce pending critical queue items before promoting fresh top-line claims"
-    : "- Pending critical queue is clear; next unlock is reviewed current top-line metrics or an explicit evidence-bound hold state",
+    : overview.stale
+      ? "- Pending critical queue is clear; next unlock is reviewed current top-line metrics or an explicit evidence-bound hold state"
+      : "- Public stale flag is clear; next leverage is build-weight reduction and stronger preview regression scoring",
   overview.stale
     ? "- Clear the remaining stale public KPI lane only where current evidence is defensible"
     : "- Keep reviewed public top-line metrics fresh as new evidence lands",
